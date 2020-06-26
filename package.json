@@ -1,0 +1,27 @@
+{
+  "name": "snoop-slayer-remastered",
+  "version": "1.0.0",
+  "description": "here we go boyos",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "repository": "https://github.com/electron/electron-quick-start",
+  "keywords": [
+    "snoop",
+    "slayer",
+    "remastered",
+    "clammyhands",
+    "javascript"
+  ],
+  "author": "zeropaulsy",
+  "license": "CC0-1.0",
+  "devDependencies": {
+    "devtron": "^1.4.0",
+    "electron": "^7.1.7"
+  },
+  "dependencies": {
+    "easystarjs": "^0.4.3",
+    "mousetrap": "^1.6.3"
+  }
+}

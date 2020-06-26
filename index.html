@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
+		<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self';">
+		<meta http-equiv="X-Content-Security-Policy" content="default-src 'self'; script-src 'self';">
+		<script type="text/javascript" src="./game/lib/pace/pace.min.js"></script>
+		<link href="./game/lib/pace/pace.css" rel="stylesheet" />
+		<script type="text/javascript" src="./game/lib/gamepad.js"></script>
+		<script type="text/javascript" src="./game/lib/camera.js"></script>
+		<script type="text/javascript" src="./game/lib/easystar-0.4.3.js"></script>
+		<script type="text/javascript" src="./setup.js"></script>
+		<link rel="stylesheet" type="text/css" href="./game/css/styles.css">
+		<title>Snoop Slayer (Remastered)</title>
+	</head>
+	<body id="body">
+		<video id="vid_tunnel" src="./game/assets/video/vid_tunnel.mp4"></video>
+		<div id="pause_menu" align="center">
+			<ul>
+				<h1>Game Paused</h1>
+				<li>
+					<input type="button" id="resume" value="Resume">
+				</li>
+				<br>
+				<li>
+					<input type="button" id="toggle_all" value="Mute FX: OFF">
+				</li>
+				<li>
+					<input type="button" id="toggle_music" value="Mute music: OFF">
+				</li>
+				<li>
+					<input type="button" id="toggle_fullscreen" value="Fullscreen: OFF">
+				</li>
+			</ul>
+		</div>
+		<!-- You can also require other files to run in this process -->
+		<script type="text/javascript" src="./game/LoadAssets.js"></script>
+		<script type="text/javascript" src="./game/KeyBinds.js"></script>
+		<script type="text/javascript" src="./game/Controller.js"></script>
+		<script type="text/javascript" src="./game/Vector.js"></script>
+		<script type="text/javascript" src="./game/BackgroundManager.js"></script>
+		<script type="text/javascript" src="./game/EntityManager.js"></script>
+		<script type="text/javascript" src="./game/Tile.js"></script>
+		<script type="text/javascript" src="./game/ParticleSystem.js"></script>
+		<script type="text/javascript" src="./game/Particle.js"></script>
+		<script type="text/javascript" src="./game/Bullet.js"></script>
+		<script type="text/javascript" src="./game/Explosion.js"></script>
+		<script type="text/javascript" src="./game/Turret.js"></script>
+		<script type="text/javascript" src="./game/Enemy.js"></script>
+		<script type="text/javascript" src="./game/Powerup.js"></script>
+		<script type="text/javascript" src="./game/EnemySpawner.js"></script>
+		<script type="text/javascript" src="./game/Player.js"></script>
+		<script type="text/javascript" src="./game/Inventory.js"></script>
+		<script type="text/javascript" src="./game/HealthBar.js"></script>
+		<script type="text/javascript" src="./game/Gun.js"></script>
+		<script type="text/javascript" src="./game/Game.js"></script>
+		<script type="text/javascript" src="./game/states/levels/Level01.js"></script>
+		<script type="text/javascript" src="./game/states/levels/Level02.js"></script>
+	</body>
+</html>

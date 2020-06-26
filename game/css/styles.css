@@ -1,0 +1,120 @@
+@font-face {
+  font-family: 'm3x6';
+  src: './game/assets/fonts/m3x6.ttf';
+}
+
+body {
+  font-family: 'm3x6';
+  user-select: none;
+  margin: 0px;
+  overflow: hidden;
+  background: black;
+  transition: filter 0.5s;
+  transition-property: filter;
+  transition-duration: 0.5s;
+  transition-timing-function: ease;
+  transition-delay: 0s;
+}
+
+video {
+  display: none;
+}
+
+canvas {
+  position: absolute;
+  image-rendering: pixelated;
+  transition: filter 0.5s;
+  transition-property: filter;
+  transition-duration: 0.5s;
+  transition-timing-function: ease;
+  transition-delay: 0s;
+}
+
+.header {
+  background-color: #3E79EA;
+  border: 1px solid #2459E4;
+  border-bottom: 2px solid #2459E4;
+  z-index: 2;
+  height: 24px;
+  -webkit-app-region: drag;
+  width: calc(100% - 2px);
+}
+
+#title {
+  margin-left: calc(50% - 130px);
+  font-size: 12pt;
+  font-family: 'm3x6';
+  color: #fff;
+}
+
+#close {
+  margin-left: 7px;
+}
+
+img {
+  -webkit-app-region: no-drag;
+  -webkit-filter: brightness(100%);
+  -webkit-transition: all 0.25s ease;
+}
+
+img:hover {
+  cursor: pointer;
+  -webkit-filter: brightness(115%);
+}
+
+h1 {
+  font-size: 5vw;
+    color: #fff;
+    margin: 2vh;
+}
+
+h2 {
+  font-size: 2vw;
+  margin-top: 10px;
+  margin-bottom: 5px;
+  color: #fff;
+}
+
+#pause_menu {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: auto;
+  z-index: 1;
+  width: 27%;
+  background-color: rgba(0, 0, 0, 0.25);
+  -webkit-filter: drop-shadow(0px 0px 20px black);
+  -webkit-transition: all 0.5s ease;
+}
+
+ul {
+  padding-left: 0px;
+  margin-left: 16px;
+  margin-right: 16px;
+  list-style-type:none;
+}
+
+input, select, a {
+  font-family: 'm3x6';
+  border: 0px solid rgb(4, 26, 55);
+  display: inline-block;
+  cursor: pointer;
+  color: #fff;
+  font-size: 5vh;
+  text-shadow: rgb(40, 57, 102) 0px 2px 0px;
+  text-align: center;
+  background-color: #e85a23;
+  width: 100%;
+  margin-bottom: 1%;
+  margin-top: 1%;
+  height: 6vh;
+  -webkit-app-region: no-drag;
+  -webkit-filter: brightness(100%);
+  -webkit-transition: all 0.25s ease;
+}
+
+input:hover, select:hover {
+  -webkit-filter: brightness(125%);
+}

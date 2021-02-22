@@ -55,7 +55,7 @@ class Enemy {
 		}
 		if (this.showHealthBar) this.healthBar.update();
 		// Set entity to be destroyed when health runs out
-		if (this.health < 0 || this.health == NaN) {
+		if (this.health < 0 || isNaN(this.health)) {
 			this.deathSound.play();
 			this.deathSound.currentTime = 0;
 			particleSystem.spawnParticle('420s' + particleSystem.particles.length, p_plus_1, this.pos.x, this.pos.y, 16, 16, 10, -1.5, 30, 5);

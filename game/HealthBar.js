@@ -10,6 +10,7 @@ class HealthBar {
 		this.ratio = p.maxHealth / w;
 		this.cColor = c1;
 		this.hColor = c2;
+		this.statBar = false;
 		this.kill = false;
 	}
 	update() {
@@ -23,7 +24,7 @@ class HealthBar {
 		Game.c.fillStyle = this.cColor;
 		Game.c.fillRect(-(this.cWidth / 2) - offset_x, 0 - offset_y, this.cWidth, this.height);
 		// Draw health and fill with colour 2
-		Game.c.fillStyle = this.hColor; 
+		Game.c.fillStyle = this.hColor;
 		Game.c.translate(-2, -2);
 		Game.c.fillRect(-(this.cWidth / 2) - offset_x, 0 - offset_y, this.hWidth + 2, this.height + 2);
 

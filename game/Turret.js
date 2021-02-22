@@ -28,19 +28,13 @@ class Turret {
 	}
 	update() {
 
-		try {
-			this.calculateAngle();
-		}
-		catch(err) {
-			this.health = 0;
-			console.log(err);
-		}
+		this.calculateAngle();
+		if (isNaN(this.rotation)) this.rotation = 1, console.warn(this.id + ': Could not calculate rotation. Instead set to 1.');
 
+  	this.pos.add(this.vel);
+    this.vel.multiply(0.99);
 
-    	this.pos.add(this.vel);
-	    this.vel.multiply(0.99);
-
-    	if (this.health < 0) this.kill = true;
+  	if (this.health < 0) this.kill = true;
 		// Set flipped variable depending if turret is facing left or right
 		if (this.rotation < -1.5 || this.rotation > 1.5) {
 			this.flipped = true;

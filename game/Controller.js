@@ -40,19 +40,7 @@ function initializeGamepadControls() {
 	});
 
 	gamepad.on('press', 'shoulder_bottom_left', e => {
-		player.dash(5, function() {
-			document.getElementById('body').style.filter = 'saturate(1.5)';
-			let currentBackground = backgroundManager.screens[backgroundManager.screenSelected];
-			//currentBackground.alpha -= 0.5;
-			g_shake += 5;
-			setTimeout(function() {
-				document.getElementById('body').style.filter = '';
-				//currentBackground.alpha += 0.5;
-				g_shake -= 5;
-			}, 100);
-			setTimeout(function() {
-				player.dashing = false;
-			}, 300)
+		player.dash(player.dashVel);
 		});
 	});
 }

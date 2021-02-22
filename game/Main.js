@@ -1,6 +1,9 @@
 const canvas = document.getElementById('canvas');
 const c = canvas.getContext('2d');
 
+//canvas.width = 640, canvas.height = 360;
+//canvas.style.width='100%'
+
 const vid_tunnel = document.getElementById('vid_tunnel');
 
 canvas.width = window.innerWidth;
@@ -36,6 +39,7 @@ let upPressed = false;
 let downPressed = false;
 let leftPressed = false;
 let rightPressed = false;
+let spacePressed = false;
 
 let leftJoystick  = {x: 0,y: 0};
 let rightJoystick = {x: 0,y: 0};
@@ -53,6 +57,8 @@ let player;
 let score;
 
 function setup() {
+	Game.setState(new Level01);
+	/*
 	width = canvas.width;
 	height = canvas.height;
 
@@ -106,7 +112,7 @@ function setup() {
 	player = entityManager.getEntityById('player');
 
 	score = 0;
-
+	*//
 }
 setup();
 
@@ -213,6 +219,7 @@ function run(evt) {
 }
 run();
 
+// Square hitbox detection
 function collisionBetween1(shapeA, shapeB) {
 	// get the vectors to check against
 	var vA = new Vector(shapeA.pos.x - shapeB.pos.x, shapeA.pos.y - shapeB.pos.y),
@@ -256,6 +263,7 @@ function arrayCollisionBetween1(arrayA, arrayB, callback) {
 	}
 }
 
+// Round hitbox detection
 function collisionBetween2(shapeA, shapeB) {
 	var dx = (shapeB.pos.x) - (shapeA.pos.x),
 		dy = (shapeB.pos.y) - (shapeA.pos.y),

@@ -96,6 +96,10 @@ var Level02 = function() {
 		player.inventory.contents.push(new Gun('staff00', spr_staff_blue, p_blue, player, player.width, player.height, 16, 16, 1, 20, 1, 2, mp3_hitmarker, p_red_small, true));
 
 		player.inventory.contents.push(new Gun('staff01', spr_staff_orange, p_orange, player, player.width, player.height, 24, 24, 1, 10, 2, 1.75, mp3_hitmarker, p_red_small, false));
+
+		player.inventory.contents.push(new Gun('staff03', spr_staff_orange, spr_bomb, player, player.width, player.height, 64, 64, 1, 10, 2, 50, mp3_hitmarker, p_red_small, false));
+		player.inventory.contents[2].explosive = true;
+		player.inventory.contents[2].firerate = 0.1;
 		// Player starting velocity
 		player.vel.x =  0;
 		player.vel.y = 25;
@@ -207,32 +211,20 @@ var Level02 = function() {
 		Mousetrap.bind( controls.right, () => { rightPressed = true; }, 'keydown' );
 		Mousetrap.bind( controls.right, () => { rightPressed = false; }, 'keyup'  );
 
+		Mousetrap.bind( controls.space, () => { spacePressed = true; }, 'keydown' );
+		Mousetrap.bind( controls.space, () => { spacePressed = false, player.dash(player.dashVel) }, 'keyup'  );
+
 		Mousetrap.bind( controls.inv1,  () => { player.inventory.slotActive = 0; }, 'keydown' );
 		Mousetrap.bind( controls.inv2,  () => { player.inventory.slotActive = 1; }, 'keydown' );
 		Mousetrap.bind( controls.inv3,  () => { player.inventory.slotActive = 2; }, 'keydown' );
 		Mousetrap.bind( controls.inv4,  () => { player.inventory.slotActive = 3; }, 'keydown' );
 		Mousetrap.bind( controls.inv5,  () => { player.inventory.slotActive = 4; }, 'keydown' );
 
-		Mousetrap.bind(controls.space, () => {
-			player.dash(5, function() {
-				document.getElementById('body').style.filter = 'saturate(1.5)';
-				let currentBackground = backgroundManager.screens[backgroundManager.screenSelected];
-				g_shake += 5;
-				setTimeout(function() {
-					document.getElementById('body').style.filter = ''
-					g_shake -= 5;
-				}, 100);
-				setTimeout(function() {
-					player.dashing = false;
-				}, 300)
-			});
-		}, 'keyup' );
-
 		// Spawn bot
 		Mousetrap.bind('i', () => {
 			entityManager.spawnTurret(
 				'player_turret' + entityManager.turrets.length,
-				spr_player_02,
+				spr_player_01,
 				entityManager.enemies,
 				player.pos.x - player.width/2,
 				player.pos.y - player.width/2,

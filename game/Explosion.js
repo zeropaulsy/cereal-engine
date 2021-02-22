@@ -24,7 +24,7 @@ class Explosion {
 		for (let i = entityManager.enemies.length-1; i >= 0; i--) {
 			let e = entityManager.enemies[i];
 
-			if (inRangeOf(this, e, this.range * 10)) {
+			if (inRangeOf(this, e, this.range * 20)) {
 				var dx = (e.pos.x) - (this.pos.x),
 					dy = (e.pos.y) - (this.pos.y),
 					angle = Math.atan2(dx, dy);

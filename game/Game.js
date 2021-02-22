@@ -43,6 +43,7 @@ let upPressed = false;
 let downPressed = false;
 let leftPressed = false;
 let rightPressed = false;
+let spacePressed = false;
 
 let leftJoystick  = {x: 0, y: 0};
 let rightJoystick = {x: 0, y: 0};
@@ -308,6 +309,7 @@ function Timer(callback, delay) {
 		timer = setTimeout(function() {
 			callback.apply(self, Array.prototype.slice.call(args, 2, args.length));
 		}, delay);
+		console.log(delay)
 	};
 
 	this.resume();

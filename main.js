@@ -10,7 +10,8 @@ function createWindow () {
 	// Create the browser window.
 	mainWindow = new BrowserWindow({
 		width: 1280,
-		height: 742,
+		// MAC height: 742,
+		height: 759,
 		minWidth: 980,
 		minHeight: 450,
 		webPreferences: {
@@ -26,12 +27,13 @@ function createWindow () {
 
 	// Set window aspect ratio
 	mainWindow.setAspectRatio(1.77);
+	mainWindow.setMenu(null);
 
 	// and load the index.html of the app.
 	mainWindow.loadFile('index.html')
 
 	// Open the DevTools.
-	//mainWindow.webContents.openDevTools()
+	mainWindow.webContents.openDevTools()
 
 	// Emitted when the window is closed.
 	mainWindow.on('closed', function () {

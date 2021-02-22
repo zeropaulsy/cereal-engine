@@ -19,20 +19,23 @@ class Player {
 		this.angle = 1;
 		this.rotation = 1;
 		this.rotationSpeed = 0.75;
+		this.dashVel = 5;
 		this.dashing = false;
+		this.dashTimeout = Object();
+		this.dashMaxCharge = 1500;
+		this.dashCharge = this.dashMaxCharge;
 		// Create varible to store last object collided with
 		this.lastCollision = Object();
 		// Create player inventory to store weapons
 		this.inventory = new Inventory(10);
 		// Create a health bar for the player
 		this.healthBar = new HealthBar('player_health_bar', this, 55, 7, '#41C1E8', '#E85D41');
-		// Timer to keep track of powerups
-		this.timer = new Timer(function(){}, 0);
+		this.dashBar = new StatBar('player_dash_bar', this, "dashCharge", 55, 7, '#41C1E8', '#65e841');
 	}
 	update() {
 		this.pos.add(this.vel);
 		this.vel.multiply(this.friction);
-		
+
 		if (this.friction > 1) this.friction = 1;
 
 		this.tile.x = Math.floor(this.pos.x/g_tileSize)*g_tileSize;
@@ -42,6 +45,10 @@ class Player {
 		if (downPressed) this.moveDown();
 		if (leftPressed) this.moveLeft();
 		if (rightPressed) this.moveRight();
+
+		if (this.dashCharge < this.dashMaxCharge) {
+			this.dashCharge+=10;
+		}
 
 		// Handle controller movement
 		if (g_gamepadConnected && g_lastInput == 'controller') {
@@ -88,6 +95,7 @@ class Player {
 		}
 		// Update player health bar percent
 		this.healthBar.update();
+		this.dashBar.update();
 		// Manage inventory slots
 		if (this.inventory.slotActive == 0) this.inventory.selectSlot(0);
 		if (this.inventory.slotActive == 1) this.inventory.selectSlot(1);
@@ -119,19 +127,23 @@ class Player {
 		Game.c.drawImage(this.sprite, -this.width / 2, -this.height / 2, this.width, this.height);
 		// Run health bar and inventory within the save restore to inherit player position and rotation
 		this.healthBar.display(0, this.height / 1.5);
+		this.dashBar.display(0, this.height / 1.25);
 		// Run inventory and render ontop of the player
 		this.inventory.run();
 
 		Game.c.restore();
 		// Handle Timer
-		if (g_paused && !this.timer.paused) {
-	      console.log(this.id + ' timer paused.');
-	      this.timer.pause();
-	    }
-	    if (!g_paused && this.timer.paused) {
-	      console.log(this.id + ' timer resumed.');
-	      this.timer.resume();
-	    }
+		/*
+		if (g_paused && !this.dashTimeout.paused) {
+			console.log(this.id + ' timer paused.');
+			this.dashTimeout.pause();
+		}
+		if (!g_paused && this.dashTimeout.paused) {
+			console.log(this.id + ' timer resumed.');
+			this.dashTimeout.resume();
+		}
+		*/
+
 	}
 	moveUp() {
 		if (this.vel.y > -this.speed) this.vel.y--;
@@ -145,11 +157,22 @@ class Player {
 	moveRight() {
 		if (this.vel.x <  this.speed) this.vel.x++;
 	}
-	dash(vel, callback) {
-		if (!this.dashing) {
-			this.dashing = true;
+	dash(vel) {
+		if (this.dashCharge == this.dashMaxCharge) {
+
+			this.dashCharge = 0;
 			this.vel.multiply(vel);
-			callback();
+
+			g_shake += 5;
+
+			setTimeout(function() {
+
+				new Explosion(player.pos.x, player.pos.y, 24, 24, 20, 10, 10);
+
+				document.getElementById('body').style.filter = ''
+				g_shake -= 5;
+
+			}, 100);
 		}
 	}
 	run() {

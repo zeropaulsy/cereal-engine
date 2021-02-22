@@ -1,8 +1,8 @@
 # Quickstart
 
-**Clone and run for a quick way to see Electron in action.**
+**Clone and run for a quick way to see it in action.**
 
-This is a game engine based on the [Quick Start Guide](https://electronjs.org/docs/tutorial/quick-start) within the Electron documentation.
+This is a custom game engine based on the [Quick Start Guide](https://electronjs.org/docs/tutorial/quick-start) within the Electron documentation.
 
 **Use this app along with the [Electron API Demos](https://electronjs.org/#get-started) app for API code examples to help you get started.**
 

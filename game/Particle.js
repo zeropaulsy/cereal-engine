@@ -4,9 +4,8 @@ class Particle {
     this.id = id;
     this.sprite = sprite;
     this.pos = new Vector(x, y);
-    //this.vel = new Vector(vx + random(-d, d), vy + random(-d, d));
     this.vel = new Vector(
-      (Math.cos(direction) * velocity) + random(-dither, dither), 
+      (Math.cos(direction) * velocity) + random(-dither, dither),
       (Math.sin(direction) * velocity) + random(-dither, dither)
     );
     this.width = width;

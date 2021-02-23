@@ -24,6 +24,7 @@ class Player {
 		this.dashTimeout = Object();
 		this.dashMaxCharge = 1500;
 		this.dashCharge = this.dashMaxCharge;
+		this.powerupActive = false;
 		// Create varible to store last object collided with
 		this.lastCollision = Object();
 		// Create player inventory to store weapons
@@ -45,11 +46,10 @@ class Player {
 		if (downPressed) this.moveDown();
 		if (leftPressed) this.moveLeft();
 		if (rightPressed) this.moveRight();
-
+		// Recharge dash bar
 		if (this.dashCharge < this.dashMaxCharge) {
-			this.dashCharge+=10;
+			this.dashCharge += 10;
 		}
-
 		// Handle controller movement
 		if (g_gamepadConnected && g_lastInput == 'controller') {
 			// Add joystick pos to player velocity
@@ -97,30 +97,27 @@ class Player {
 		this.healthBar.update();
 		this.dashBar.update();
 		// Manage inventory slots
-		if (this.inventory.slotActive == 0) this.inventory.selectSlot(0);
-		if (this.inventory.slotActive == 1) this.inventory.selectSlot(1);
-		if (this.inventory.slotActive == 2) this.inventory.selectSlot(2);
-		if (this.inventory.slotActive == 3) this.inventory.selectSlot(3);
-		if (this.inventory.slotActive == 4) this.inventory.selectSlot(4);
+		for (let i = 0; i < 4; i++) {
+			if (this.inventory.slotActive == i) this.inventory.selectSlot(i);
+		}
 	}
 	display() {
-
 		Game.c.save();
 		// Draw Shadow
 		Game.c.translate(this.pos.x, this.pos.y + Math.sin(this.rotation)*10);
 		Game.c.drawImage(spr_shadow, -this.width/2, (this.height/2)-8, this.width, 16);
 
 		Game.c.restore();
-
+		// Render player
 		Game.c.save();
 		// Flip sprite on Y axis when updside down
 		if (this.flipped) {
 			Game.c.scale(1, -1);
-			Game.c.translate(this.pos.x, -this.pos.y);
+			Game.c.translate(Math.round(this.pos.x), -Math.round(this.pos.y));
 			Game.c.rotate(-this.rotation);
 		} else {
 			Game.c.scale(1, 1);
-			Game.c.translate(this.pos.x, this.pos.y);
+			Game.c.translate(Math.round(this.pos.x), Math.round(this.pos.y));
 			Game.c.rotate(this.rotation);
 		}
 		// Draw player sprite
@@ -132,18 +129,6 @@ class Player {
 		this.inventory.run();
 
 		Game.c.restore();
-		// Handle Timer
-		/*
-		if (g_paused && !this.dashTimeout.paused) {
-			console.log(this.id + ' timer paused.');
-			this.dashTimeout.pause();
-		}
-		if (!g_paused && this.dashTimeout.paused) {
-			console.log(this.id + ' timer resumed.');
-			this.dashTimeout.resume();
-		}
-		*/
-
 	}
 	moveUp() {
 		if (this.vel.y > -this.speed) this.vel.y--;
@@ -160,17 +145,24 @@ class Player {
 	dash(vel) {
 		if (this.dashCharge == this.dashMaxCharge) {
 
+			let value = 1;
+
 			this.dashCharge = 0;
 			this.vel.multiply(vel);
 
 			g_shake += 5;
+			value -= 1;
 
-			setTimeout(function() {
+			document.getElementById('body').style.filter = 'saturate('+value+')';
+
+			let timer = new Timer(function() {
 
 				new Explosion(player.pos.x, player.pos.y, 24, 24, 20, 10, 10);
 
-				document.getElementById('body').style.filter = ''
 				g_shake -= 5;
+				value += 1;
+
+				document.getElementById('body').style.filter = 'saturate('+value+')';
 
 			}, 100);
 		}

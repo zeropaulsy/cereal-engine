@@ -170,7 +170,7 @@ window.onload = function () {
 		};
 	}
 
-    Game.init();
+	Game.init();
 	Game.run();
 
 	Game.canvas.addEventListener('mousedown', function(e) {
@@ -280,6 +280,9 @@ function inRangeOf(shapeA, shapeB, range) {
 	var radii = (shapeA.hitbox.w / 2) + (range);
 	// Compare distance to radii
 	if ((dx * dx) + (dy * dy) < radii * radii && !g_paused) {
+		// Store last collision in objects
+		shapeA.lastCollision = shapeB;
+		shapeB.lastCollision = shapeA;
 		return true;
 	} else {
 		return false;

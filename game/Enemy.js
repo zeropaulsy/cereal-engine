@@ -28,6 +28,7 @@ class Enemy {
 		this.kill = false;
 		this.pathInstanceId = 'none';
 		this.pathfinding = false;
+		this.powerupDropped = false;
 	}
 	update() {
 		this.pos.add(this.vel);
@@ -59,11 +60,16 @@ class Enemy {
 			this.deathSound.play();
 			this.deathSound.currentTime = 0;
 			particleSystem.spawnParticle('420s' + particleSystem.particles.length, p_plus_1, this.pos.x, this.pos.y, 16, 16, 10, -1.5, 30, 5);
+			// Drop powerup
+			if (random(0, 100) < 3 && !this.powerupDropped) {
+				this.dropPowerup();
+				this.powerupDropped = true;
+			}
 			this.kill = true;
 		}
 	}
 	display() {
-		// Draw tile player is on
+		// Draw tile enemy is on
 		// Game.c.fillStyle = 'rgba(255, 0, 0, 0.5)';
 		// Game.c.fillRect(this.tile.x, this.tile.y, g_tileSize, g_tileSize);
 
@@ -87,10 +93,40 @@ class Enemy {
 
 		Game.c.save();
 
-		Game.c.translate(this.pos.x, this.pos.y);
+		Game.c.translate(Math.round(this.pos.x), Math.round(this.pos.y));
 		if (this.showHealthBar) this.healthBar.display(0, this.height/2 + 15);
 
 		Game.c.restore();
+	}
+	applyDebuff() {
+
+	}
+	dropPowerup() {
+		let id = 'powerup' + entityManager.powerups.length;
+
+		entityManager.spawnPowerup(id, spr_box, this.pos.x, this.pos.y, 48, 48, function() {
+
+			let lastCollision = this.lastCollision;
+			let powerupTime = 5000;
+
+			if (!lastCollision.powerupActive) {
+				lastCollision.powerupActive = true;
+
+				console.log(this.id + ' picked up.');
+
+				lastCollision.inventory.slotActive = Math.round(random(1, 3));
+
+				let timer = new Timer(function() {
+					lastCollision.inventory.slotActive = 0;
+					lastCollision.powerupActive = false;
+				}, powerupTime);
+
+				return true;
+			} else {
+				return false;
+			}
+
+		});
 	}
 	run() {
 		this.update();

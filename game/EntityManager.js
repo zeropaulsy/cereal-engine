@@ -30,7 +30,7 @@ class EntityManager {
 			// Calculate path to player
 			if (e.entityType == 'enemy') {
 				if (e.tile.x/g_tileSize < Game.getCurrentState().map.cols && e.tile.y/g_tileSize < Game.getCurrentState().map.rows && e.tile.x/g_tileSize > 0 && e.tile.y/g_tileSize > 0) {
-					this.findEntityPath(e);
+					if (!g_paused) this.findEntityPath(e);
 				}
 			}
 
@@ -91,7 +91,7 @@ class EntityManager {
 		if (this.entities.length < this.max) {
 			// New bullet to entities array
 			this.entities.push(new Powerup(id, sprite, x, y, width, height, onCollision));
-			// Update array of bullets
+			// Update array of powerups
 			this.filterEntities('powerup');
 		} else {
 			// Log warning if entity limit reached or exceeded
@@ -102,7 +102,7 @@ class EntityManager {
 		if (this.entities.length < this.max) {
 			// New entities to entities array
 			this.entities.push(new Turret(id, sprite, target, x, y, width, height, health, ammo, rotationSpeed, stationary));
-			// Update array of bullets
+			// Update array of turrets
 			this.filterEntities('turret');
 		} else {
 			// Log warning if entity limit reached or exceeded
@@ -126,10 +126,11 @@ class EntityManager {
 	}
 	filterEntities(t) {
 		// Find bullets within the main entity array and index them
-		if ( t == 'bullet' ) this.bullets = this.entities.filter( x => x.entityType == t );
-		if ( t == 'enemy'  ) this.enemies = this.entities.filter( x => x.entityType == t );
-		if ( t == 'turret' ) this.turrets = this.entities.filter( x => x.entityType == t );
-		if ( t == 'tile'   ) this.tiles   = this.entities.filter( x => x.entityType == t );
+		if ( t == 'bullet' ) this.bullets  = this.entities.filter( x => x.entityType == t );
+		if ( t == 'enemy'  ) this.enemies  = this.entities.filter( x => x.entityType == t );
+		if ( t == 'turret' ) this.turrets  = this.entities.filter( x => x.entityType == t );
+		if ( t == 'tile'   ) this.tiles    = this.entities.filter( x => x.entityType == t );
+		if ( t == 'powerup') this.powerups = this.entities.filter( x => x.entityType == t );
 	}
 	getEntityById(id) {
 		// Return entity with specified id

@@ -1,7 +1,8 @@
 // All of the Node.js APIs are available in the preload process.
 // It has the same sandbox as a Chrome extension.
-const Mousetrap  = require('mousetrap');
-const remote 	 = require('electron').remote;
+const Mousetrap = require('mousetrap');
+const remote    = require('electron').remote;
+const fs        = require('fs');
 
 window.__devtron = {require: require, process: process}
 

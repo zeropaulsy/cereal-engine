@@ -42,6 +42,7 @@ var Level01 = function() {
 		easystar.setAcceptableTiles([0, 9]);
 		easystar.setTileCost(9, 10);
 		easystar.enableDiagonals();
+		easystar.setIterationsPerCalculation(2000);
 
 		backgroundManager = new BackgroundManager(10, 0);
 
@@ -60,15 +61,16 @@ var Level01 = function() {
 		// Create enemy spawners
 		this.enemySpawnerTop = new EnemySpawner(50, 55, 25, true, function() {
 			if (Math.round(random(0, 5)) != 5) {
-				entityManager.spawnEnemy('enemy' + entityManager.enemies.length, spr_enemy, player, width / 2, -25, 50, 55, false, random(1.2, 2), 10, mp3_hitmarker, 1);
+				entityManager.spawnEnemy('enemy' + entityManager.enemies.length, spr_enemy, player, width / 2, -25, 50, 55, false, random(1.2, 3), 10, mp3_hitmarker, 1);
 			} else {
-				entityManager.spawnEnemy('enemy' + entityManager.enemies.length, spr_enemy_03, player, width / 2, -25, 100, 130, true, random(6, 7), 250, mp3_hitmarker, 1);
+				//entityManager.spawnEnemy('enemy' + entityManager.enemies.length, spr_enemy_03, player, width / 2, -25, 100, 130, true, random(6, 7), 250, mp3_hitmarker, 1);
+				entityManager.spawnEnemy('enemy' + entityManager.enemies.length, spr_enemy_02, player, -45, 346, 60, 80, false, random(4, 5), 25, mp3_hitmarker, 1);
 			}
 		}, 1);
 
 		this.enemySpawnerLeft = new EnemySpawner(50, 75, 25, true, function() {
 			if (Math.round(random(0, 1)) == 0) {
-				entityManager.spawnEnemy('enemy' + entityManager.enemies.length, spr_enemy, player, -45, 346, 50, 55, false, random(1.2, 2), 10, mp3_hitmarker, 1);
+				entityManager.spawnEnemy('enemy' + entityManager.enemies.length, spr_enemy, player, -45, 346, 50, 55, false, random(1.2, 3), 10, mp3_hitmarker, 1);
 			} else {
 				entityManager.spawnEnemy('enemy' + entityManager.enemies.length, spr_enemy_02, player, -45, 346, 60, 80, false, random(3, 4), 25, mp3_hitmarker, 1);
 			}
@@ -76,7 +78,7 @@ var Level01 = function() {
 
 		this.enemySpawnerRight = new EnemySpawner(50, 75, 25, true, function() {
 			if (Math.round(random(0, 1)) == 0) {
-				entityManager.spawnEnemy('enemy' + entityManager.enemies.length, spr_enemy, player, width + 45, 346, 50, 55, false, random(1.2, 2), 10, mp3_hitmarker, 1);
+				entityManager.spawnEnemy('enemy' + entityManager.enemies.length, spr_enemy, player, width + 45, 346, 50, 55, false, random(1.2, 3), 10, mp3_hitmarker, 1);
 			} else {
 				entityManager.spawnEnemy('enemy' + entityManager.enemies.length, spr_enemy_02, player, width + 45, 346, 60, 80, false, random(3, 4), 25, mp3_hitmarker, 1);
 			}
@@ -147,8 +149,6 @@ var Level01 = function() {
 		if ( this.enemySpawnerTop.spawnTime   > 10 ) this.enemySpawnerTop.spawnTime   -= 0.01;
 		if ( this.enemySpawnerLeft.spawnTime  > 10 ) this.enemySpawnerLeft.spawnTime  -= 0.01;
 		if ( this.enemySpawnerRight.spawnTime > 10 ) this.enemySpawnerRight.spawnTime -= 0.01;
-
-		easystar.setIterationsPerCalculation(2000);
 
 		easystar.calculate();
 

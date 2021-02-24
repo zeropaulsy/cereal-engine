@@ -41,6 +41,5 @@ function initializeGamepadControls() {
 
 	gamepad.on('press', 'shoulder_bottom_left', e => {
 		player.dash(player.dashVel);
-		});
 	});
 }

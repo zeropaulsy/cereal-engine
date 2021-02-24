@@ -138,20 +138,21 @@ class EntityManager {
 	}
 	findEntityPath(e) {
 		// easystar js
-		if (e.pathInstanceId != 'none') easystar.cancelPath(e.pathInstanceId);
 		if (!inRangeOf(e, e.target, g_tileSize*2)) {
 			e.pathfinding = true;
+			if (e.pathInstanceId != 'none') easystar.cancelPath(e.pathInstanceId);
 			e.pathInstanceId = easystar.findPath(e.tile.x/g_tileSize, e.tile.y/g_tileSize, e.target.tile.x/g_tileSize, e.target.tile.y/g_tileSize, function(path) {
 				if (path === null) {
 					console.log("Path was not found. " + path);
 				} else {
-					e.dx = (path[2].x*g_tileSize) - (e.pos.x);
-					e.dy = (path[2].y*g_tileSize) - (e.pos.y);
+					e.dx = ((path[1].x - random(-1, 1)) * g_tileSize) - (e.pos.x);
+					e.dy = ((path[1].y - random(-1, 1)) * g_tileSize) - (e.pos.y);
 					e.angle = Math.atan2(e.dy, e.dx);
 					e.rotation = averageNums(e.rotation, e.angle, e.rotationSpeed);
 				}
 			});
 		} else {
+			easystar.cancelPath(e.pathInstanceId);
 			e.pathfinding = false;
 		}
 	}

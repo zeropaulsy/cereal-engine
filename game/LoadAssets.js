@@ -1,3 +1,5 @@
+var spr_player_org = loadImage({ src : './game/assets/img/spr_player_org.png', maxSeconds : 10 });
+
 // Videos
 var vid_tunnel = document.getElementById('vid_tunnel');
 
@@ -51,6 +53,9 @@ spr_banana_gun.src = './game/assets/img/spr_banana_gun.png';
 var spr_bubble = new Image();
 spr_bubble.src = './game/assets/img/spr_bubble.png';
 
+//var spr_player_org = new Image();
+//spr_player_org.src = './game/assets/img/spr_player_org.png';
+
 // Cursors
 var cur_pixel = new Image();
 cur_pixel.src = './game/assets/img/cur_pixel.png';
@@ -92,6 +97,9 @@ p_hitmarker.src = './game/assets/img/p_hitmarker.png';
 
 var p_banana = new Image();
 p_banana.src = './game/assets/img/p_banana.png';
+
+var p_dorito = new Image();
+p_dorito.src = './game/assets/img/p_dorito.png';
 
 // Audio
 var mp3_hitmarker = new Audio('./game/assets/sound/mp3_hitmarker.mp3');

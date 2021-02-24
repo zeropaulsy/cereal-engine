@@ -4,11 +4,11 @@ const gamepad  = new Gamepad();
 var EmptyState = function(){
 	this.name     = "EmptyState";
 
-    this.update   = function() {};
-    this.display  = function() {};
+  this.update   = function() {};
+  this.display  = function() {};
 
-    this.onEnter  = function() {};
-    this.onExit   = function() {};
+  this.onEnter  = function() {};
+  this.onExit   = function() {};
 
 	this.onPause  = function() {}
 	this.onResume = function() {}

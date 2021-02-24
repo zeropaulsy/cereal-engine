@@ -1,3 +1,4 @@
+/*
 const canvas = document.getElementById('canvas');
 const c = canvas.getContext('2d');
 
@@ -58,61 +59,6 @@ let score;
 
 function setup() {
 	Game.setState(new Level01);
-	/*
-	width = canvas.width;
-	height = canvas.height;
-
-	g_tileSize = 64;
-	g_shake = 0;
-
-	backgroundManager = new BackgroundManager(10, 0);
-
-	backgroundManager.screens.push(new BackgroundScreen('windowsXP', [bg_level_01], 1));
-	backgroundManager.screens.push(new BackgroundScreen('trippy', [vid_tunnel, bg_trip, bg_level_01], 0.1));
-	backgroundManager.screens.push(new BackgroundScreen('spooky', [bg_level_01], 1));
-
-	entityManager = new EntityManager(5000);
-
-	for (var i = 0; i < map.tiles.length; i++) {
-		for (var j = 0; j < map.tiles[i].length; j++) {
-			if (map.tiles[i][j] == 1) entityManager.spawnTile('tile' + entityManager.entities.length, ts_map, 16, 0, 8, 8, (g_tileSize / 2) + (j * g_tileSize), (g_tileSize / 2) + (i * g_tileSize), g_tileSize, g_tileSize, true, 10);
-			if (map.tiles[i][j] == 2) entityManager.spawnTile('tile' + entityManager.entities.length, ts_map, 8, 0, 8, 8, (g_tileSize / 2) + (j * g_tileSize), (g_tileSize / 2) + (i * g_tileSize), g_tileSize, g_tileSize, true, 10);
-			if (map.tiles[i][j] == 3) entityManager.spawnTile('tile' + entityManager.entities.length, ts_map, 24, 0, 8, 8, (g_tileSize / 2) + (j * g_tileSize), (g_tileSize / 2) + (i * g_tileSize), g_tileSize, g_tileSize, true, 10);
-		}
-	}
-
-	enemySpawnerTop = new EnemySpawner(1000, 55, 25, true, function() {
-		if (Math.round(random(0, 5)) != 5) {
-			entityManager.spawnEnemy('enemy' + entityManager.enemies.length, spr_enemy, player, width / 2, -25, 50, 55, false, random(1.2, 2), 10, mp3_hitmarker, 1);
-		} else {
-			entityManager.spawnEnemy('enemy' + entityManager.enemies.length, spr_enemy_03, player, width / 2, -25, 100, 130, true, random(6, 7), 250, mp3_hitmarker, 1);
-		}
-	}, 1);
-
-	enemySpawnerLeft = new EnemySpawner(1000, 75, 25, true, function() {
-		if (Math.round(random(0, 1)) == 0) {
-			entityManager.spawnEnemy('enemy' + entityManager.enemies.length, spr_enemy, player, -45, 346, 50, 55, false, random(1.2, 2), 10, mp3_hitmarker, 1);
-		} else {
-			entityManager.spawnEnemy('enemy' + entityManager.enemies.length, spr_enemy_02, player, -45, 346, 60, 80, false, random(3, 4), 25, mp3_hitmarker, 1);
-		}
-	}, 1);
-
-	enemySpawnerRight = new EnemySpawner(1000, 75, 25, true, function() {
-		if (Math.round(random(0, 1)) == 0) {
-			entityManager.spawnEnemy('enemy' + entityManager.enemies.length, spr_enemy, player, width + 45, 346, 50, 55, false, random(1.2, 2), 10, mp3_hitmarker, 1);
-		} else {
-			entityManager.spawnEnemy('enemy' + entityManager.enemies.length, spr_enemy_02, player, width + 45, 346, 60, 80, false, random(3, 4), 25, mp3_hitmarker, 1);
-		}
-	}, 1);
-
-	particleSystem = new ParticleSystem(2000);
-
-	entityManager.spawnPlayer('player', spr_player_01, width / 2, height - (75 / 2), 80, 75, 7, 0.875, 15);
-
-	player = entityManager.getEntityById('player');
-
-	score = 0;
-	*//
 }
 setup();
 
@@ -415,3 +361,4 @@ window.addEventListener('resize', function() {
 	width = canvas.width / g_scale;
 	height = canvas.height / g_scale;
 });
+*/

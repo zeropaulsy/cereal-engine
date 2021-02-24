@@ -15,3 +15,7 @@ entityManager.spawnPowerup('bomb' + entityManager.powerups.length, spr_bomb, 200
 		}, powerupTime);
 	}
 });
+
+for (let i = 0; i < entityManager.turrets.length; i++) {
+	entityManager.turrets[i].kill = true;
+}

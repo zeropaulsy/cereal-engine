@@ -1,7 +1,6 @@
-// StatBar Class : HealthBar(id, parent, stat, width, height, container colour, health color)
+// StatBar Class : StatBar(id, parent, stat, width, height, container colour, health color)
 class StatBar {
 	constructor(id, p, statString, w, h, c1, c2) {
-		console.log(statString)
 		this.id = id;
 		this.parent = p;
 		this.statString = statString;

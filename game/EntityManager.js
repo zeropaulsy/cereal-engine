@@ -54,7 +54,7 @@ class EntityManager {
 
 		// Sort zIndex based on Y position
 		this.map = this.entities.map(function(el, index) {
-			return { index : index, value : el.pos.y };
+			return { index : index, value : el.pos.y + (el.height/2) };
 		})
 
 		this.map.sort(function (a, b) {

@@ -13,7 +13,7 @@ class Explosion {
 	explode() {
 		// Shake screen
 		g_shake += 3;
-		setTimeout(function() { g_shake -= 3 }, 100);
+		let timer = new Timer(function() { g_shake -= 3 }, 100);
 		// Create particles for explosion effect
 		for (let i = 0; i < this.amount; i++) {
 			particleSystem.spawnParticle('boom' + particleSystem.particles.length, p_white, this.pos.x, this.pos.y, 24, 24, this.range, random(-3, 3), random(35, 55), this.dither);
@@ -26,8 +26,8 @@ class Explosion {
 
 			if (inRangeOf(this, e, this.range * 20)) {
 				var dx = (e.pos.x) - (this.pos.x),
-					dy = (e.pos.y) - (this.pos.y),
-					angle = Math.atan2(dx, dy);
+						dy = (e.pos.y) - (this.pos.y),
+						angle = Math.atan2(dx, dy);
 
 				e.health -= this.damage;
 				e.vel.x -= Math.sin(angle) * -25;

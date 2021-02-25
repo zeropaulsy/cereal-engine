@@ -7,7 +7,9 @@ function BackgroundManager(max, bg_selected) {
 
     s.run();
   }
-  BackgroundManager.prototype.selectBackgroundScreen = function(id, func) {
+  BackgroundManager.prototype.selectBackgroundScreen = function(id, callback) {
+    this.callback = callback || function() {};
+    this.callback();
     this.screenSelected = this.screens.findIndex(x => x.id === id);
   }
   BackgroundManager.prototype.getBackgroundById = function(id) {

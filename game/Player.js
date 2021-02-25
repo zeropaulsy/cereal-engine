@@ -30,8 +30,8 @@ class Player {
 		// Create player inventory to store weapons
 		this.inventory = new Inventory(10);
 		// Create a health bar for the player
-		this.healthBar = new HealthBar('player_health_bar', this, 55, 7, '#41C1E8', '#E85D41');
-		this.dashBar = new StatBar('player_dash_bar', this, "dashCharge", 55, 7, '#41C1E8', '#65e841');
+		this.healthBar = new StatBar('player_health_bar', this, 'health', 55, 7, '#41C1E8', '#E85D41');
+		this.dashBar = new StatBar('player_dash_bar', this, 'dashCharge', 55, 7, '#41C1E8', '#65e841');
 	}
 	update() {
 		this.pos.add(this.vel);

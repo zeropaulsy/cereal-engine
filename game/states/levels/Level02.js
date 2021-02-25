@@ -42,6 +42,7 @@ var Level02 = function() {
 		easystar.setAcceptableTiles([0, 9]);
 		easystar.setTileCost(9, 10);
 		easystar.enableDiagonals();
+		easystar.setIterationsPerCalculation(1000);
 
 		backgroundManager = new BackgroundManager(10, 0);
 
@@ -114,6 +115,11 @@ var Level02 = function() {
 
 	}
 	this.onExit = function() {
+		// CLose turret worker threads
+		for (let i = 0; i < entityManager.turrets.length; i++) {
+			entityManager.turrets[i].worker.terminate();
+		}
+
 		// Destroy enemy spawners
 		this.enemySpawnerTop = null;
 		this.enemySpawnerLeft = null;
@@ -152,15 +158,13 @@ var Level02 = function() {
 		if ( this.enemySpawnerLeft.spawnTime  > 10 ) this.enemySpawnerLeft.spawnTime  -= 0.01;
 		if ( this.enemySpawnerRight.spawnTime > 10 ) this.enemySpawnerRight.spawnTime -= 0.01;
 
-		easystar.setIterationsPerCalculation(1000);
-
 		easystar.calculate();
 
 	}
 	this.display = function() {
 
-		Game.c.fillStyle = 'black';
-		Game.c.fillRect(0, 0, width, height);
+		// Game.c.fillStyle = 'black';
+		// Game.c.fillRect(0, 0, width, height);
 
 		Game.c.save();
 
@@ -232,23 +236,32 @@ var Level02 = function() {
 				player.pos.y - player.width/2,
 				80, 75,
 				25, 25,
-				0.9,
+				0.75,
 				false
 			);
 		}, 'keydown');
 
 		// Background script(s)
 		Mousetrap.bind('y', () => {
-			backgroundManager.selectBackgroundScreen('bg_level_02_trippy', (function() {
-				document.getElementById('body').style.filter = 'saturate(1.5)';
-				g_shake = 5;
+			let _this = this;
+			backgroundManager.selectBackgroundScreen('bg_level_02_trippy', function() {
+				// Apply filter to canvas
+				document.getElementById('body').style.filter = 'saturate(1.2)';
+				// Set shake amount
+				g_shake = 1;
+				// Start video
 				vid_tunnel.play();
-				backgroundManager.getBackgroundById('bg_level_02_trippy').timer = new Timer(function() {
-					document.getElementById('body').style.filter = '';
-					backgroundManager.selectBackgroundScreen('bg_level_01');
-					g_shake = 0;
+				// Create timer to reset changes and refer to default backgound
+				let timer = new Timer(function() {
+					// Only execute if game is still in current level
+					if (Game.getCurrentState() == _this) {
+						document.getElementById('body').style.filter = '';
+						backgroundManager.selectBackgroundScreen('bg_level_02');
+						g_shake = 0;
+						vid_tunnel.pause();
+					}
 				}, 6000);
-			})());
+			});
 		}, 'keydown');
 	}
 }

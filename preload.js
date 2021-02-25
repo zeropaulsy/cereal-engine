@@ -2,7 +2,6 @@
 // It has the same sandbox as a Chrome extension.
 const Mousetrap = require('mousetrap');
 const remote    = require('electron').remote;
-const fs        = require('fs');
 
 window.__devtron = {require: require, process: process}
 

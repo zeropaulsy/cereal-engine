@@ -21,7 +21,8 @@ class Turret {
 		this.rotation = 0;
 		this.rotationSpeed = rotationSpeed;
 		this.stationary = stationary;
-		this.speed = 4;
+		this.speed = 1;
+		this.friction = 0.9;
 		this.knockBack = 10;
 		this.lastCollision = Object();
 		this.kill = false;
@@ -31,17 +32,21 @@ class Turret {
 		this.healthBar = new HealthBar(this.id + '_health_bar', this, 55, 7, '#ce9069', '#51bf59');
 		// Add worker thread
 		this.worker = new Worker('./game/CalculateAngle.js');
+		this.workerUpdateSpeed = 25;
+		this.workerTimer = 0;
+		// Listen for responce
 		this.worker.onmessage = function(e) {
 			_this.angle = Math.atan2(e.data.vy, e.data.vx)
 		};
 	}
 	update() {
 
+		this.workerTimer--;
 		this.calculateAngle();
 		if (isNaN(this.rotation)) this.rotation = 1, console.warn(this.id + ': Could not calculate rotation. Instead set to 1.');
 
 		this.pos.add(this.vel);
-		this.vel.multiply(0.99);
+		this.vel.multiply(this.friction);
 
 		if (this.health < 0) this.worker.terminate(), this.kill = true;
 		// Set flipped variable depending if turret is facing left or right
@@ -89,35 +94,37 @@ class Turret {
 		if (0 < entityManager.enemies.length) {
 
 			for (var target, d = Number.MAX_VALUE, i = 0; i < entityManager.enemies.length; i++) {
-				let enemy = entityManager.enemies[i],
-					distance = Math.pow(this.pos.x - enemy.pos.x, 2) + Math.pow(this.pos.y - enemy.pos.y, 2);
+				let enemy 	 = entityManager.enemies[i],
+						distance = Math.pow(this.pos.x - enemy.pos.x, 2) + Math.pow(this.pos.y - enemy.pos.y, 2);
 				distance < d && (target = enemy, d = distance)
 			}
 
 			let t = target;
 
 			// Current weapon projectile speed
-			this.vMag = this.inventory.getEquippedItem().speed;
+			// this.vMag = this.inventory.getEquippedItem().speed;
 
 			// Send to worker thread
-			this.worker.postMessage({
-				'calculateAngle': 'start',
-				'turret': {
-					x: this.pos.x,
-					y: this.pos.y
-				},
-				'target': {
-					x: t.pos.x,
-					y: t.pos.y
-				},
-				'targetVel': {
-					x: t.vel.x,
-					y: t.vel.y
-				},
-				'vMag': this.vMag
-			});
-
-			// Listen for responce
+			if (this.workerTimer < 0) {
+				this.worker.postMessage({
+					'worker_message': 'calculate_angle',
+					'turret': {
+						x: this.pos.x,
+						y: this.pos.y
+					},
+					'target': {
+						x: t.pos.x,
+						y: t.pos.y
+					},
+					'targetVel': {
+						x: t.vel.x,
+						y: t.vel.y
+					},
+					'vMag': this.inventory.getEquippedItem().speed
+				});
+				// Reset worker timer
+				this.workerTimer = this.workerUpdateSpeed;
+			}
 
 			this.rotation = averageNums(this.rotation, this.angle, this.rotationSpeed);
 

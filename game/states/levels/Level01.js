@@ -112,6 +112,11 @@ var Level01 = function() {
 
 	}
 	this.onExit = function() {
+		// CLose turret worker threads
+		for (let i = 0; i < entityManager.turrets.length; i++) {
+			entityManager.turrets[i].worker.terminate();
+		}
+
 		// Destroy enemy spawners
 		this.enemySpawnerTop = null;
 		this.enemySpawnerLeft = null;
@@ -127,6 +132,7 @@ var Level01 = function() {
 
 		// Add level score to global score
 		score += this.score;
+		g_shake = 0;
 
 		// Reset controls
 		Object.keys(controls).forEach(function(key) {
@@ -225,25 +231,34 @@ var Level01 = function() {
 				entityManager.enemies,
 				player.pos.x - player.width/2,
 				player.pos.y - player.width/2,
-				80, 75,
+				80/2, 75/2,
 				25, 25,
-				0.9,
+				0.75,
 				false
 			);
 		}, 'keydown');
 
 		// Background script(s)
 		Mousetrap.bind('y', () => {
-			backgroundManager.selectBackgroundScreen('bg_level_01_trippy', (function() {
-				document.getElementById('body').style.filter = 'saturate(1.5)';
-				g_shake = 5;
+			let _this = this;
+			backgroundManager.selectBackgroundScreen('bg_level_01_trippy', function() {
+				// Apply filter to canvas
+				document.getElementById('body').style.filter = 'saturate(1.2)';
+				// Set shake amount
+				g_shake = 1;
+				// Start video
 				vid_tunnel.play();
-				backgroundManager.getBackgroundById('bg_level_01_trippy').timer = new Timer(function() {
-					document.getElementById('body').style.filter = '';
-					backgroundManager.selectBackgroundScreen('bg_level_01');
-					g_shake = 0;
+				// Create timer to reset changes and refer to default backgound
+				let timer = new Timer(function() {
+					// Only execute if game is still in current level
+					if (Game.getCurrentState() == _this) {
+						document.getElementById('body').style.filter = '';
+						backgroundManager.selectBackgroundScreen('bg_level_01');
+						g_shake = 0;
+						vid_tunnel.pause();
+					}
 				}, 6000);
-			})());
+			});
 		}, 'keydown');
 	}
 }

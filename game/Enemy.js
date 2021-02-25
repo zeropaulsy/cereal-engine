@@ -16,7 +16,7 @@ class Enemy {
 		this.health = health;
 		this.maxHealth = health;
 		this.showHealthBar = showHealthBar;
-		this.healthBar = new HealthBar(id + '_healthbar', this, width / 1.5, 7, '#f0f0dd', '#686e46');
+		this.healthBar = new StatBar(id + '_healthbar', this, 'health', width / 1.5, 7, '#f0f0dd', '#686e46');
 		this.deathSound = deathSound;
 		this.scoreValue = scoreValue;
 		this.knockBack = 0;

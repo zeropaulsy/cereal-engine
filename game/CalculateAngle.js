@@ -1,7 +1,16 @@
 self.addEventListener('message', function(e) {
   var data = e.data;
-  switch (data.calculateAngle) {
-    case 'start':
+  switch (data.worker_message) {
+    case 'find_target':
+
+      for (var target, d = Number.MAX_VALUE, i = 0; i < entityManager.enemies.length; i++) {
+        let enemy = entityManager.enemies[i],
+          distance = Math.pow(this.pos.x - enemy.pos.x, 2) + Math.pow(this.pos.y - enemy.pos.y, 2);
+        distance < d && (target = enemy, d = distance)
+      }
+
+      break;
+    case 'calculate_angle':
       // Find the vector AB
 			this.ABx = data.target.x - data.turret.x;
 		  this.ABy = data.target.y - data.turret.y;

@@ -1,9 +1,5 @@
 # Cereal-Engine
 
-**Clone and run for a quick way to see it in action.**
-
-This is a custom game engine based on the [Quick Start Guide](https://electronjs.org/docs/tutorial/quick-start) within the Electron documentation.
-
 ## To Use
 
 To clone and run this repository you'll need [Git](https://git-scm.com) and [Node.js](https://nodejs.org/en/download/) (which comes with [npm](http://npmjs.com)) installed on your computer. From your command line:

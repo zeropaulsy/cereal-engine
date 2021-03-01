@@ -1,3 +1,21 @@
+function findEntityPath(e, t) {
+	// easystar js
+	if ( !inRangeOf(e, t, g_tileSize * 2) ) {
+		e.pathfinding = true;
+		e.pathInstanceId = easystar.findPath(e.tile.x/g_tileSize, e.tile.y/g_tileSize, t.tile.x/g_tileSize, t.tile.y/g_tileSize, function(path) {
+			if (path === null) {
+				console.log("Path was not found. " + path);
+			} else {
+				e.path = path;
+				easystar.cancelPath(e.pathInstanceId);
+			}
+		});
+	} else {
+		easystar.cancelPath(e.pathInstanceId);
+		e.pathfinding = false;
+	}
+}
+
 function collisionBetween1(shapeA, shapeB) {
 	// get the vectors to check against
 	var vA = new Vector(shapeA.pos.x - shapeB.pos.x, shapeA.pos.y - shapeB.pos.y),

@@ -26,6 +26,7 @@ class Enemy {
 		this.flipped = false;
 		this.lastCollision = Object();
 		this.kill = false;
+		this.path = [];
 		this.pathInstanceId = 'none';
 		this.pathfinding = false;
 		this.powerupDropped = false;
@@ -35,11 +36,23 @@ class Enemy {
 		this.vel.multiply(0.875);
 		this.tile.x = Math.floor(this.pos.x/g_tileSize)*g_tileSize;
 		this.tile.y = Math.floor(this.pos.y/g_tileSize)*g_tileSize;
-		// Calculate angle to face based on position of target
-		if (!this.pathfinding) {
-			this.angle = this.pos.angle(this.target.pos);
-			this.rotation = averageNums(this.rotation, this.angle, this.rotationSpeed);
+		// Find player and follow path
+		if ( this.isOnGrid() ) {
+			findEntityPath(this, this.target);
 		}
+		if (this.pathfinding) {
+			try {
+				this.dx = ( (this.path[1].x - random(-1, 1) ) * g_tileSize ) - ( this.pos.x - (this.width / 2) );
+				this.dy = ( (this.path[1].y - random(-1, 1) ) * g_tileSize ) - ( this.pos.y - (this.height/ 2) );
+				this.angle = Math.atan2(this.dy, this.dx);
+			}
+			catch {
+				this.angle = this.pos.angle(this.target.pos);
+			}
+		} else {
+			this.angle = this.pos.angle(this.target.pos);
+		}
+		this.rotation = averageNums(this.rotation, this.angle, this.rotationSpeed);
 		// Set velocity to move in direction of angle
 		this.vel.x += Math.cos(this.rotation) / this.speed;
 		this.vel.y += Math.sin(this.rotation) / this.speed;
@@ -97,6 +110,13 @@ class Enemy {
 		if (this.showHealthBar) this.healthBar.display(0, this.height/2 + 15);
 
 		Game.c.restore();
+	}
+	isOnGrid() {
+		if (this.tile.x/g_tileSize < Game.getCurrentState().map.cols && this.tile.y/g_tileSize < Game.getCurrentState().map.rows && this.tile.x/g_tileSize > 0 && this.tile.y/g_tileSize > 0) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 	applyDebuff() {
 

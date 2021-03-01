@@ -30,22 +30,27 @@ class Player {
 		// Create player inventory to store weapons
 		this.inventory = new Inventory(10);
 		// Create a health bar for the player
-		this.healthBar = new StatBar('player_health_bar', this, 'health', 55, 7, '#41C1E8', '#E85D41');
-		this.dashBar = new StatBar('player_dash_bar', this, 'dashCharge', 55, 7, '#41C1E8', '#65e841');
+		this.healthBar = new StatBar('player_health_bar', this, 'health', w / 1.45, 7, '#41C1E8', '#E85D41');
+		this.dashBar = new StatBar('player_dash_bar', this, 'dashCharge', w / 1.45, 7, '#41C1E8', '#65e841');
 	}
 	update() {
 		this.pos.add(this.vel);
 		this.vel.multiply(this.friction);
 
 		if (this.friction > 1) this.friction = 1;
-
-		this.tile.x = Math.floor(this.pos.x/g_tileSize)*g_tileSize;
-		this.tile.y = Math.floor(this.pos.y/g_tileSize)*g_tileSize;
+		// Calculate white tile player is on
+		this.tile.x = Math.floor( this.pos.x / g_tileSize ) * g_tileSize;
+		this.tile.y = Math.floor( this.pos.y / g_tileSize ) * g_tileSize;
 		// Bind movement listeners to player velocity
-		if (upPressed) this.moveUp();
-		if (downPressed) this.moveDown();
-		if (leftPressed) this.moveLeft();
+		if (upPressed		) this.moveUp();
+		if (downPressed	) this.moveDown();
+		if (leftPressed	) this.moveLeft();
 		if (rightPressed) this.moveRight();
+		// Handle weapon shooting
+		for (let i = 0; i < this.inventory.contents.length; i++) {
+			let g = this.inventory.contents[i];
+			if (g.equipped && mouseDown) g.shoot();
+		}
 		// Recharge dash bar
 		if (this.dashCharge < this.dashMaxCharge) {
 			this.dashCharge += 10;
@@ -144,12 +149,13 @@ class Player {
 	}
 	dash(vel) {
 		if (this.dashCharge == this.dashMaxCharge) {
-
+			// Define value to alter effects
 			let value = 1;
-
+			//
 			this.dashCharge = 0;
+			// Add vel to player velocity
 			this.vel.multiply(vel);
-
+			// Scripted dash event
 			g_shake += 5;
 			value -= 1;
 

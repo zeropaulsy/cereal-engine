@@ -33,7 +33,15 @@ function createWindow () {
 	mainWindow.loadFile('index.html')
 
 	// Open the DevTools.
-	mainWindow.webContents.openDevTools()
+	mainWindow.webContents.openDevTools();
+
+	mainWindow.on('resize', function () {
+	  setTimeout(function () {
+	    var size = mainWindow.getSize();
+	    mainWindow.setSize( size[0], ( parseInt(size[0] * 9 / 16) ) + 30 );
+	  }, 0);
+	});
+
 
 	// Emitted when the window is closed.
 	mainWindow.on('closed', function () {
@@ -55,13 +63,13 @@ app.on('ready', function () {
 app.on('window-all-closed', function () {
 	// On macOS it is common for applications and their menu bar
 	// to stay active until the user quits explicitly with Cmd + Q
-	if (process.platform !== 'darwin') app.quit()
+	if (process.platform !== 'darwin') app.quit();
 })
 
 app.on('activate', function () {
 	// On macOS it's common to re-create a window in the app when the
 	// dock icon is clicked and there are no other windows open.
-	if (mainWindow === null) createWindow()
+	if (mainWindow === null) createWindow();
 })
 
 // In this file you can include the rest of your app's specific main process

@@ -9,10 +9,7 @@ class Turret {
 		this.vel = new Vector();
 		this.width = width;
 		this.height = height;
-		this.hitbox = {
-			w: width,
-			h: height
-		};
+		this.hitbox = { w: width / 1.25, h: height / 1.25 };
 		this.health = health;
 		this.maxHealth = health;
 		this.ammo = ammo;
@@ -21,29 +18,28 @@ class Turret {
 		this.rotation = 0;
 		this.rotationSpeed = rotationSpeed;
 		this.stationary = stationary;
-		this.speed = 1;
+		this.speed = random(1, 2);
 		this.friction = 0.9;
 		this.knockBack = 10;
+		this.distance = random(128, 256);
 		this.lastCollision = Object();
 		this.kill = false;
 		this.inventory = new Inventory(5);
 		this.inventory.contents.push(new Gun('staff00', spr_staff_orange, p_orange, this, this.width, this.height, 16, 16, 1, 20, 1, 1, mp3_hitmarker, p_red_small, true));
 		this.inventory.contents.push(new Gun('staff01', spr_staff_orange, p_orange, this, this.width, this.height, 16, 16, 1, 10, 2, 0.75, mp3_hitmarker, p_red_small, false));
-		this.healthBar = new HealthBar(this.id + '_health_bar', this, 55, 7, '#ce9069', '#51bf59');
+		this.healthBar = new StatBar(this.id + '_health_bar', this, 'health', 55 / 1.45, 7, '#ce9069', '#51bf59');
 		// Add worker thread
 		this.worker = new Worker('./game/CalculateAngle.js');
 		this.workerUpdateSpeed = 25;
 		this.workerTimer = 0;
-		// Listen for responce
-		this.worker.onmessage = function(e) {
-			_this.angle = Math.atan2(e.data.vy, e.data.vx)
-		};
+		// Listen for worker responce message
+		this.worker.onmessage = function(e) { _this.angle = Math.atan2(e.data.vy, e.data.vx) };
 	}
 	update() {
 
 		this.workerTimer--;
 		this.calculateAngle();
-		if (isNaN(this.rotation)) this.rotation = 1, console.warn(this.id + ': Could not calculate rotation. Instead set to 1.');
+		if ( isNaN(this.rotation) ) this.rotation = 1, console.warn(this.id + ': Could not calculate rotation. Instead set to 1.');
 
 		this.pos.add(this.vel);
 		this.vel.multiply(this.friction);
@@ -92,7 +88,7 @@ class Turret {
 	}
 	calculateAngle() {
 		if (0 < entityManager.enemies.length) {
-
+			// Find closest enemy
 			for (var target, d = Number.MAX_VALUE, i = 0; i < entityManager.enemies.length; i++) {
 				let enemy 	 = entityManager.enemies[i],
 						distance = Math.pow(this.pos.x - enemy.pos.x, 2) + Math.pow(this.pos.y - enemy.pos.y, 2);
@@ -100,9 +96,6 @@ class Turret {
 			}
 
 			let t = target;
-
-			// Current weapon projectile speed
-			// this.vMag = this.inventory.getEquippedItem().speed;
 
 			// Send to worker thread
 			if (this.workerTimer < 0) {
@@ -128,7 +121,7 @@ class Turret {
 
 			this.rotation = averageNums(this.rotation, this.angle, this.rotationSpeed);
 
-			if (!this.stationary && !inRangeOf(this, player, 256)) {
+			if (!this.stationary && !inRangeOf(this, player, this.distance)) {
 
 				let tx = ((player.pos.x - player.width) - this.pos.x);
 				let ty = ((player.pos.y - player.width) - this.pos.y);

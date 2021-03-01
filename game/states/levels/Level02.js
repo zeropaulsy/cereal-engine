@@ -42,6 +42,7 @@ var Level02 = function() {
 		easystar.setAcceptableTiles([0, 9]);
 		easystar.setTileCost(9, 10);
 		easystar.enableDiagonals();
+		easystar.enableSync();
 		easystar.setIterationsPerCalculation(1000);
 
 		backgroundManager = new BackgroundManager(10, 0);
@@ -200,8 +201,24 @@ var Level02 = function() {
 
 	}
 
-	this.onPause  = function() {}
-	this.onResume = function() {}
+	this.onPause  = function() {
+		// Show pause menu
+		document.getElementById("pause_menu").style.display = 'block';
+		canvas.style.cursor = 'auto';
+		canvas.style.filter = 'blur(5px) brightness(0.5)';
+
+		if (window.fullscreen) {
+			document.getElementById("toggle_fullscreen").value = "Fullscreen: ON";
+		} else {
+			document.getElementById("toggle_fullscreen").value = "Fullscreen: OFF";
+		}
+	}
+	this.onResume = function() {
+		// Hide pause menu
+		document.getElementById("pause_menu").style.display = 'none';
+		canvas.style.cursor = 'none';
+		canvas.style.filter = 'blur(0px) brightness(1)';
+	}
 
 	this.initializeControls = function() {
 		// Player controls
@@ -234,9 +251,9 @@ var Level02 = function() {
 				entityManager.enemies,
 				player.pos.x - player.width/2,
 				player.pos.y - player.width/2,
-				80, 75,
+				80/1.25, 75/1.25,
 				25, 25,
-				0.75,
+				0.875,
 				false
 			);
 		}, 'keydown');

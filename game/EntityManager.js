@@ -22,20 +22,15 @@ class EntityManager {
 				// Remove entity from array when killed
 				this.entities.splice(i, 1);
 				// Update entity specific arrays on kill
-				for (let j = 0; j < this.entityTypes.length; j++) {
-					let ent = this.entityTypes[j];
-					if ( e.entityType == ent ) this.filterEntities( ent )
-				}
-			}
-			// Calculate path to player
-			if (e.entityType == 'enemy') {
-				if (e.tile.x/g_tileSize < Game.getCurrentState().map.cols && e.tile.y/g_tileSize < Game.getCurrentState().map.rows && e.tile.x/g_tileSize > 0 && e.tile.y/g_tileSize > 0) {
-					if (!g_paused) this.findEntityPath(e);
+				this.filterEntities(e.entityType);
+				// Cancel enemy path on kill
+				if (e.entityType == 'enemy') {
+					easystar.cancelPath(e.pathInstanceId);
 				}
 			}
 
-			e.display();
 			if (!g_paused) e.update();
+			e.display();
 		}
 		// Check for collisions between arrays
 		arrayCollisionBetween1(this.enemies, this.tiles,   (a, b) => { });
@@ -80,8 +75,10 @@ class EntityManager {
 		if (this.entities.length < this.max) {
 			// New bullet to entities array
 			this.entities.push(new Enemy(id, spr, t, x, y, w, h, hb, s, l, ds, sv));
+			// this.enemies.push(new Enemy(id, spr, t, x, y, w, h, hb, s, l, ds, sv));
 			// Update array of bullets
 			this.filterEntities('enemy');
+			// this.entities.concat(this.enemies)
 		} else {
 			// Log warning if entity limit reached or exceeded
 			console.warn('Could not spawn enemy. Maximum number of entities reached: ' + this.max);
@@ -140,15 +137,12 @@ class EntityManager {
 		// easystar js
 		if (!inRangeOf(e, e.target, g_tileSize*2)) {
 			e.pathfinding = true;
-			if (e.pathInstanceId != 'none') easystar.cancelPath(e.pathInstanceId);
 			e.pathInstanceId = easystar.findPath(e.tile.x/g_tileSize, e.tile.y/g_tileSize, e.target.tile.x/g_tileSize, e.target.tile.y/g_tileSize, function(path) {
 				if (path === null) {
 					console.log("Path was not found. " + path);
 				} else {
-					e.dx = ((path[1].x - random(-1, 1)) * g_tileSize) - (e.pos.x);
-					e.dy = ((path[1].y - random(-1, 1)) * g_tileSize) - (e.pos.y);
-					e.angle = Math.atan2(e.dy, e.dx);
-					e.rotation = averageNums(e.rotation, e.angle, e.rotationSpeed);
+					e.path = path;
+					easystar.cancelPath(e.pathInstanceId);
 				}
 			});
 		} else {

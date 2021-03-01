@@ -1,17 +1,16 @@
 {
-  "name": "snoop-slayer-remastered",
+  "name": "cereal-engine",
   "version": "1.0.0",
   "description": "here we go boyos",
   "main": "main.js",
   "scripts": {
     "start": "electron ."
   },
-  "repository": "https://github.com/electron/electron-quick-start",
+  "repository": "https://github.com/zeropaulsy/cereal-engine",
   "keywords": [
-    "snoop",
-    "slayer",
+    "cereal",
+    "engine",
     "remastered",
-    "clammyhands",
     "javascript"
   ],
   "author": "zeropaulsy",

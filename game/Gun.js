@@ -29,26 +29,31 @@ class Gun {
 		// Count time passed
 		this.timeCounter += delta;
 		// Spawn bullet when equipped and mouse is pressed
+		/*
 		if (this.equipped && mouseDown && !g_paused) {
 			if (this.timeCounter > this.firerate) {
 				this.timeCounter = 0;
 				this.shoot(this.amount);
 			}
 		}
+		*/
 		this.angle = this.parent.angle;
 	}
 	display() {
 		if (this.equipped) Game.c.drawImage(this.sprite, -this.width / 2, -this.height / 2, this.width, this.height);
 	}
 	shoot() {
-		for (let i = 0; i < this.amount; i++) {
-			entityManager.spawnBullet(
-				'bullet' + entityManager.bullets.length,
-				this.bulletSprite,
-				this,
-				this.bulletWidth,
-				this.bulletHeight
-			);
+		if (this.timeCounter > this.firerate) {
+			for (let i = 0; i < this.amount; i++) {
+				entityManager.spawnBullet(
+					'bullet' + entityManager.bullets.length,
+					this.bulletSprite,
+					this,
+					this.bulletWidth,
+					this.bulletHeight
+				);
+			}
+			this.timeCounter = 0;
 		}
 	}
 	run() {

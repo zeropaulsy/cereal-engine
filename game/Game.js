@@ -98,21 +98,7 @@ var Game = {
 			rightJoystick.y = applyDeadzone(gp.axes[3], rightDeadzone);
 		}
 
-		// Show / hide pause menu
-		if (g_paused) {
-			document.getElementById("pause_menu").style.display = 'block';
-			canvas.style.cursor = 'auto';
-			canvas.style.filter = 'blur(5px) brightness(0.5)';
-		} else {
-			document.getElementById("pause_menu").style.display = 'none';
-			canvas.style.cursor = 'none';
-			canvas.style.filter = 'blur(0px) brightness(1)';
-		}
-		if (window.fullscreen) {
-			document.getElementById("toggle_fullscreen").value = "Fullscreen: ON";
-		} else {
-			document.getElementById("toggle_fullscreen").value = "Fullscreen: OFF";
-		}
+		g_paused ? Game.stateStack.pause() : Game.stateStack.resume();
 
 		// Calculate current framerate
 		if (!lastCalledTime) {

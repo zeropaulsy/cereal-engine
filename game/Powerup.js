@@ -9,7 +9,7 @@ class Powerup {
 		this.height = height;
 		this.hitbox = {w: width, h: height};
 		this.onCollision = onCollision;
-		this.lastCollision = Object();
+		this.hitbox.lastCollision = Object();
 		this.health = random(500, 750);
 		this.kill = false;
 	}

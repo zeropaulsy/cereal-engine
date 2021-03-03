@@ -8,10 +8,6 @@ class ParticleSystem {
     // Loop through particles array
     for (let i = this.particles.length-1; i >= 0; i--) {
       var p = this.particles[i];
-      if (p.kill) {
-        // Remove particle from array when killed
-        this.particles.splice(i, 1);
-      }
 
       if (!g_paused) p.update();
       p.display();
@@ -24,5 +20,10 @@ class ParticleSystem {
       // Log warning if particle limit reached or exceeded
       console.warn('Could not spawn particle. Maximum number of particles reached: ' + this.max);
     }
+  }
+  removeParticle(p) {
+    // Remove particle from array when killed
+    let i = this.particles.indexOf(p);
+    return this.particles.splice(i, 1);
   }
 }

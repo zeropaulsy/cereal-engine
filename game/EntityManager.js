@@ -16,18 +16,6 @@ class EntityManager {
 		// Loop through entites array
 		for (let i = this.entities.length-1; i >= 0; i--) {
 			let e = this.entities[i];
-			if (e.kill) {
-				// Increase score if enemy killed by the player with its score value
-				if (e.lastCollision.entityType == 'bullet') Game.getCurrentState().score += e.scoreValue;
-				// Remove entity from array when killed
-				this.entities.splice(i, 1);
-				// Update entity specific arrays on kill
-				this.filterEntities(e.entityType);
-				// Cancel enemy path on kill
-				if (e.entityType == 'enemy') {
-					easystar.cancelPath(e.pathInstanceId);
-				}
-			}
 
 			if (!g_paused) e.update();
 			e.display();
@@ -38,9 +26,9 @@ class EntityManager {
 		arrayCollisionBetween1(this.turrets, this.tiles,   (a, b) => { });
 
 		arrayCollisionBetween1(this.bullets, this.tiles,   (a, b) => {
-			if (a.explosive) a.explode();
-			particleSystem.spawnParticle('hitmarker' + particleSystem.particles.length, p_brown_small, a.pos.x, a.pos.y, 10, 10, 3, random(0, 3), 5, 5);
-			a.kill = true;
+			//if (a.explosive) a.explode();
+			//particleSystem.spawnParticle('hitmarker' + particleSystem.particles.length, p_brown_small, a.pos.x, a.pos.y, 10, 10, 3, random(0, 3), 5, 5);
+			a.destroy();
 		});
 
 		arrayCollisionBetween2(this.enemies, this.turrets, (a, b) => { b.health--; });
@@ -133,21 +121,13 @@ class EntityManager {
 		// Return entity with specified id
 		return this.entities.find(x => x.id === id);
 	}
-	findEntityPath(e) {
-		// easystar js
-		if (!inRangeOf(e, e.target, g_tileSize*2)) {
-			e.pathfinding = true;
-			e.pathInstanceId = easystar.findPath(e.tile.x/g_tileSize, e.tile.y/g_tileSize, e.target.tile.x/g_tileSize, e.target.tile.y/g_tileSize, function(path) {
-				if (path === null) {
-					console.log("Path was not found. " + path);
-				} else {
-					e.path = path;
-					easystar.cancelPath(e.pathInstanceId);
-				}
-			});
-		} else {
-			easystar.cancelPath(e.pathInstanceId);
-			e.pathfinding = false;
-		}
+	removeEntity(e) {
+		// Increase score if enemy killed by the player with its score value
+		if (e.hitbox.lastCollision.entityType == 'bullet') Game.getCurrentState().score += e.scoreValue;
+		// Remove entity from array when killed
+		let i = this.entities.indexOf(e);
+		this.entities.splice(i, 1);
+		// Update entity specific arrays on kill
+		this.filterEntities(e.entityType);
 	}
 }

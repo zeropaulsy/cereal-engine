@@ -9,7 +9,7 @@ class Turret {
 		this.vel = new Vector();
 		this.width = width;
 		this.height = height;
-		this.hitbox = { w: width / 1.25, h: height / 1.25 };
+		this.hitbox = new CollisionBody(this, width, height, true);
 		this.health = health;
 		this.maxHealth = health;
 		this.ammo = ammo;
@@ -22,7 +22,6 @@ class Turret {
 		this.friction = 0.9;
 		this.knockBack = 10;
 		this.distance = random(128, 256);
-		this.lastCollision = Object();
 		this.kill = false;
 		this.inventory = new Inventory(5);
 		this.inventory.contents.push(new Gun('staff00', spr_staff_orange, p_orange, this, this.width, this.height, 16, 16, 1, 20, 1, 1, mp3_hitmarker, p_red_small, true));

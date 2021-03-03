@@ -10,7 +10,7 @@ class Player {
 		this.tile = new Vector();
 		this.width = w;
 		this.height = h;
-		this.hitbox = {w: w, h: h};
+		this.hitbox = new CollisionBody(this, w, h, true);
 		this.speed = s;
 		this.friction = f;
 		this.knockBack = k
@@ -21,12 +21,9 @@ class Player {
 		this.rotationSpeed = 0.75;
 		this.dashVel = 5;
 		this.dashing = false;
-		this.dashTimeout = Object();
 		this.dashMaxCharge = 1500;
 		this.dashCharge = this.dashMaxCharge;
 		this.powerupActive = false;
-		// Create varible to store last object collided with
-		this.lastCollision = Object();
 		// Create player inventory to store weapons
 		this.inventory = new Inventory(10);
 		// Create a health bar for the player
@@ -149,7 +146,7 @@ class Player {
 	}
 	dash(vel) {
 		if (this.dashCharge == this.dashMaxCharge) {
-			// Define value to alter effects
+			// Define value used to alter effects
 			let value = 1;
 			//
 			this.dashCharge = 0;

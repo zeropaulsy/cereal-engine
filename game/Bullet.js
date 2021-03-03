@@ -4,16 +4,11 @@ class Bullet {
 		this.entityType = 'bullet';
 		this.id = id;
 		this.sprite = sprite;
-		this.parent = p;
 		this.width = w;
 		this.height = h;
-		this.hitbox = {w: w, h: h};
+		this.parent = p; 
 		this.speed = p.speed;
 		this.dither = p.dither;
-		this.damage = p.damage;
-		this.hitSound = p.hitSound;
-		this.hitParticle = p.hitParticle;
-		this.explosive = p.explosive;
 		this.angle = p.parent.rotation;
 		this.rotation = this.angle + random(-3, 3);
 		this.pos = new Vector(
@@ -24,26 +19,27 @@ class Bullet {
 			(Math.cos(this.angle) * p.speed) + random(-p.dither, p.dither),
 			(Math.sin(this.angle) * p.speed) + random(-p.dither, p.dither)
 		);
+		this.hitbox = new CollisionBody(this, w, h, true);
+		this.damage = p.damage;
+		this.hitSound = p.hitSound;
+		this.hitParticle = p.hitParticle;
+		this.explosive = p.explosive;
 		this.health = 1;
-		this.lastCollision = Object();
 		this.kill = false;
 	}
 	update() {
 		this.pos.add(this.vel);
 
-		if (this.pos.x > width || this.pos.y > height || this.pos.x < 0 || this.pos.y < 0 || this.angle==NaN) this.kill = true;
+		if (this.pos.x > width || this.pos.y > height || this.pos.x < 0 || this.pos.y < 0 || this.angle==NaN) this.destroy();
 
 		this.rotation += 0.25 * (deltaTime);
 
 		if (this.health < 0) {
-			if (this.explosive)  {
-				this.hitSound.play();
-				this.explode();
-			} else {
+			if (!this.explosive)  {
 				this.hitSound.play();
 				particleSystem.spawnParticle('hitmarker' + particleSystem.particles.length, this.hitParticle, this.pos.x, this.pos.y, 18, 18, 3, random(0, 3), 5, 5);
 			}
-			this.kill = true;
+			this.destroy();
 		}
 	}
 	display() {
@@ -57,6 +53,12 @@ class Bullet {
 	}
 	explode() {
 		new Explosion(this.pos.x, this.pos.y, 24, 24, 7, 10, 10, 100);
+	}
+	destroy() {
+		if (this.explosive) this.explode();
+		particleSystem.spawnParticle('hitmarker' + particleSystem.particles.length, p_brown_small, this.pos.x, this.pos.y, 10, 10, 3, random(0, 3), 5, 5);
+
+		entityManager.removeEntity(this);
 	}
 	run() {
 		this.update();

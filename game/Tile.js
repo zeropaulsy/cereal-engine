@@ -12,13 +12,13 @@ class Tile {
 		this.vel = new Vector(0, 0);
 		this.width = width;
 		this.height = height;
-		this.hitbox = {w: this.width, h: this.height};
+		this.hitbox = new CollisionBody(this, width, height, true);
 		this.collision = collision;
 		this.knockBack = knockBack;
 		this.kill = false;
 	}
 	update() {
-		if (this.collision == true) collisionBetween1(player, this);
+		if (this.hitbox.collisionsEnabled == true) collisionBetween1(player, this);
 	}
 	display() {
 		Game.c.save();

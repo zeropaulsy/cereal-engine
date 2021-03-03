@@ -2,6 +2,7 @@
 class Particle {
   constructor(id, sprite, x, y, width, height, velocity, direction, health, dither) {
     this.id = id;
+    this.parent = particleSystem;
     this.sprite = sprite;
     this.pos = new Vector(x, y);
     this.vel = new Vector(
@@ -13,7 +14,6 @@ class Particle {
     this.health = health;
     this.dither = dither;
     this.angle = 0;
-    this.kill = false;
   }
   update() {
     this.pos.add(this.vel);
@@ -22,7 +22,7 @@ class Particle {
 
     this.health--;
 
-    if (this.health <= 0) this.kill = true;
+    if (this.health <= 0) this.destroy();
   }
   display() {
     Game.c.save();
@@ -32,6 +32,10 @@ class Particle {
     Game.c.drawImage(this.sprite, -(this.width + this.health)/2, -(this.height + this.health)/2, this.width + this.health, this.height + this.health);
 
     Game.c.restore();
+  }
+  destroy() {
+    // Destroy particle
+		this.parent.removeParticle(this);
   }
   run() {
     this.update();

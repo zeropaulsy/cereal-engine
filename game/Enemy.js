@@ -4,6 +4,7 @@ class Enemy {
 		this.entityType = 'enemy';
 		this.id = id;
 		this.showId = false;
+		this.parent = entityManager;
 		this.sprite = sprite;
 		this.target = target;
 		this.pos = new Vector(x, y);
@@ -11,7 +12,7 @@ class Enemy {
 		this.tile = new Vector();
 		this.width = width;
 		this.height = height;
-		this.hitbox = {w: width, h: height};
+		this.hitbox = new CollisionBody(this, width, height, true);
 		this.speed = speed;
 		this.health = health;
 		this.maxHealth = health;
@@ -24,7 +25,6 @@ class Enemy {
 		this.rotation = this.pos.angle(target.pos);
 		this.rotationSpeed = random(0.875, 0.95);
 		this.flipped = false;
-		this.lastCollision = Object();
 		this.kill = false;
 		this.path = [];
 		this.pathInstanceId = 'none';
@@ -70,15 +70,7 @@ class Enemy {
 		if (this.showHealthBar) this.healthBar.update();
 		// Set entity to be destroyed when health runs out
 		if (this.health < 0 || isNaN(this.health)) {
-			this.deathSound.play();
-			this.deathSound.currentTime = 0;
-			particleSystem.spawnParticle('420s' + particleSystem.particles.length, p_plus_1, this.pos.x, this.pos.y, 16, 16, 10, -1.5, 30, 5);
-			// Drop powerup
-			if (random(0, 100) < 3 && !this.powerupDropped) {
-				this.dropPowerup();
-				this.powerupDropped = true;
-			}
-			this.kill = true;
+			this.destroy();
 		}
 	}
 	display() {
@@ -118,27 +110,40 @@ class Enemy {
 			return false;
 		}
 	}
-	applyDebuff() {
-
+	destroy() {
+		// Play death noise
+		this.deathSound.play();
+		this.deathSound.currentTime = 0;
+		// Spawn blood particles
+		particleSystem.spawnParticle('420s' + particleSystem.particles.length, p_plus_1, this.pos.x, this.pos.y, 16, 16, 10, -1.5, 30, 5);
+		// Drop powerup
+		if (random(0, 100) < 3 && !this.powerupDropped) {
+			this.dropPowerup();
+			this.powerupDropped = true;
+		}
+		// Cancel easystar pathfinding
+		easystar.cancelPath(this.pathInstanceId);
+		// Destroy collision body
+		this.parent.removeEntity(this);
 	}
 	dropPowerup() {
 		let id = 'powerup' + entityManager.powerups.length;
 
 		entityManager.spawnPowerup(id, spr_box, this.pos.x, this.pos.y, 48, 48, function() {
 
-			let lastCollision = this.lastCollision;
+			// let lastCollision = this.hitbox.lastCollision;
 			let powerupTime = 5000;
 
-			if (!lastCollision.powerupActive) {
-				lastCollision.powerupActive = true;
+			if (!player.powerupActive) {
+				player.powerupActive = true;
 
 				console.log(this.id + ' picked up.');
 
-				lastCollision.inventory.slotActive = Math.round(random(1, 3));
+				player.inventory.slotActive = Math.round(random(1, 3));
 
 				let timer = new Timer(function() {
-					lastCollision.inventory.slotActive = 0;
-					lastCollision.powerupActive = false;
+					player.inventory.slotActive = 0;
+					player.powerupActive = false;
 				}, powerupTime);
 
 				return true;

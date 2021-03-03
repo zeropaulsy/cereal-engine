@@ -61,9 +61,9 @@ function arrayCollisionBetween1(arrayA, arrayB, callback) {
 
 function collisionBetween2(shapeA, shapeB) {
 	var dx = (shapeB.pos.x) - (shapeA.pos.x),
-		dy = (shapeB.pos.y) - (shapeA.pos.y),
-		angle = Math.atan2(dx, dy),
-		collision = false;
+			dy = (shapeB.pos.y) - (shapeA.pos.y),
+			angle = Math.atan2(dx, dy),
+			collision = false;
 	// Combined radius of the two shapes
 	var radii = (shapeA.hitbox.w / 2) + (shapeB.hitbox.h / 2);
 	// Compare distance to radii
@@ -75,8 +75,8 @@ function collisionBetween2(shapeA, shapeB) {
 		shapeA.vel.x += Math.sin(angle) * -shapeB.knockBack;
 		shapeA.vel.y += Math.cos(angle) * -shapeB.knockBack;
 		// Store last collision in objects
-		shapeA.lastCollision = shapeB;
-		shapeB.lastCollision = shapeA;
+		shapeA.hitbox.lastCollision = shapeB;
+		shapeB.hitbox.lastCollision = shapeA;
 		// Set collision to true
 		collision = true;
 	}
@@ -106,8 +106,8 @@ function inRangeOf(shapeA, shapeB, range) {
 	// Compare distance to radii
 	if ((dx * dx) + (dy * dy) < radii * radii && !g_paused) {
 		// Store last collision in objects
-		shapeA.lastCollision = shapeB;
-		shapeB.lastCollision = shapeA;
+		shapeA.hitbox.lastCollision = shapeB;
+		shapeB.hitbox.lastCollision = shapeA;
 		return true;
 	} else {
 		return false;

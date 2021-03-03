@@ -19,7 +19,7 @@ class Turret {
 		this.stationary = stationary;
 		this.speed = 4;
 		this.knockBack = 10;
-		this.lastCollision = Object();
+		this.hitbox.lastCollision = Object();
 		this.kill = false;
 		this.inventory = new Inventory(5);
 		this.inventory.contents.push(new Gun('staff00', spr_staff_orange, p_orange, this, this.width, this.height, 16, 16, 1, 20, 1, 1, mp3_hitmarker, p_red_small, true));

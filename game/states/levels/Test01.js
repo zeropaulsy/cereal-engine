@@ -73,25 +73,25 @@ var Test01 = function() {
 		particleSystem = new ParticleSystem(2000);
 
 		// Create player entity and initialize instructions
-		entityManager.spawnPlayer('player', spr_player_02, width / 2, 75, 80 / 1.25, 75 / 1.25, 7, 0.875, 15);
+		entityManager.spawnPlayer('player', spr_player_02, width - 100, height / 2, 80 / 1.25, 75 / 1.25, 7, 0.875, 15);
 		// Assign player entity to global varible for ease of use
 		player = entityManager.getEntityById('player');
 		// Set player health bar colour
 		player.healthBar.cColor = '#ce9069';
 		player.healthBar.hColor = '#51bf59';
 		// Add weapons to inventory (id, gun sprite, bullet sprite, parent, width, height, amount, speed, dither, damage, hit sound, hit particle, eqipped)
-		player.inventory.contents.push(new Gun('staff00', spr_staff_blue, p_blue, player, player.width, player.height, 16 / 1.25, 16 / 1.25, 1, 20 / 1.25, 1, 2, mp3_hitmarker, p_red_small, true));
+		player.inventory.contents.push(new Gun('staff00', spr_staff_blue, p_blue, player, player.width, player.height, 16 / 1.25, 16 / 1.25, 1, 20, 1, 5, mp3_hitmarker, p_red_small, true));
 
-		player.inventory.contents.push(new Gun('staff01', spr_staff_orange, p_orange, player, player.width, player.height, 24 / 1.25, 24 / 1.25, 1, 10 / 1.25, 2, 2.5, mp3_hitmarker, p_red_small, false));
+		player.inventory.contents.push(new Gun('staff01', spr_staff_orange, p_orange, player, player.width, player.height, 24 / 1.25, 24 / 1.25, 2, 10, 2, 6, mp3_hitmarker, p_red_small, false));
 
-		player.inventory.contents.push(new Gun('staff03', spr_staff_red, spr_bomb, player, player.width, player.height, 64 / 1.25, 64 / 1.25, 1, 10 / 1.25, 2, 50, mp3_hitmarker, p_red_small, false));
+		player.inventory.contents.push(new Gun('staff03', spr_staff_red, spr_bomb, player, player.width, player.height, 64 / 1.25, 64 / 1.25, 1, 10, 2, 50, mp3_hitmarker, p_red_small, false));
 		player.inventory.contents[2].explosive = true;
-		player.inventory.contents[2].firerate = 0.1;
+		player.inventory.contents[2].firerate = 15;
 
-		player.inventory.contents.push(new Gun('bow01', spr_bow_01, p_dagger_01, player, player.width, player.height, 75 / 1.25, 24 / 1.25, 1, 25 / 1.25, 0, 5, mp3_hitmarker, p_red_small, false));
+		player.inventory.contents.push(new Gun('bow01', spr_bow_01, p_dagger_01, player, player.width, player.height, 75 / 1.25, 24 / 1.25, 1, 25, 0, 10, mp3_hitmarker, p_red_small, false));
 		// Player starting velocity
-		player.vel.x =  0;
-		player.vel.y = 25;
+		player.vel.x = -10;
+		player.vel.y =   0;
 		// Set stage score
 		this.score = score;
 

@@ -17,8 +17,8 @@ class Bullet {
 		this.angle = p.parent.rotation;
 		this.rotation = this.angle + random(-3, 3);
 		this.pos = new Vector(
-			p.pos.x + (p.parent.width/2.75) * Math.cos(this.angle),
-			p.pos.y + (p.parent.width/2.75) * Math.sin(this.angle)
+			p.pos.x + (p.parent.width / 2.75) * Math.cos(this.angle),
+			p.pos.y + (p.parent.width / 2.75) * Math.sin(this.angle)
 		);
 		this.vel = new Vector(
 			(Math.cos(this.angle) * p.speed) + random(-p.dither, p.dither),
@@ -33,7 +33,7 @@ class Bullet {
 
 		if (this.pos.x > width || this.pos.y > height || this.pos.x < 0 || this.pos.y < 0 || this.angle==NaN) this.kill = true;
 
-		this.rotation += (0.25 + delta);
+		this.rotation += 0.25 * (deltaTime);
 
 		if (this.health < 0) {
 			if (this.explosive)  {

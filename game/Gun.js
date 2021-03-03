@@ -17,7 +17,7 @@ class Gun {
 		this.hitSound = hitSound;
 		this.hitParticle = hitParticle;
 		this.equipped = equipped;
-		this.firerate = 0.01;
+		this.firerate = 2;
 		this.explosive = false;
 		this.timeCounter = 0;
 		this.angle = parent.angle;
@@ -27,23 +27,15 @@ class Gun {
 		// Set position to parent position
 		this.pos.equals(this.parent.pos);
 		// Count time passed
-		this.timeCounter += delta;
-		// Spawn bullet when equipped and mouse is pressed
-		/*
-		if (this.equipped && mouseDown && !g_paused) {
-			if (this.timeCounter > this.firerate) {
-				this.timeCounter = 0;
-				this.shoot(this.amount);
-			}
-		}
-		*/
+		this.timeCounter += (deltaTime);
+
 		this.angle = this.parent.angle;
 	}
 	display() {
 		if (this.equipped) Game.c.drawImage(this.sprite, -this.width / 2, -this.height / 2, this.width, this.height);
 	}
 	shoot() {
-		if (this.timeCounter > this.firerate) {
+		if (this.timeCounter >= this.firerate) {
 			for (let i = 0; i < this.amount; i++) {
 				entityManager.spawnBullet(
 					'bullet' + entityManager.bullets.length,

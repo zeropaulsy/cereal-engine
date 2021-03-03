@@ -92,15 +92,15 @@ var Level01 = function() {
 		// Assign player entity to global varible for ease of use
 		player = entityManager.getEntityById('player');
 		// Add weapons to inventory (id, gun sprite, bullet sprite, parent, width, height, amount, speed, dither, damage, hit sound, hit particle, eqipped)
-		player.inventory.contents.push(new Gun('staff00', spr_staff_blue, p_blue, player, player.width, player.height, 16, 16, 1, 20, 1, 2, mp3_hitmarker, p_red_small, true));
+		player.inventory.contents.push(new Gun('staff00', spr_staff_blue, p_blue, player, player.width, player.height, 16, 16, 1, 20, 1, 5, mp3_hitmarker, p_red_small, true));
 
-		player.inventory.contents.push(new Gun('staff01', spr_staff_orange, p_orange, player, player.width, player.height, 24, 24, 1, 10, 2, 2.5, mp3_hitmarker, p_red_small, false));
+		player.inventory.contents.push(new Gun('staff01', spr_staff_orange, p_orange, player, player.width, player.height, 24, 24, 2, 10, 2, 6, mp3_hitmarker, p_red_small, false));
 
 		player.inventory.contents.push(new Gun('staff03', spr_staff_red, spr_bomb, player, player.width, player.height, 64, 64, 1, 10, 2, 50, mp3_hitmarker, p_red_small, false));
 		player.inventory.contents[2].explosive = true;
-		player.inventory.contents[2].firerate = 0.1;
+		player.inventory.contents[2].firerate = 15;
 
-		player.inventory.contents.push(new Gun('bow01', spr_bow_01, p_dagger_01, player, player.width, player.height, 75, 24, 1, 25, 0, 5, mp3_hitmarker, p_red_small, false));
+		player.inventory.contents.push(new Gun('bow01', spr_bow_01, p_dagger_01, player, player.width, player.height, 75, 24, 1, 25, 0, 10, mp3_hitmarker, p_red_small, false));
 		// Player starting velocity
 		player.vel.x =   0;
 		player.vel.y = -25;

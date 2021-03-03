@@ -5,16 +5,16 @@ class Vector {
   }
   add(vec, mult) {
     let m = mult || 1;
-    this.x += (vec.x * m) * delta * maxFps;
-    this.y += (vec.y * m) * delta * maxFps;
+    this.x += (vec.x * m) * (deltaTime);
+    this.y += (vec.y * m) * (deltaTime);
   }
   subtract(vec) {
-    this.x -= vec.x * delta * maxFps;
-    this.y -= vec.y * delta * maxFps;
+    this.x -= vec.x;
+    this.y -= vec.y;
   }
   multiply(value) {
-    this.x *= value - delta;
-    this.y *= value - delta;
+    this.x *= value;
+    this.y *= value;
   }
   equals(vec) {
     this.x = vec.x;

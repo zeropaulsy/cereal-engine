@@ -4,6 +4,7 @@ let backgroundAlpha = 1;
 let maxFps = 60;
 let lastCalledTime;
 let fps;
+let targetDelta = 1000/maxFps;
 let delta;
 
 let g_gravity = 0;
@@ -106,9 +107,10 @@ var Game = {
 			fps = 0;
 			return;
 		}
-		delta = (performance.now() - lastCalledTime) / 1000;
+		delta = (performance.now() - lastCalledTime);
+		deltaTime = delta / targetDelta;
 		lastCalledTime = performance.now();
-		fps = 1 / delta;
+		fps = 1000 / delta;
 		// Update and render current state
 		if (!loading) {
 			if (!g_paused) {

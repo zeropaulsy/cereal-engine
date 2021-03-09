@@ -6,7 +6,7 @@ class Bullet {
 		this.sprite = sprite;
 		this.width = w;
 		this.height = h;
-		this.parent = p; 
+		this.parent = p;
 		this.speed = p.speed;
 		this.dither = p.dither;
 		this.angle = p.parent.rotation;
@@ -34,7 +34,7 @@ class Bullet {
 
 		this.rotation += 0.25 * (deltaTime);
 
-		if (this.health < 0) {
+		if (this.health <= 0) {
 			if (!this.explosive)  {
 				this.hitSound.play();
 				particleSystem.spawnParticle('hitmarker' + particleSystem.particles.length, this.hitParticle, this.pos.x, this.pos.y, 18, 18, 3, random(0, 3), 5, 5);

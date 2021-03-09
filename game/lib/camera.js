@@ -96,7 +96,7 @@ class Camera {
 
         // Center camera on "R"
         window.addEventListener('keydown', e => {
-            if (e.key === 'r') {
+            if (e.key === 'u') {
                 this.zoomTo(1000);
                 this.moveTo(0, 0);
             }

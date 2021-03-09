@@ -6,36 +6,53 @@ class EntityManager {
 		this.playerSpawned = false;
 		this.entityTypes = ['tile', 'enemy', 'bullet', 'turret', 'powerup'];
 		this.entities = [];
+		this.players  = [];
 		this.tiles    = [];
 		this.enemies  = [];
 		this.powerups = [];
 		this.turrets  = [];
 		this.bullets  = [];
+
+		this.entities.push(this.tiles, this.players, this.enemies, this.powerups, this.turrets, this.bullets);
+	}
+	init() {
+		// this.entities.push(this.tiles, this.enemies, this.powerups, this.turrets, this.bullets);
 	}
 	run() {
 		// Loop through entites array
+		/*
 		for (let i = this.entities.length-1; i >= 0; i--) {
 			let e = this.entities[i];
 
-			if (!g_paused) e.update();
+			if (!g_paused)  {
+				e.update();
+			}
 			e.display();
+		}*/
+		for (let i = 0; i > this.entities.length; i++) {
+			let type = this.entities[i];
+			if (type.length > 0) {
+				for (let j = 0; j > type.length; j++) {
+					if (!g_paused)  {
+						e.update();
+					}
+					e.display();
+				}
+			}
 		}
 		// Check for collisions between arrays
 		arrayCollisionBetween1(this.enemies, this.tiles,   (a, b) => { });
 
 		arrayCollisionBetween1(this.turrets, this.tiles,   (a, b) => { });
 
-		arrayCollisionBetween1(this.bullets, this.tiles,   (a, b) => {
-			//if (a.explosive) a.explode();
-			//particleSystem.spawnParticle('hitmarker' + particleSystem.particles.length, p_brown_small, a.pos.x, a.pos.y, 10, 10, 3, random(0, 3), 5, 5);
-			a.destroy();
-		});
+		arrayCollisionBetween1(this.bullets, this.tiles,   (a, b) => { a.health--; });
 
 		arrayCollisionBetween2(this.enemies, this.turrets, (a, b) => { b.health--; });
 
-		arrayCollisionBetween2(this.bullets, this.enemies, (a, b) => { a.health -= 1; b.health -= a.damage; });
+		arrayCollisionBetween2(this.bullets, this.enemies, (a, b) => { a.health--; b.health -= a.damage; });
 
 		// Sort zIndex based on Y position
+		/*
 		this.map = this.entities.map(function(el, index) {
 			return { index : index, value : el.pos.y + (el.height/2) };
 		})
@@ -47,11 +64,12 @@ class EntityManager {
 		this.entities = this.map.map(function (el) {
 		  return entityManager.entities[el.index];
 		});
+		*/
 	}
 	spawnPlayer(id, spr, x, y, w, h, s, f, k) {
 		// Create player and add to entities array
 		if (!this.playerSpawned) {
-			this.entities.push(new Player(id, spr, x, y, w, h, s, f, k));
+			this.players.push(new Player(id, spr, x, y, w, h, s, f, k));
 			// Toggle boolean meaning only one player entity can be added to array
 			this.playerSpawned = true;
 		} else {
@@ -62,11 +80,9 @@ class EntityManager {
 	spawnEnemy(id, spr, t, x, y, w, h, hb, s, l, ds, sv) {
 		if (this.entities.length < this.max) {
 			// New bullet to entities array
-			this.entities.push(new Enemy(id, spr, t, x, y, w, h, hb, s, l, ds, sv));
-			// this.enemies.push(new Enemy(id, spr, t, x, y, w, h, hb, s, l, ds, sv));
+			this.enemies.push(new Enemy(id, spr, t, x, y, w, h, hb, s, l, ds, sv));
 			// Update array of bullets
-			this.filterEntities('enemy');
-			// this.entities.concat(this.enemies)
+			// this.filterEntities('enemy');
 		} else {
 			// Log warning if entity limit reached or exceeded
 			console.warn('Could not spawn enemy. Maximum number of entities reached: ' + this.max);
@@ -75,7 +91,7 @@ class EntityManager {
 	spawnPowerup(id, sprite, x, y, width, height, onCollision) {
 		if (this.entities.length < this.max) {
 			// New bullet to entities array
-			this.entities.push(new Powerup(id, sprite, x, y, width, height, onCollision));
+			this.powerups.push(new Powerup(id, sprite, x, y, width, height, onCollision));
 			// Update array of powerups
 			this.filterEntities('powerup');
 		} else {
@@ -86,7 +102,7 @@ class EntityManager {
 	spawnTurret(id, sprite, target, x, y, width, height, health, ammo, rotationSpeed, stationary) {
 		if (this.entities.length < this.max) {
 			// New entities to entities array
-			this.entities.push(new Turret(id, sprite, target, x, y, width, height, health, ammo, rotationSpeed, stationary));
+			this.turrets.push(new Turret(id, sprite, target, x, y, width, height, health, ammo, rotationSpeed, stationary));
 			// Update array of turrets
 			this.filterEntities('turret');
 		} else {
@@ -97,7 +113,7 @@ class EntityManager {
 	spawnBullet(id, spr, p, w, h) {
 		if (this.entities.length < this.max) {
 			// New entities to entities array
-			this.entities.push(new Bullet(id, spr, p, w, h));
+			this.bullets.push(new Bullet(id, spr, p, w, h));
 			// Update array of bullets
 			this.filterEntities('bullet');
 		} else {
@@ -106,7 +122,7 @@ class EntityManager {
 		}
 	}
 	spawnTile(id, tilesheet, sx, sy, sw, sh, x, y, width, height, collision, knockBack) {
-		this.entities.push(new Tile(id, tilesheet, sx, sy, sw, sh, x, y, width, height, collision, knockBack));
+		this.tiles.push(new Tile(id, tilesheet, sx, sy, sw, sh, x, y, width, height, collision, knockBack));
 		this.filterEntities('tile');
 	}
 	filterEntities(t) {
@@ -119,7 +135,13 @@ class EntityManager {
 	}
 	getEntityById(id) {
 		// Return entity with specified id
-		return this.entities.find(x => x.id === id);
+		//return this.entities.find(x => x.id === id);
+		for (var i = 0; i < this.entities.length; i++) {
+	    let index = this.entities[i].indexOf(id);
+	    if (index > -1) {
+	      return [i, index];
+	    }
+	  }
 	}
 	removeEntity(e) {
 		// Increase score if enemy killed by the player with its score value

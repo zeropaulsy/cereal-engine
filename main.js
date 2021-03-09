@@ -21,12 +21,12 @@ function createWindow () {
 	})
 
 	// Require devtron
-	require('devtron').install();
+	// require('devtron').install();
 
-	//mainWindow.__devtron = {require: require, process: process}
+	// mainWindow.__devtron = {require: require, process: process}
 
 	// Set window aspect ratio
-	mainWindow.setAspectRatio(1.77);
+	// mainWindow.setAspectRatio(1.77);
 	mainWindow.setMenu(null);
 
 	// and load the index.html of the app.

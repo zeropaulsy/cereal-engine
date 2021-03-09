@@ -9,6 +9,8 @@ var Test01 = function() {
 
 	this.score;
 
+	this.camera;
+
 	this.map = {
 		cols: 20,
 		rows: 11,
@@ -38,6 +40,9 @@ var Test01 = function() {
 		// Set g variables
 		g_tileSize = 64;
 		g_shake = 0;
+		// Define camera
+		this.camera = new Camera(Game.c);
+		this.camera.zoomTo(1250);
 		// Setup pathfinding using this levels map
 		easystar.setGrid(this.map.tiles);
 		easystar.setAcceptableTiles([0, 9]);
@@ -136,6 +141,8 @@ var Test01 = function() {
 
 	this.update = function() {
 
+		this.camera.moveTo(player.pos.x, player.pos.y);
+
 		this.enemySpawnerLeft.run();
 
 		if ( this.enemySpawnerLeft.spawnTime  > 10 ) this.enemySpawnerLeft.spawnTime  -= 0.01;
@@ -145,8 +152,10 @@ var Test01 = function() {
 	}
 	this.display = function() {
 
-		// Game.c.fillStyle = 'black';
-		// Game.c.fillRect(0, 0, width, height);
+		Game.c.fillStyle = 'black';
+		Game.c.fillRect(0, 0, width, height);
+
+		this.camera.begin();
 
 		Game.c.save();
 
@@ -179,6 +188,8 @@ var Test01 = function() {
 		}
 
 		Game.c.restore();
+
+		this.camera.end();
 
 	}
 

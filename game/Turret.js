@@ -43,7 +43,7 @@ class Turret {
 		this.pos.add(this.vel);
 		this.vel.multiply(this.friction);
 
-		if (this.health < 0) this.worker.terminate(), this.kill = true;
+		if (this.health < 0) this.destroy(10);
 		// Set flipped variable depending if turret is facing left or right
 		if (this.rotation < -1.5 || this.rotation > 1.5) {
 			this.flipped = true;
@@ -89,8 +89,8 @@ class Turret {
 		if (0 < entityManager.enemies.length) {
 			// Find closest enemy
 			for (var target, d = Number.MAX_VALUE, i = 0; i < entityManager.enemies.length; i++) {
-				let enemy 	 = entityManager.enemies[i],
-						distance = Math.pow(this.pos.x - enemy.pos.x, 2) + Math.pow(this.pos.y - enemy.pos.y, 2);
+				let enemy = entityManager.enemies[i],
+					distance = Math.pow(this.pos.x - enemy.pos.x, 2) + Math.pow(this.pos.y - enemy.pos.y, 2);
 				distance < d && (target = enemy, d = distance)
 			}
 
@@ -137,6 +137,17 @@ class Turret {
 			this.angle = 0.5;
 			this.rotation = averageNums(this.rotation, this.angle, this.rotationSpeed);
 		}
+	}
+	destroy(a) {
+		let amount = a || 0
+		// Spawn death particles
+		for (let i = 0; i < amount; i++) {
+			particleSystem.spawnParticle('hitmarker' + particleSystem.particles.length, p_red_small , this.pos.x, this.pos.y, 18, 18, 3, random(0, 3), 15, 5);
+		}
+		// Terminate worker thread
+		this.worker.terminate()
+		// Remove entity from main array
+		entityManager.removeEntity(this);
 	}
 	run() {
 		this.update()

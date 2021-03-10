@@ -13,9 +13,9 @@ class ParticleSystem {
       p.display();
     }
   }
-  spawnParticle(id, spr, x, y, w, h, v, a, l, d) {
+  spawnParticle(id, spr, x, y, w, h, v, a, hl, d) {
     if (this.particles.length < this.max) {
-      this.particles.push(new Particle(id, spr, x, y, w, h, v, a, l, d));
+      this.particles.push(new Particle(id, spr, x, y, w, h, v, a, hl, d));
     } else {
       // Log warning if particle limit reached or exceeded
       console.warn('Could not spawn particle. Maximum number of particles reached: ' + this.max);

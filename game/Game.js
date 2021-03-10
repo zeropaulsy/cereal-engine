@@ -16,14 +16,15 @@ let g_gamepadConnected = false;
 let g_lastInput = 'computer';
 let g_scale = 1;
 
-let width;
-let height;
+let width = 1280;
+let height = 720;
 
 let mouseX;
 let mouseY;
 
 let mouseDown = false;
 let mouseUp = false;
+let mouseMoving = false;
 
 let controls = {
 	// Movement
@@ -121,10 +122,29 @@ var Game = {
 	},
 
 	startGame: function() {
-		this.stateStack.push(new Level01());
+		// this.stateStack.push(new Level01());
+		this.setState(new Level01());
 	},
 	pauseGame: function() {
 		g_paused = !g_paused;
+	},
+	showPauseMenu: function() {
+		// Show pause menu
+		document.getElementById("pause_menu").style.display = 'block';
+		canvas.style.cursor = 'auto';
+		canvas.style.filter = 'brightness(0.5)';
+
+		if (window.fullscreen) {
+			document.getElementById("toggle_fullscreen").value = "Fullscreen: ON";
+		} else {
+			document.getElementById("toggle_fullscreen").value = "Fullscreen: OFF";
+		}
+	},
+	hidePauseMenu: function() {
+		// Hide pause menu
+		document.getElementById("pause_menu").style.display = 'none';
+		canvas.style.cursor = 'auto';
+		canvas.style.filter = 'brightness(1)';
 	},
 
 	setupCanvas: function(wrapper) {
@@ -143,6 +163,7 @@ var Game = {
 }
 
 window.onload = function () {
+
     window.getGameDimensions = function() {
         return {
             width: Game.width,
@@ -153,8 +174,8 @@ window.onload = function () {
 	window.getMousePos = function(canvas, evt) {
 		var rect = canvas.getBoundingClientRect();
 		return {
-			x: evt.clientX - rect.left,
-			y: evt.clientY - rect.top
+			x: (evt.clientX + Game.getCurrentState().camera.lookAt[0]) - canvas.width / 2,
+			y: (evt.clientY + Game.getCurrentState().camera.lookAt[1]) - canvas.height/ 2
 		};
 	}
 
@@ -173,8 +194,10 @@ window.onload = function () {
 
 	Game.canvas.addEventListener('mousemove', function(evt) {
 		var mousePos = getMousePos(canvas, evt);
+
 		this.mouseX = mousePos.x / g_scale;
 		this.mouseY = mousePos.y / g_scale;
+
 		g_lastInput = 'computer';
 	}, true);
 };
@@ -197,9 +220,9 @@ document.addEventListener('keypress', (e) => {
 });
 
 window.addEventListener('resize', function() {
-	canvas.width = window.innerWidth;
-	canvas.height = window.innerHeight;
+	Game.canvas.width = window.innerWidth;
+	Game.canvas.height = window.innerHeight;
 
-	width = Game.canvas.width / g_scale;
-	height = Game.canvas.height / g_scale;
+	//width = Game.canvas.width / g_scale;
+	//height = Game.canvas.height / g_scale;
 });

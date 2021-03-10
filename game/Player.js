@@ -70,7 +70,7 @@ class Player {
 			this.dx = canvas.mouseX - (this.pos.x);
 			this.dy = canvas.mouseY - (this.pos.y);
 			this.angle = Math.atan2(this.dy, this.dx);
-			this.rotation = this.angle;
+			this.rotation = averageNums(this.rotation, this.angle, 0.35);
 		}
 		// Constrain player to screen
 		if (this.pos.x < this.width/2) {
@@ -156,7 +156,7 @@ class Player {
 			g_shake += 5;
 			value -= 1;
 
-			document.getElementById('body').style.filter = 'saturate('+value+')';
+			document.getElementById('canvas').style.filter = 'saturate('+value+')';
 
 			let timer = new Timer(function() {
 
@@ -165,7 +165,7 @@ class Player {
 				g_shake -= 5;
 				value += 1;
 
-				document.getElementById('body').style.filter = 'saturate('+value+')';
+				document.getElementById('canvas').style.filter = 'saturate('+value+')';
 
 			}, 100);
 		}

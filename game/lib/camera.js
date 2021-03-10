@@ -55,8 +55,8 @@ class Camera {
     }
 
     moveTo(x, y) {
-        this.lookAt[0] = x;
-        this.lookAt[1] = y;
+        this.lookAt[0] = Math.floor(x);
+        this.lookAt[1] = Math.floor(y);
         this.updateViewport();
     }
 

@@ -122,8 +122,12 @@ function random(min, max) {
 	return Math.random() * (max - min) + min;
 }
 
+function decimalPlace(num, val) {
+	return Math.round(num * val) / val;
+}
+
 function averageNums(a, b, f) {
-	var avg = (Math.atan2(Math.sin(a) * (f) + Math.sin(b) * (1 - f), Math.cos(a) * (f) + Math.cos(b) * (1 - f)));
+	var avg = ( Math.atan2( Math.sin(a) * (f) + Math.sin(b) * (1 - f), Math.cos(a) * (f) + Math.cos(b) * (1 - f) ) );
 	return avg;
 }
 

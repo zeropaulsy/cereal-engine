@@ -15,10 +15,10 @@ class Powerup {
 	}
 	update() {
 		if ( inRangeOf(this, player, this.hitbox.w/2) && !this.kill ) {
-			if (this.onCollision()) this.kill = true;
+			if (this.onCollision()) this.destroy();
 		}
 		this.health--;
-		if (this.health < 0) this.kill = true;
+		if (this.health < 0) this.destroy();
 	}
 	display() {
 		Game.c.save();
@@ -35,6 +35,9 @@ class Powerup {
 		Game.c.drawImage(this.sprite, -this.width / 2, -this.height / 2, this.width, this.height);
 
 		Game.c.restore();
+	}
+	destroy() {
+		entityManager.removeEntity(this);
 	}
 	run() {
 		this.update();

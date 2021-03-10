@@ -8,6 +8,9 @@ var Level01 = function() {
 
 	this.score;
 
+	this.camera;
+	this.coords;
+
 	this.map = {
 		cols: 20,
 		rows: 11,
@@ -32,11 +35,15 @@ var Level01 = function() {
 	};
 
 	this.onEnter = function() {
-		width = Game.canvas.width;
-		height = Game.canvas.height;
 		// Set g variables
 		g_tileSize = 64;
 		g_shake = 0;
+		Game.canvas.mouseX = width;
+		Game.canvas.mouseY = height / 2;
+		// Setup camera
+		this.camera = new Camera(Game.c);
+		this.camera.moveTo(Game.canvas.width / 2, Game.canvas.height / 2);
+		this.camera.zoomTo(Game.canvas.width);
 		// Setup pathfinding using this levels map
 		easystar.setGrid(this.map.tiles);
 		easystar.setAcceptableTiles([0, 9]);
@@ -88,7 +95,7 @@ var Level01 = function() {
 		particleSystem = new ParticleSystem(2000);
 
 		// Create player entity and initialize instructions
-		entityManager.spawnPlayer('player', spr_player_01, width / 2, height - (75 / 2), 80, 75, 7, 0.875, 15);
+		entityManager.spawnPlayer('player', spr_player_01, width / 2, height - 75, 80, 75, 7, 0.875, 15);
 		// Assign player entity to global varible for ease of use
 		player = entityManager.getEntityById('player');
 		// Add weapons to inventory (id, gun sprite, bullet sprite, parent, width, height, amount, speed, dither, damage, hit sound, hit particle, eqipped)
@@ -149,6 +156,12 @@ var Level01 = function() {
 
 	this.update = function() {
 
+		this.coords = this.camera.screenToWorld(Game.canvas.width / 2, Game.canvas.height / 2);
+
+		this.camera.moveTo(Game.canvas.width / 2, Game.canvas.height / 2);
+		// this.camera.moveTo(player.pos.x * g_scale, player.pos.y * g_scale);
+		this.camera.zoomTo(Game.canvas.width);
+
 		this.enemySpawnerTop.run();
 		this.enemySpawnerLeft.run();
 		this.enemySpawnerRight.run();
@@ -161,6 +174,8 @@ var Level01 = function() {
 
 	}
 	this.display = function() {
+
+		this.camera.begin();
 
 		Game.c.save();
 
@@ -178,8 +193,8 @@ var Level01 = function() {
 
 			Game.c.save();
 
-			Game.c.translate(canvas.mouseX, canvas.mouseY);
-			Game.c.drawImage(cur_pixel, -40 / 2, -40 / 2, 40, 40);
+		    Game.c.translate(player.pos.x - 20, player.pos.y - 20);
+			Game.c.drawImage(cur_pixel, 100 * Math.cos(player.rotation), 100 * Math.sin(player.rotation), 40, 40);
 
 			Game.c.restore();
 		}
@@ -195,25 +210,15 @@ var Level01 = function() {
 
 		Game.c.restore();
 
+		this.camera.end();
+
 	}
 
 	this.onPause  = function() {
-		// Show pause menu
-		document.getElementById("pause_menu").style.display = 'block';
-		canvas.style.cursor = 'auto';
-		canvas.style.filter = 'blur(5px) brightness(0.5)';
-
-		if (window.fullscreen) {
-			document.getElementById("toggle_fullscreen").value = "Fullscreen: ON";
-		} else {
-			document.getElementById("toggle_fullscreen").value = "Fullscreen: OFF";
-		}
+		Game.showPauseMenu();
 	}
 	this.onResume = function() {
-		// Hide pause menu
-		document.getElementById("pause_menu").style.display = 'none';
-		canvas.style.cursor = 'none';
-		canvas.style.filter = 'blur(0px) brightness(1)';
+		Game.hidePauseMenu();
 	}
 
 	this.initializeControls = function() {

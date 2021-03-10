@@ -35,14 +35,13 @@ var Test01 = function() {
 	};
 
 	this.onEnter = function() {
-		width = Game.canvas.width;
-		height = Game.canvas.height;
 		// Set g variables
 		g_tileSize = 64;
 		g_shake = 0;
-		// Define camera
+		// Setup camera
 		this.camera = new Camera(Game.c);
-		this.camera.zoomTo(1250);
+		this.camera.moveTo(Game.canvas.width / 2, Game.canvas.height / 2);
+		this.camera.zoomTo(Game.canvas.width);
 		// Setup pathfinding using this levels map
 		easystar.setGrid(this.map.tiles);
 		easystar.setAcceptableTiles([0, 9]);
@@ -141,7 +140,8 @@ var Test01 = function() {
 
 	this.update = function() {
 
-		this.camera.moveTo(player.pos.x, player.pos.y);
+		this.camera.moveTo(player.pos.x * g_scale, player.pos.y * g_scale);
+		this.camera.zoomTo(Game.canvas.width);
 
 		this.enemySpawnerLeft.run();
 
@@ -163,12 +163,6 @@ var Test01 = function() {
 
 		Game.c.translate(random(-g_shake, g_shake), random(-g_shake, g_shake));
 
-		backgroundManager.run();
-
-		entityManager.run();
-
-		if (g_particles_enabled) particleSystem.run();
-
 		// Draw HUD
 		Game.c.font = '100px m3x6';
 		Game.c.fillStyle = '#ff0000';
@@ -179,10 +173,17 @@ var Test01 = function() {
 		Game.c.fillText('score: ' + this.score, 10, 150);
 
 		if (!g_paused) {
+
+			backgroundManager.run();
+
+			entityManager.run();
+
+			if (g_particles_enabled) particleSystem.run();
+
 			Game.c.save();
 
-			Game.c.translate(canvas.mouseX, canvas.mouseY);
-			Game.c.drawImage(cur_pixel, -40 / 2, -40 / 2, 40, 40);
+		    Game.c.translate(player.pos.x - 20, player.pos.y - 20);
+			Game.c.drawImage(cur_pixel, 100 * Math.cos(player.rotation), 100 * Math.sin(player.rotation), 40, 40);
 
 			Game.c.restore();
 		}
@@ -194,22 +195,10 @@ var Test01 = function() {
 	}
 
 	this.onPause  = function() {
-		// Show pause menu
-		document.getElementById("pause_menu").style.display = 'block';
-		canvas.style.cursor = 'auto';
-		canvas.style.filter = 'blur(5px) brightness(0.5)';
-
-		if (window.fullscreen) {
-			document.getElementById("toggle_fullscreen").value = "Fullscreen: ON";
-		} else {
-			document.getElementById("toggle_fullscreen").value = "Fullscreen: OFF";
-		}
+		Game.showPauseMenu();
 	}
 	this.onResume = function() {
-		// Hide pause menu
-		document.getElementById("pause_menu").style.display = 'none';
-		canvas.style.cursor = 'none';
-		canvas.style.filter = 'blur(0px) brightness(1)';
+		Game.hidePauseMenu();
 	}
 
 	this.initializeControls = function() {

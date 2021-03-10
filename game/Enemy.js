@@ -114,6 +114,8 @@ class Enemy {
 		// Play death noise
 		this.deathSound.play();
 		this.deathSound.currentTime = 0;
+		// Increase score if enemy killed by the player with its score value
+		if (this.hitbox.lastCollision.entityType == 'bullet') Game.getCurrentState().score += this.scoreValue;
 		// Spawn blood particles
 		particleSystem.spawnParticle('420s' + particleSystem.particles.length, p_plus_1, this.pos.x, this.pos.y, 16, 16, 10, -1.5, 30, 5);
 		// Drop powerup

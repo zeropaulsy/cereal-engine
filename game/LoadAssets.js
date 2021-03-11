@@ -1,18 +1,41 @@
-var spr_player_org = loadImage({ src : './game/assets/img/spr_player_org.png', maxSeconds : 10 });
+var spr_player_slayer = loadImage({ src : './game/assets/img/spr_player_org.png', maxSeconds : 10 });
+
+var spr_player_01 = loadImage({ src : './game/assets/img/spr_player_01.png', maxSeconds : 10 });
+
+var spr_player_02 = loadImage({ src : './game/assets/img/spr_player_02.png', maxSeconds : 10 });
+
+// Backgrounds
+var bg_windows_bliss = loadImage({ src : './game/assets/img/bg_windows_bliss.jpg', maxSeconds : 10 });
+
+var bg_trip_full = loadImage({ src : './game/assets/img/bg_trip_full.jpg', maxSeconds : 10 });
+
+
+// Sprites
+var spr_chicken_gun = loadImage({ src : './game/assets/img/spr_chicken_gun.png', maxSeconds : 10 });
+
+var spr_dew_gun = loadImage({ src : './game/assets/img/spr_dew_gun.png', maxSeconds : 10 });
+
+var spr_snoop = loadImage({ src : './game/assets/img/spr_snoop.png', maxSeconds : 10 });
+
+var spr_misc_bag = loadImage({ src : './game/assets/img/spr_misc_bag.png', maxSeconds : 10 });
+
+// Particles
+var p_chicken = loadImage({ src : './game/assets/img/p_chicken.png', maxSeconds : 10 });
+
+var p_dew_can = loadImage({ src : './game/assets/img/p_dew_can.png', maxSeconds : 10 });
 
 // Videos
 var vid_tunnel = document.getElementById('vid_tunnel');
 
 // Tilesheets
-var ts_map = new Image();
-ts_map.src = './game/assets/img/ts_map.png';
+var ts_map = loadImage({ src : './game/assets/img/ts_map.png', maxSeconds : 10 });
 
 // Sprites
-var spr_player_01 = new Image();
-spr_player_01.src = './game/assets/img/spr_player_01.png';
+// var spr_player_01 = new Image();
+// spr_player_01.src = './game/assets/img/spr_player_01.png';
 
-var spr_player_02 = new Image();
-spr_player_02.src = './game/assets/img/spr_player_02.png';
+// var spr_player_02 = new Image();
+// spr_player_02.src = './game/assets/img/spr_player_02.png';
 
 var spr_staff_red = new Image();
 spr_staff_red.src = './game/assets/img/spr_staff_red.png';

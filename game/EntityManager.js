@@ -55,10 +55,10 @@ class EntityManager {
 			console.log('Player has already been spawned.');
 		}
 	}
-	spawnEnemy(id, spr, t, x, y, w, h, hb, s, l, ds, sv) {
+	spawnEnemy(id, spr, t, x, y, w, h, hb, s, l, ds, sv, ps) {
 		if (this.entities.length < this.max) {
 			// New bullet to entities array
-			this.entities.push(new Enemy(id, spr, t, x, y, w, h, hb, s, l, ds, sv));
+			this.entities.push(new Enemy(id, spr, t, x, y, w, h, hb, s, l, ds, sv, ps));
 			// this.enemies.push(new Enemy(id, spr, t, x, y, w, h, hb, s, l, ds, sv));
 			// Update array of bullets
 			this.filterEntities('enemy');
@@ -79,10 +79,10 @@ class EntityManager {
 			console.warn('Could not spawn enemy. Maximum number of entities reached: ' + this.max);
 		}
 	}
-	spawnTurret(id, sprite, target, x, y, width, height, health, ammo, rotationSpeed, stationary) {
+	spawnTurret(id, sprite, target, x, y, width, height, health, ammo, rotationSpeed, stationary, equipItem) {
 		if (this.entities.length < this.max) {
 			// New entities to entities array
-			this.entities.push(new Turret(id, sprite, target, x, y, width, height, health, ammo, rotationSpeed, stationary));
+			this.entities.push(new Turret(id, sprite, target, x, y, width, height, health, ammo, rotationSpeed, stationary, equipItem));
 			// Update array of turrets
 			this.filterEntities('turret');
 		} else {

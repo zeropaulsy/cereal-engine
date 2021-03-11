@@ -35,6 +35,8 @@ var Test01 = function() {
 	};
 
 	this.onEnter = function() {
+		// Set image rendering to nearest neighbour
+		Game.c.imageSmoothingEnabled = false;
 		// Set g variables
 		g_tileSize = 64;
 		g_shake = 0;
@@ -232,10 +234,11 @@ var Test01 = function() {
 				entityManager.enemies,
 				player.pos.x - player.width/2,
 				player.pos.y - player.width/2,
-				80/1.25, 75/1.25,
+				player.width/1.25, player.height/1.25,
 				25, 25,
 				0.875,
-				false
+				false,
+				'staff02'
 			);
 		}, 'keydown');
 

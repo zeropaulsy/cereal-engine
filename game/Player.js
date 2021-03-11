@@ -104,22 +104,24 @@ class Player {
 		}
 	}
 	display() {
-		Game.c.save();
-		// Draw Shadow
-		Game.c.translate(this.pos.x, this.pos.y + Math.sin(this.rotation)*10);
-		Game.c.drawImage(spr_shadow, -this.width/2, (this.height/2)-8, this.width, 16);
+		if (g_shadows_enabled) {
+			Game.c.save();
+			// Draw Shadow
+			Game.c.translate(this.pos.x, this.pos.y + Math.sin(this.rotation)*10);
+			Game.c.drawImage(spr_shadow, -this.width/2, (this.height/2)-8, this.width, 16);
 
-		Game.c.restore();
+			Game.c.restore();
+		}
 		// Render player
 		Game.c.save();
 		// Flip sprite on Y axis when updside down
 		if (this.flipped) {
 			Game.c.scale(1, -1);
-			Game.c.translate(Math.round(this.pos.x), -Math.round(this.pos.y));
+			Game.c.translate(this.pos.x, -this.pos.y);
 			Game.c.rotate(-this.rotation);
 		} else {
 			Game.c.scale(1, 1);
-			Game.c.translate(Math.round(this.pos.x), Math.round(this.pos.y));
+			Game.c.translate(this.pos.x, this.pos.y);
 			Game.c.rotate(this.rotation);
 		}
 		// Draw player sprite

@@ -10,8 +10,8 @@ function createWindow () {
 	// Create the browser window.
 	mainWindow = new BrowserWindow({
 		width: 1280,
-		// OSX height: 742,
-		height: 759,
+		height: 742,
+		// height: 759,
 		minWidth: 980,
 		minHeight: 450,
 		webPreferences: {
@@ -38,7 +38,8 @@ function createWindow () {
 	mainWindow.on('resize', function () {
 	  setTimeout(function () {
 	    var size = mainWindow.getSize();
-	    mainWindow.setSize( size[0], ( parseInt(size[0] * 9 / 16) ) + 30 );
+	    // windows mainWindow.setSize( size[0], ( parseInt(size[0] * 9 / 16) ) + 30 );
+		mainWindow.setSize( size[0], ( parseInt(size[0] * 9 / 16) ) + 22 );
 	  }, 0);
 	});
 

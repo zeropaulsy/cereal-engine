@@ -1,6 +1,6 @@
 // Turret Class
 class Turret {
-	constructor(id, sprite, target, x, y, width, height, health, ammo, rotationSpeed, stationary) {
+	constructor(id, sprite, target, x, y, width, height, health, ammo, rotationSpeed, stationary, equipItem) {
 		let _this = this;
 		this.entityType = 'turret';
 		this.id = id;
@@ -24,8 +24,10 @@ class Turret {
 		this.distance = random(128, 256);
 		this.kill = false;
 		this.inventory = new Inventory(5);
-		this.inventory.contents.push(new Gun('staff00', spr_staff_orange, p_orange, this, this.width, this.height, 16, 16, 1, 20, 1, 1, mp3_hitmarker, p_red_small, true));
-		this.inventory.contents.push(new Gun('staff01', spr_staff_orange, p_orange, this, this.width, this.height, 16, 16, 1, 10, 2, 0.75, mp3_hitmarker, p_red_small, false));
+		this.inventory.contents.push( new Gun('staff00', spr_staff_orange, p_orange, this, this.width, this.height, 16, 16, 1, 20, 1, 10, mp3_hitmarker, p_red_small, true ) );
+		this.inventory.contents.push( new Gun('staff01', spr_staff_orange, p_orange, this, this.width, this.height, 16, 16, 1, 10, 2, 10, mp3_hitmarker, p_red_small, false) );
+		this.inventory.contents.push( new Gun('staff02', spr_dorito_gun,   p_dorito, this, this.width, this.height, 16, 16, 1, 10, 2, 10, mp3_hitmarker, p_red_small, false) );
+		this.inventory.equipItem(equipItem);
 		this.healthBar = new StatBar(this.id + '_health_bar', this, 'health', 55 / 1.45, 7, '#ce9069', '#51bf59');
 		// Add worker thread
 		this.worker = new Worker('./game/CalculateAngle.js');
@@ -52,20 +54,16 @@ class Turret {
 		}
 		// Update turret health bar percent
 		this.healthBar.update();
-		// Manage inventory slots
-		if (this.inventory.slotActive == 0) this.inventory.equipItem('staff00');
-		if (this.inventory.slotActive == 1) this.inventory.equipItem('staff01');
 	}
 	display() {
+		if (g_shadows_enabled) {
+			Game.c.save();
+			// Draw Shadow
+			Game.c.translate(this.pos.x, this.pos.y + Math.sin(this.rotation)*10);
+			Game.c.drawImage(spr_shadow, -this.width/2, (this.height/2)-8, this.width, 16);
 
-		Game.c.save();
-		// Draw Shadow
-		Game.c.translate(this.pos.x, this.pos.y + Math.sin(this.rotation) * 10);
-		Game.c.drawImage(spr_shadow, -this.width / 2, (this.height / 2) - 8, this.width, 16);
-
-		Game.c.restore();
-
-		Game.c.save();
+			Game.c.restore();
+		}
 		// Flip sprite on Y axis when updside down
 		if (this.flipped) {
 			Game.c.scale(1, -1);

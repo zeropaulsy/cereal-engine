@@ -35,6 +35,8 @@ var Level01 = function() {
 	};
 
 	this.onEnter = function() {
+		// Set image rendering to nearest neighbour
+		Game.c.imageSmoothingEnabled = false;
 		// Set g variables
 		g_tileSize = 64;
 		g_shake = 0;
@@ -256,8 +258,9 @@ var Level01 = function() {
 				player.pos.y - player.width/2,
 				80/1.25, 75/1.25,
 				25, 25,
-				random(0.75, 0.9),
-				false
+				0.875,
+				false,
+				'staff00'
 			);
 		}, 'keydown');
 

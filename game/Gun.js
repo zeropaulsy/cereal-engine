@@ -17,7 +17,7 @@ class Gun {
 		this.hitSound = hitSound;
 		this.hitParticle = hitParticle;
 		this.equipped = equipped;
-		this.firerate = 2;
+		this.firerate = 1.5;
 		this.explosive = false;
 		this.timeCounter = 0;
 		this.angle = parent.angle;

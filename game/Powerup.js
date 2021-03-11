@@ -21,13 +21,14 @@ class Powerup {
 		if (this.health < 0) this.destroy();
 	}
 	display() {
-		Game.c.save();
-		// Draw Shadow
-		Game.c.translate(this.pos.x, this.pos.y);
-		Game.c.drawImage(spr_shadow, -this.width/2, this.height/2, this.width, 16);
+		if (g_shadows_enabled) {
+			Game.c.save();
+			// Draw Shadow
+			Game.c.translate(this.pos.x, this.pos.y);
+			Game.c.drawImage(spr_shadow, -this.width/2, this.height/2, this.width, 16);
 
-		Game.c.restore();
-
+			Game.c.restore();
+		}
 		Game.c.save();
 
 		Game.c.translate(this.pos.x, this.pos.y + Math.round(Math.sin(lastCalledTime/250)));

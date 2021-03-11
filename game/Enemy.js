@@ -1,6 +1,6 @@
 // Enemy Class : Enemy(id, sprite, target, x, y, width, height, speed, health, death sound, score value)
 class Enemy {
-	constructor(id, sprite, target, x, y, width, height, showHealthBar, speed, health, deathSound, scoreValue) {
+	constructor(id, sprite, target, x, y, width, height, showHealthBar, speed, health, deathSound, scoreValue, powerupSprite) {
 		this.entityType = 'enemy';
 		this.id = id;
 		this.showId = false;
@@ -20,6 +20,7 @@ class Enemy {
 		this.healthBar = new StatBar(id + '_healthbar', this, 'health', width / 1.5, 7, '#f0f0dd', '#686e46');
 		this.deathSound = deathSound;
 		this.scoreValue = scoreValue;
+		this.powerupSprite = powerupSprite || spr_box;
 		this.knockBack = 0;
 		this.angle = 1;
 		this.rotation = this.pos.angle(target.pos);
@@ -90,7 +91,7 @@ class Enemy {
 			//Game.c.rotate(this.rotation);
 		}
 		// Draw shadow
-		Game.c.drawImage(spr_shadow, -this.width/2, (this.height/2)-8, this.width, 16);
+		if (g_shadows_enabled) Game.c.drawImage(spr_shadow, -this.width/2, (this.height/2)-8, this.width, 16);
 		// Draw sprite
 		Game.c.drawImage(this.sprite, -this.width/2, -this.height/2, this.width, this.height);
 
@@ -131,9 +132,8 @@ class Enemy {
 	dropPowerup() {
 		let id = 'powerup' + entityManager.powerups.length;
 
-		entityManager.spawnPowerup(id, spr_box, this.pos.x, this.pos.y, 48, 48, function() {
+		entityManager.spawnPowerup(id, this.powerupSprite, this.pos.x, this.pos.y, 48, 48, function() {
 
-			// let lastCollision = this.hitbox.lastCollision;
 			let powerupTime = 5000;
 
 			if (!player.powerupActive) {

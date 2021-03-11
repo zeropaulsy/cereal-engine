@@ -15,6 +15,7 @@ let g_shake = 0;
 let g_gamepadConnected = false;
 let g_lastInput = 'computer';
 let g_scale = 1;
+let g_shadows_enabled = true;
 
 let width = 1280;
 let height = 720;
@@ -83,8 +84,6 @@ var Game = {
 	},
 	run: function() {
 		requestAnimationFrame(Game.run);
-		// Set image rendering to nearest neighbour
-		Game.c.imageSmoothingEnabled = false;
 		// Set loading to false once pace completes asset preload
 		if (Pace.bar.progress == 100) loading = false;
 		// Set scale based on window size

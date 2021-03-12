@@ -1,6 +1,5 @@
 var Test01 = function() {
 
-
 	this.name = 'Test01';
 
 	this.enemySpawnerTop;
@@ -40,6 +39,7 @@ var Test01 = function() {
 		// Set g variables
 		g_tileSize = 64;
 		g_shake = 0;
+		g_pathfinding_enabled = true;
 		// Setup camera
 		this.camera = new Camera(Game.c);
 		this.camera.moveTo(Game.canvas.width / 2, Game.canvas.height / 2);
@@ -149,7 +149,7 @@ var Test01 = function() {
 
 		if ( this.enemySpawnerLeft.spawnTime  > 10 ) this.enemySpawnerLeft.spawnTime  -= 0.01;
 
-		easystar.calculate();
+		if (g_pathfinding_enabled) easystar.calculate();
 
 	}
 	this.display = function() {
@@ -220,11 +220,11 @@ var Test01 = function() {
 		Mousetrap.bind( controls.space, () => { spacePressed = true; }, 'keydown' );
 		Mousetrap.bind( controls.space, () => { spacePressed = false, player.dash(player.dashVel) }, 'keyup'  );
 
-		Mousetrap.bind( controls.inv1,  () => { player.inventory.slotActive = 0; }, 'keydown' );
-		Mousetrap.bind( controls.inv2,  () => { player.inventory.slotActive = 1; }, 'keydown' );
-		Mousetrap.bind( controls.inv3,  () => { player.inventory.slotActive = 2; }, 'keydown' );
-		Mousetrap.bind( controls.inv4,  () => { player.inventory.slotActive = 3; }, 'keydown' );
-		Mousetrap.bind( controls.inv5,  () => { player.inventory.slotActive = 4; }, 'keydown' );
+		Mousetrap.bind( controls.inv1,  () => { player.inventory.selectSlot(0); }, 'keydown' );
+		Mousetrap.bind( controls.inv2,  () => { player.inventory.selectSlot(1); }, 'keydown' );
+		Mousetrap.bind( controls.inv3,  () => { player.inventory.selectSlot(2); }, 'keydown' );
+		Mousetrap.bind( controls.inv4,  () => { player.inventory.selectSlot(3); }, 'keydown' );
+		Mousetrap.bind( controls.inv5,  () => { player.inventory.selectSlot(4); }, 'keydown' );
 
 		// Spawn bot
 		Mousetrap.bind('i', () => {

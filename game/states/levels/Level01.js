@@ -40,6 +40,8 @@ var Level01 = function() {
 		// Set g variables
 		g_tileSize = 64;
 		g_shake = 0;
+		g_pathfinding_enabled = true;
+
 		Game.canvas.mouseX = width;
 		Game.canvas.mouseY = height / 2;
 		// Setup camera
@@ -172,7 +174,7 @@ var Level01 = function() {
 		if ( this.enemySpawnerLeft.spawnTime  > 10 ) this.enemySpawnerLeft.spawnTime  -= 0.01;
 		if ( this.enemySpawnerRight.spawnTime > 10 ) this.enemySpawnerRight.spawnTime -= 0.01;
 
-		easystar.calculate();
+		if (g_pathfinding_enabled) easystar.calculate();
 
 	}
 	this.display = function() {
@@ -195,8 +197,8 @@ var Level01 = function() {
 
 			Game.c.save();
 
-		    Game.c.translate(player.pos.x - 20, player.pos.y - 20);
-			Game.c.drawImage(cur_pixel, 100 * Math.cos(player.rotation), 100 * Math.sin(player.rotation), 40, 40);
+		    Game.c.translate(Game.canvas.mouseX, Game.canvas.mouseY);
+			Game.c.drawImage(cur_pixel, -20, -20, 40, 40);
 
 			Game.c.restore();
 		}
@@ -221,6 +223,7 @@ var Level01 = function() {
 	}
 	this.onResume = function() {
 		Game.hidePauseMenu();
+		canvas.style.cursor = 'none';
 	}
 
 	this.initializeControls = function() {
@@ -240,11 +243,11 @@ var Level01 = function() {
 		Mousetrap.bind( controls.space, () => { spacePressed = true; }, 'keydown' );
 		Mousetrap.bind( controls.space, () => { spacePressed = false, player.dash(player.dashVel) }, 'keyup'  );
 
-		Mousetrap.bind( controls.inv1,  () => { player.inventory.slotActive = 0; }, 'keydown' );
-		Mousetrap.bind( controls.inv2,  () => { player.inventory.slotActive = 1; }, 'keydown' );
-		Mousetrap.bind( controls.inv3,  () => { player.inventory.slotActive = 2; }, 'keydown' );
-		Mousetrap.bind( controls.inv4,  () => { player.inventory.slotActive = 3; }, 'keydown' );
-		Mousetrap.bind( controls.inv5,  () => { player.inventory.slotActive = 4; }, 'keydown' );
+		Mousetrap.bind( controls.inv1,  () => { player.inventory.selectSlot(0); }, 'keydown' );
+		Mousetrap.bind( controls.inv2,  () => { player.inventory.selectSlot(1); }, 'keydown' );
+		Mousetrap.bind( controls.inv3,  () => { player.inventory.selectSlot(2); }, 'keydown' );
+		Mousetrap.bind( controls.inv4,  () => { player.inventory.selectSlot(3); }, 'keydown' );
+		Mousetrap.bind( controls.inv5,  () => { player.inventory.selectSlot(4); }, 'keydown' );
 
 		Mousetrap.bind('t', () => { new Explosion(player.pos.x, player.pos.y, 24, 24, 15, 10, 10) }, 'keyup');
 

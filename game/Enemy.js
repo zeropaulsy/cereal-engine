@@ -41,7 +41,7 @@ class Enemy {
 		if ( this.isOnGrid() ) {
 			findEntityPath(this, this.target);
 		}
-		if (this.pathfinding) {
+		if (this.pathfinding && g_pathfinding_enabled) {
 			try {
 				this.dx = ( (this.path[1].x - random(-1, 1) ) * g_tileSize ) - ( this.pos.x - (this.width / 2) );
 				this.dy = ( (this.path[1].y - random(-1, 1) ) * g_tileSize ) - ( this.pos.y - (this.height/ 2) );
@@ -141,10 +141,10 @@ class Enemy {
 
 				console.log(this.id + ' picked up.');
 
-				player.inventory.slotActive = Math.round(random(1, 3));
+				player.inventory.selectSlot( Math.round(random(1, 3)) );
 
 				let timer = new Timer(function() {
-					player.inventory.slotActive = 0;
+					player.inventory.selectSlot(0);
 					player.powerupActive = false;
 				}, powerupTime);
 

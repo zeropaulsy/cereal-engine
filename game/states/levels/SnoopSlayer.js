@@ -9,7 +9,6 @@ var SnoopSlayer = function() {
 	this.score;
 
 	this.camera;
-	this.coords;
 
 	this.map = {
 		cols: 20,
@@ -41,6 +40,7 @@ var SnoopSlayer = function() {
 		g_tileSize = 64;
 		g_shake = 0;
 		g_shadows_enabled = false;
+		g_pathfinding_enabled = false;
 
 		Game.canvas.mouseX = width;
 		Game.canvas.mouseY = height / 2;
@@ -71,7 +71,7 @@ var SnoopSlayer = function() {
 			}
 		}
 		// Create enemy spawners
-		this.enemySpawnerTop = new EnemySpawner(50, 55, 25, true, function() {
+		this.enemySpawnerTop = new EnemySpawner(250, 55, 25, true, function() {
 			if (Math.round(random(0, 5)) != 5) {
 				entityManager.spawnEnemy('enemy' + entityManager.enemies.length, spr_snoop, player, random(150, width - 150), -55, 55, 55, false, random(1.2, 3), 10, mp3_hitmarker, 1, spr_misc_bag);
 			} else {
@@ -79,7 +79,7 @@ var SnoopSlayer = function() {
 			}
 		}, 1);
 
-		this.enemySpawnerLeft = new EnemySpawner(50, 75, 25, true, function() {
+		this.enemySpawnerLeft = new EnemySpawner(250, 75, 25, true, function() {
 			if (Math.round(random(0, 1)) == 0) {
 				entityManager.spawnEnemy('enemy' + entityManager.enemies.length, spr_snoop, player, -45, random(150, height - 150), 55, 55, false, random(1.2, 3), 10, mp3_hitmarker, 1, spr_misc_bag);
 			} else {
@@ -87,7 +87,7 @@ var SnoopSlayer = function() {
 			}
 		}, 1);
 
-		this.enemySpawnerRight = new EnemySpawner(50, 75, 25, true, function() {
+		this.enemySpawnerRight = new EnemySpawner(250, 75, 25, true, function() {
 			if (Math.round(random(0, 1)) == 0) {
 				entityManager.spawnEnemy('enemy' + entityManager.enemies.length, spr_snoop, player, width + 45, random(150, height - 150), 55, 55, false, random(1.2, 3), 10, mp3_hitmarker, 1, spr_misc_bag);
 			} else {
@@ -159,10 +159,8 @@ var SnoopSlayer = function() {
 
 	this.update = function() {
 
-		this.coords = this.camera.screenToWorld(Game.canvas.width / 2, Game.canvas.height / 2);
-
-		this.camera.moveTo(Game.canvas.width / 2, Game.canvas.height / 2);
 		// this.camera.moveTo(player.pos.x * g_scale, player.pos.y * g_scale);
+		this.camera.moveTo(Game.canvas.width / 2, Game.canvas.height / 2);
 		this.camera.zoomTo(Game.canvas.width);
 
 		this.enemySpawnerTop.run();
@@ -173,7 +171,7 @@ var SnoopSlayer = function() {
 		if ( this.enemySpawnerLeft.spawnTime  > 10 ) this.enemySpawnerLeft.spawnTime  -= 0.01;
 		if ( this.enemySpawnerRight.spawnTime > 10 ) this.enemySpawnerRight.spawnTime -= 0.01;
 
-		easystar.calculate();
+		if (g_pathfinding_enabled) easystar.calculate();
 
 	}
 	this.display = function() {
@@ -242,11 +240,11 @@ var SnoopSlayer = function() {
 		Mousetrap.bind( controls.space, () => { spacePressed = true; }, 'keydown' );
 		Mousetrap.bind( controls.space, () => { spacePressed = false, player.dash(player.dashVel) }, 'keyup'  );
 
-		Mousetrap.bind( controls.inv1,  () => { player.inventory.slotActive = 0; }, 'keydown' );
-		Mousetrap.bind( controls.inv2,  () => { player.inventory.slotActive = 1; }, 'keydown' );
-		Mousetrap.bind( controls.inv3,  () => { player.inventory.slotActive = 2; }, 'keydown' );
-		Mousetrap.bind( controls.inv4,  () => { player.inventory.slotActive = 3; }, 'keydown' );
-		Mousetrap.bind( controls.inv5,  () => { player.inventory.slotActive = 4; }, 'keydown' );
+		Mousetrap.bind( controls.inv1,  () => { player.inventory.selectSlot(0); }, 'keydown' );
+		Mousetrap.bind( controls.inv2,  () => { player.inventory.selectSlot(1); }, 'keydown' );
+		Mousetrap.bind( controls.inv3,  () => { player.inventory.selectSlot(2); }, 'keydown' );
+		Mousetrap.bind( controls.inv4,  () => { player.inventory.selectSlot(3); }, 'keydown' );
+		Mousetrap.bind( controls.inv5,  () => { player.inventory.selectSlot(4); }, 'keydown' );
 
 		Mousetrap.bind('t', () => { new Explosion(player.pos.x, player.pos.y, 24, 24, 15, 10, 10) }, 'keyup');
 

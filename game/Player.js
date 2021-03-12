@@ -99,9 +99,9 @@ class Player {
 		this.healthBar.update();
 		this.dashBar.update();
 		// Manage inventory slots
-		for (let i = 0; i < 4; i++) {
-			if (this.inventory.slotActive == i) this.inventory.selectSlot(i);
-		}
+		//for (let i = 0; i < 4; i++) {
+		//	if (this.inventory.slotActive == i) this.inventory.selectSlot(i);
+		//}
 	}
 	display() {
 		if (g_shadows_enabled) {

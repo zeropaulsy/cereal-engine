@@ -16,6 +16,7 @@ let g_gamepadConnected = false;
 let g_lastInput = 'computer';
 let g_scale = 1;
 let g_shadows_enabled = true;
+let g_pathfinding_enabled = true;
 
 let width = 1280;
 let height = 720;

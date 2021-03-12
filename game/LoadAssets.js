@@ -40,6 +40,7 @@ let spr_chicken_gun   = loadImage({ src : './game/assets/img/slayer/spr_chicken_
 let spr_dorito_gun    = loadImage({ src : './game/assets/img/slayer/spr_dorito_gun.png',  maxSeconds : 10 });
 let spr_banana_gun    = loadImage({ src : './game/assets/img/slayer/spr_banana_gun.png',  maxSeconds : 10 });
 let spr_dew_gun       = loadImage({ src : './game/assets/img/slayer/spr_dew_gun.png',     maxSeconds : 10 });
+let spr_dew_logo      = loadImage({ src : './game/assets/img/slayer/spr_dew_logo.png',    maxSeconds : 10 });
 let spr_snoop         = loadImage({ src : './game/assets/img/slayer/spr_snoop.png',       maxSeconds : 10 });
 let spr_misc_bag      = loadImage({ src : './game/assets/img/slayer/spr_misc_bag.png',    maxSeconds : 10 });
 
@@ -48,6 +49,7 @@ let p_banana    = loadImage({ src : './game/assets/img/slayer/p_banana.png',    
 let p_dorito    = loadImage({ src : './game/assets/img/slayer/p_dorito.png',    maxSeconds : 10 });
 let p_chicken   = loadImage({ src : './game/assets/img/slayer/p_chicken.png',   maxSeconds : 10 });
 let p_dew_can   = loadImage({ src : './game/assets/img/slayer/p_dew_can.png',   maxSeconds : 10 });
+let p_explosion = loadImage({ src : './game/assets/img/slayer/p_explosion.png', maxSeconds : 10 });
 
 let bg_windows_bliss = loadImage({ src : './game/assets/img/slayer/bg_windows_bliss.jpg', maxSeconds : 10 });
 

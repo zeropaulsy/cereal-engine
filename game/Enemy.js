@@ -38,10 +38,10 @@ class Enemy {
 		this.tile.x = Math.floor(this.pos.x/g_tileSize)*g_tileSize;
 		this.tile.y = Math.floor(this.pos.y/g_tileSize)*g_tileSize;
 		// Find player and follow path
-		if ( this.isOnGrid() ) {
-			findEntityPath(this, this.target);
-		}
 		if (this.pathfinding && g_pathfinding_enabled) {
+			if ( this.isOnGrid() ) {
+				findEntityPath(this, this.target);
+			}
 			try {
 				this.dx = ( (this.path[1].x - random(-1, 1) ) * g_tileSize ) - ( this.pos.x - (this.width / 2) );
 				this.dy = ( (this.path[1].y - random(-1, 1) ) * g_tileSize ) - ( this.pos.y - (this.height/ 2) );
@@ -105,10 +105,14 @@ class Enemy {
 		Game.c.restore();
 	}
 	isOnGrid() {
-		if (this.tile.x/g_tileSize < Game.getCurrentState().map.cols && this.tile.y/g_tileSize < Game.getCurrentState().map.rows && this.tile.x/g_tileSize > 0 && this.tile.y/g_tileSize > 0) {
-			return true;
+		if (Game.getCurrentState().map !== undefined) {
+			if (this.tile.x/g_tileSize < Game.getCurrentState().map.cols && this.tile.y/g_tileSize < Game.getCurrentState().map.rows && this.tile.x/g_tileSize > 0 && this.tile.y/g_tileSize > 0) {
+				return true;
+			} else {
+				return false;
+			}
 		} else {
-			return false;
+			console.log('current state has no tilemap.');
 		}
 	}
 	destroy() {

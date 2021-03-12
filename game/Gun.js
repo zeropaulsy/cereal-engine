@@ -22,6 +22,12 @@ class Gun {
 		this.timeCounter = 0;
 		this.angle = parent.angle;
 		this.flipped = false;
+		// Define explosive particles to pass onto bullet
+		this.p1 = p_white;
+		this.p2 = p_orange;
+		this.p3 = p_red_small;
+		// Function to call as the weapon is equipped
+		this.onEquip = function() {};
 	}
 	update() {
 		// Set position to parent position
@@ -37,13 +43,7 @@ class Gun {
 	shoot() {
 		if (this.timeCounter >= this.firerate) {
 			for (let i = 0; i < this.amount; i++) {
-				entityManager.spawnBullet(
-					'bullet' + entityManager.bullets.length,
-					this.bulletSprite,
-					this,
-					this.bulletWidth,
-					this.bulletHeight
-				);
+				entityManager.spawnBullet('bullet' + entityManager.bullets.length, this.bulletSprite, this, this.bulletWidth, this.bulletHeight);
 			}
 			this.timeCounter = 0;
 		}

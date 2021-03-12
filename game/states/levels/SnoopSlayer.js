@@ -10,66 +10,29 @@ var SnoopSlayer = function() {
 
 	this.camera;
 
-	this.map = {
-		cols: 20,
-		rows: 11,
-		tsize: 8,
-		tiles: [
-			[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-			[0, 0, 0, 0, 0, 0, 0, 0, 9, 0, 0, 9, 0, 0, 0, 0, 0, 0, 0, 0],
-			[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-			[0, 0, 0, 0, 0, 0, 0, 0, 9, 9, 9, 9, 0, 0, 0, 0, 0, 0, 0, 0],
-			[0, 0, 0, 0, 0, 0, 0, 0, 9, 0, 0, 9, 0, 0, 0, 0, 0, 0, 0, 0],
-			[0, 0, 0, 0, 0, 0, 0, 0, 9, 0, 0, 9, 0, 0, 0, 0, 0, 0, 0, 0],
-			[0, 0, 0, 0, 0, 0, 0, 0, 9, 9, 9, 9, 0, 0, 0, 0, 0, 0, 0, 0],
-			[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-			[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-			[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-			[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-			[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-		],
-		getTile: function(col, row) {
-			return this.tiles[row * map.cols + col]
-		}
-	};
-
 	this.onEnter = function() {
 		// Set image rendering to nearest neighbour
 		Game.c.imageSmoothingEnabled = true;
+		Game.canvas.style.cursor = 'none';
+		// Set mouse position incase users mouse if off screen when state is loading
+		Game.canvas.mouseX = width;
+		Game.canvas.mouseY = height / 2;
 		// Set g variables
 		g_tileSize = 64;
 		g_shake = 0;
 		g_shadows_enabled = false;
 		g_pathfinding_enabled = false;
-
-		Game.canvas.mouseX = width;
-		Game.canvas.mouseY = height / 2;
 		// Setup camera
 		this.camera = new Camera(Game.c);
 		this.camera.moveTo(Game.canvas.width / 2, Game.canvas.height / 2);
 		this.camera.zoomTo(Game.canvas.width);
-		// Setup pathfinding using this levels map
-		easystar.setGrid(this.map.tiles);
-		easystar.setAcceptableTiles([0, 9]);
-		easystar.setTileCost(9, 10);
-		easystar.enableDiagonals();
-		easystar.enableSync();
-		easystar.setIterationsPerCalculation(2000);
-
+		// Define the backgound manager
 		backgroundManager = new BackgroundManager(10, 0);
-
+		// Create backgrounds
 		backgroundManager.screens.push(new BackgroundScreen('bg_windows_bliss', [bg_windows_bliss], 1));
 		backgroundManager.screens.push(new BackgroundScreen('bg_level_01_trippy', [vid_tunnel, bg_trip_full, bg_windows_bliss], 0.1));
-
+		// Define the entity manager
 		entityManager = new EntityManager(5000);
-		// Create map from tilemap
-		for (var i = 0; i < this.map.tiles.length; i++) {
-			for (var j = 0; j < this.map.tiles[i].length; j++) {
-				if (this.map.tiles[i][j] == 1) entityManager.spawnTile('tile' + entityManager.entities.length, ts_map, 16, 0, 8, 8, (g_tileSize / 2) + (j * g_tileSize), (g_tileSize / 2) + (i * g_tileSize), g_tileSize, g_tileSize, true, 10);
-				if (this.map.tiles[i][j] == 2) entityManager.spawnTile('tile' + entityManager.entities.length, ts_map,  8, 0, 8, 8, (g_tileSize / 2) + (j * g_tileSize), (g_tileSize / 2) + (i * g_tileSize), g_tileSize, g_tileSize, true, 10);
-				if (this.map.tiles[i][j] == 3) entityManager.spawnTile('tile' + entityManager.entities.length, ts_map, 24, 0, 8, 8, (g_tileSize / 2) + (j * g_tileSize), (g_tileSize / 2) + (i * g_tileSize), g_tileSize, g_tileSize, true, 10);
-			}
-		}
 		// Create enemy spawners
 		this.enemySpawnerTop = new EnemySpawner(250, 55, 25, true, function() {
 			if (Math.round(random(0, 5)) != 5) {
@@ -97,20 +60,24 @@ var SnoopSlayer = function() {
 
 		particleSystem = new ParticleSystem(2000);
 
-		// Create player entity and initialize instructions
+		// Spawn player and initialize instructions
 		entityManager.spawnPlayer('player', spr_player_slayer, width / 2, height - 75, 85, 85, 7, 0.875, 15);
 		// Assign player entity to global varible for ease of use
 		player = entityManager.getEntityById('player');
 		// Add weapons to inventory (id, gun sprite, bullet sprite, parent, width, height, amount, speed, dither, damage, hit sound, hit particle, eqipped)
-		player.inventory.contents.push(new Gun('chicken_gun', spr_chicken_gun, p_chicken, player, player.width, player.height, 24, 16, 1, 20, 1, 15, mp3_hitmarker, p_hitmarker, true));
-
-		player.inventory.contents.push(new Gun('dorito_gun', spr_dorito_gun, p_dorito, player, player.width, player.height, 24, 24, 2, 10, 2, 25, mp3_hitmarker, p_hitmarker, false));
-
-		player.inventory.contents.push(new Gun('banana_gun', spr_banana_gun, p_banana, player, player.width, player.height, 24, 24, 2, 15, 2, 20, mp3_hitmarker, p_hitmarker, false));
-
-		player.inventory.contents.push(new Gun('dew_gun', spr_dew_gun, p_dew_can, player, player.width, player.height, 24, 16, 2, 15, 2, 20, mp3_hitmarker, p_hitmarker, false));
-		player.inventory.contents[3].explosive = true;
-		player.inventory.contents[3].firerate = 3;
+		player.inventory.contents.push( new Gun('chicken_gun', spr_chicken_gun, p_chicken, player, player.width, player.height, 24, 16, 1, 20, 1, 15, mp3_hitmarker, p_hitmarker, true ) );
+		player.inventory.contents.push( new Gun('dorito_gun',  spr_dorito_gun,  p_dorito,  player, player.width, player.height, 24, 24, 2, 10, 2, 25, mp3_hitmarker, p_hitmarker, false) );
+		player.inventory.contents.push( new Gun('banana_gun',  spr_banana_gun,  p_banana,  player, player.width, player.height, 24, 24, 2, 15, 2, 20, mp3_hitmarker, p_hitmarker, false) );
+		player.inventory.contents.push( new Gun('dew_gun',     spr_dew_gun,     p_dew_can, player, player.width, player.height, 24, 16, 2, 15, 2, 20, mp3_hitmarker, p_hitmarker, false) );
+		// Set additional weapon properties
+		player.inventory.getInventoryItem('dew_gun').explosive = true;
+		player.inventory.getInventoryItem('dew_gun').firerate = 3;
+		player.inventory.getInventoryItem('dew_gun').p1 = p_explosion;
+		player.inventory.getInventoryItem('dew_gun').p2 = spr_dew_logo;
+		player.inventory.getInventoryItem('dew_gun').p3 = p_hitmarker;
+		player.inventory.getInventoryItem('dew_gun').onEquip = function() {
+			console.log('dew_gun equipped');
+		}
 		// Player starting velocity
 		player.vel.x =   0;
 		player.vel.y = -25;
@@ -170,8 +137,6 @@ var SnoopSlayer = function() {
 		if ( this.enemySpawnerTop.spawnTime   > 10 ) this.enemySpawnerTop.spawnTime   -= 0.01;
 		if ( this.enemySpawnerLeft.spawnTime  > 10 ) this.enemySpawnerLeft.spawnTime  -= 0.01;
 		if ( this.enemySpawnerRight.spawnTime > 10 ) this.enemySpawnerRight.spawnTime -= 0.01;
-
-		if (g_pathfinding_enabled) easystar.calculate();
 
 	}
 	this.display = function() {
@@ -271,7 +236,7 @@ var SnoopSlayer = function() {
 				// Apply filter to canvas
 				document.getElementById('body').style.filter = 'saturate(1.2)';
 				// Set shake amount
-				g_shake = 1;
+				g_shake += 1;
 				// Start video
 				vid_tunnel.play();
 				// Create timer to reset changes and refer to default backgound
@@ -280,7 +245,7 @@ var SnoopSlayer = function() {
 					if (Game.getCurrentState() == _this) {
 						document.getElementById('body').style.filter = '';
 						backgroundManager.selectBackgroundScreen('bg_windows_bliss');
-						g_shake = 0;
+						g_shake -= 1;
 						vid_tunnel.pause();
 					}
 				}, 6000);

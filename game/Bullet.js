@@ -52,7 +52,7 @@ class Bullet {
 		Game.c.restore();
 	}
 	explode() {
-		new Explosion(this.pos.x, this.pos.y, 24, 24, 7, 10, 10, 100);
+		new Explosion(this.pos.x, this.pos.y, 24, 24, 7, 10, 10, 100, this.parent.p1, this.parent.p2, this.parent.p3);
 	}
 	destroy() {
 		if (this.explosive) this.explode();

@@ -26,7 +26,7 @@ class Inventory {
 	}
 	equipItem(id) {
 		// Find item currently equipped using getEquippedItem()
-		this.getEquippedItem().equipped = false;
+		// this.getEquippedItem().equipped = false;
 		// Equip new item using the id specified
 		this.getInventoryItem(id).equipped = true;
 	}
@@ -37,5 +37,7 @@ class Inventory {
 		this.slotActive = slot;
 		// Equip active slot
 		this.contents[this.slotActive].equipped = true;
+		// Call on equip function
+		this.contents[this.slotActive].onEquip();
 	}
 }

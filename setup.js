@@ -1,29 +1,29 @@
 const easystar = new EasyStar.js();
-const gamepad  = new Gamepad();
+const gamepad = new Gamepad();
 
-var EmptyState = function(){
-	this.name     = "EmptyState";
+var EmptyState = function() {
+	this.name = "EmptyState";
 
-  this.update   = function() {};
-  this.display  = function() {};
+	this.update = function() {};
+	this.display = function() {};
 
-  this.onEnter  = function() {};
-  this.onExit   = function() {};
+	this.onEnter = function() {};
+	this.onExit = function() {};
 
-	this.onPause  = function() {}
+	this.onPause = function() {}
 	this.onResume = function() {}
 }
 
 var State = function() {
 	this.name;
 
-	this.update  = function() {}
+	this.update = function() {}
 	this.display = function() {}
 
 	this.onEnter = function() {}
-	this.onExit  = function() {}
+	this.onExit = function() {}
 
-	this.onPause  = function() {}
+	this.onPause = function() {}
 	this.onResume = function() {}
 }
 
@@ -36,7 +36,7 @@ var StateList = function() {
 		this.states.push(state);
 	}
 	this.top = function() {
-		return this.states[this.states.length-1];
+		return this.states[this.states.length - 1];
 	}
 }
 

@@ -41,6 +41,7 @@ var Level01 = function() {
 		g_tileSize = 64;
 		g_shake = 0;
 		g_pathfinding_enabled = true;
+		g_shadows_enabled = true;
 
 		Game.canvas.mouseX = width;
 		Game.canvas.mouseY = height / 2;

@@ -24,9 +24,9 @@ class Turret {
 		this.distance = random(128, 256);
 		this.kill = false;
 		this.inventory = new Inventory(5);
-		this.inventory.contents.push( new Gun('staff00', spr_staff_orange, p_orange, this, this.width, this.height, 16, 16, 1, 20, 1, 10, mp3_hitmarker, p_red_small, true ) );
-		this.inventory.contents.push( new Gun('staff01', spr_staff_orange, p_orange, this, this.width, this.height, 16, 16, 1, 10, 2, 10, mp3_hitmarker, p_red_small, false) );
-		this.inventory.contents.push( new Gun('staff02', spr_dorito_gun,   p_dorito, this, this.width, this.height, 16, 16, 1, 10, 2, 10, mp3_hitmarker, p_red_small, false) );
+		this.inventory.contents.push( new Gun('chicken_gun', spr_chicken_gun, p_chicken, this, this.width, this.height, 16, 10, 1, 20, 1, 15, mp3_hitmarker, p_hitmarker, true ) );
+		this.inventory.contents.push( new Gun('dorito_gun',  spr_dorito_gun,  p_dorito,  this, this.width, this.height, 16, 16, 2, 10, 2, 25, mp3_hitmarker, p_hitmarker, false) );
+		this.inventory.contents.push( new Gun('banana_gun',  spr_banana_gun,  p_banana,  this, this.width, this.height, 16, 16, 2, 15, 2, 20, mp3_hitmarker, p_hitmarker, false) );
 		this.inventory.equipItem(equipItem);
 		this.healthBar = new StatBar(this.id + '_health_bar', this, 'health', 55 / 1.45, 7, '#ce9069', '#51bf59');
 		// Add worker thread
@@ -64,6 +64,8 @@ class Turret {
 
 			Game.c.restore();
 		}
+
+		Game.c.save();
 		// Flip sprite on Y axis when updside down
 		if (this.flipped) {
 			Game.c.scale(1, -1);
@@ -74,13 +76,13 @@ class Turret {
 			Game.c.translate(this.pos.x, this.pos.y);
 			Game.c.rotate(this.rotation);
 		}
+
 		// Render player sprite
 		Game.c.drawImage(this.sprite, -this.width / 2, -this.height / 2, this.width, this.height);
+
 		// Run health bar and inventory within the save restore to inherit player position and rotation
 		this.healthBar.display(0, this.height / 1.5);
-
 		this.inventory.run();
-
 		Game.c.restore();
 	}
 	calculateAngle() {
@@ -143,7 +145,7 @@ class Turret {
 			particleSystem.spawnParticle('hitmarker' + particleSystem.particles.length, p_red_small , this.pos.x, this.pos.y, 18, 18, 3, random(0, 3), 15, 5);
 		}
 		// Terminate worker thread
-		this.worker.terminate()
+		this.worker.terminate();
 		// Remove entity from main array
 		entityManager.removeEntity(this);
 	}

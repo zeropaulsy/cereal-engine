@@ -1,19 +1,15 @@
 self.addEventListener('message', function(e) {
-  var data = e.data;
-  switch (data.worker_message) {
-    case 'find_target':
+	var data = e.data;
+	switch (data.worker_message) {
+		case 'find_target':
 
-      for (var target, d = Number.MAX_VALUE, i = 0; i < entityManager.enemies.length; i++) {
-        let enemy = entityManager.enemies[i],
-          distance = Math.pow(this.pos.x - enemy.pos.x, 2) + Math.pow(this.pos.y - enemy.pos.y, 2);
-        distance < d && (target = enemy, d = distance)
-      }
+			// ...
 
-      break;
-    case 'calculate_angle':
-      // Find the vector AB
+			break;
+		case 'calculate_angle':
+			// Find the vector AB
 			this.ABx = data.target.x - data.turret.x;
-		  this.ABy = data.target.y - data.turret.y;
+			this.ABy = data.target.y - data.turret.y;
 
 			// Normalize it
 			this.ABmag = Math.sqrt(this.ABx * this.ABx + this.ABy * this.ABy);
@@ -45,11 +41,11 @@ self.addEventListener('message', function(e) {
 			this.vx = this.vjx + this.vix;
 			this.vy = this.vjy + this.viy;
 
-      // Post result back to main thread
-      self.postMessage({
+			// Post result back to main thread
+			self.postMessage({
 				'vx': this.vx,
-        'vy': this.vy
+				'vy': this.vy
 			});
-      break;
-  };
+			break;
+	};
 }, false);

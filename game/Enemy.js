@@ -38,10 +38,10 @@ class Enemy {
 		this.tile.x = Math.floor(this.pos.x/g_tileSize)*g_tileSize;
 		this.tile.y = Math.floor(this.pos.y/g_tileSize)*g_tileSize;
 		// Find player and follow path
+		if (this.isOnGrid() && g_pathfinding_enabled) {
+			findEntityPath(this, this.target);
+		}
 		if (this.pathfinding && g_pathfinding_enabled) {
-			if ( this.isOnGrid() ) {
-				findEntityPath(this, this.target);
-			}
 			try {
 				this.dx = ( (this.path[1].x - random(-1, 1) ) * g_tileSize ) - ( this.pos.x - (this.width / 2) );
 				this.dy = ( (this.path[1].y - random(-1, 1) ) * g_tileSize ) - ( this.pos.y - (this.height/ 2) );
@@ -111,8 +111,6 @@ class Enemy {
 			} else {
 				return false;
 			}
-		} else {
-			console.log('current state has no tilemap.');
 		}
 	}
 	destroy() {

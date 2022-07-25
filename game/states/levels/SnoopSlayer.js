@@ -11,13 +11,13 @@ var SnoopSlayer = function() {
 	this.camera;
 
 	this.onEnter = function() {
-		// Set image rendering to nearest neighbour
+		// Set image rendering mode
 		Game.c.imageSmoothingEnabled = true;
 		Game.canvas.style.cursor = 'none';
-		// Set mouse position incase users mouse if off screen when state is loading
+		// Set mouse position
 		Game.canvas.mouseX = width;
 		Game.canvas.mouseY = height / 2;
-		// Set g variables
+		// Set global variables
 		g_tileSize = 64;
 		g_shake = 0;
 		g_shadows_enabled = false;
@@ -211,7 +211,7 @@ var SnoopSlayer = function() {
 		Mousetrap.bind( controls.inv4,  () => { player.inventory.selectSlot(3); }, 'keydown' );
 		Mousetrap.bind( controls.inv5,  () => { player.inventory.selectSlot(4); }, 'keydown' );
 
-		Mousetrap.bind('t', () => { new Explosion(player.pos.x, player.pos.y, 24, 24, 15, 10, 10) }, 'keyup');
+		Mousetrap.bind('t', () => { new Explosion(player.pos.x, player.pos.y, 24, 24, 15, 10, 10, p_explosion, spr_dew_logo, p_hitmarker) }, 'keyup');
 
 		// Spawn bot
 		Mousetrap.bind('i', () => {
@@ -225,7 +225,7 @@ var SnoopSlayer = function() {
 				25, 25,
 				random(0.75, 0.9),
 				false,
-				'staff02'
+				'dorito_gun'
 			);
 		}, 'keydown');
 

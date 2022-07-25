@@ -123,7 +123,7 @@ var Game = {
 
 	startGame: function() {
 		// this.stateStack.push(new Level01());
-		this.setState(new Level01());
+		this.setState(new SnoopSlayer());
 	},
 	pauseGame: function() {
 		g_paused = !g_paused;

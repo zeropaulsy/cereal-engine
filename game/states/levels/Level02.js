@@ -40,6 +40,7 @@ var Level02 = function() {
 		g_tileSize = 64;
 		g_shake = 0;
 		g_pathfinding_enabled = true;
+		g_shadows_enabled = true;
 		// Setup camera
 		this.camera = new Camera(Game.c);
 		this.camera.moveTo(Game.canvas.width / 2, Game.canvas.height / 2);

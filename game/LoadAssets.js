@@ -43,6 +43,10 @@ let spr_dew_gun       = loadImage({ src : './game/assets/img/slayer/spr_dew_gun.
 let spr_dew_logo      = loadImage({ src : './game/assets/img/slayer/spr_dew_logo.png',    maxSeconds : 10 });
 let spr_snoop         = loadImage({ src : './game/assets/img/slayer/spr_snoop.png',       maxSeconds : 10 });
 let spr_misc_bag      = loadImage({ src : './game/assets/img/slayer/spr_misc_bag.png',    maxSeconds : 10 });
+let spr_hypercam      = loadImage({ src : './game/assets/img/slayer/spr_hypercam.png',    maxSeconds : 10 });
+let spr_alert_boss_1  = loadImage({ src : './game/assets/img/slayer/spr_alert_boss_1.png',maxSeconds : 10 });
+let spr_alert_boss_2  = loadImage({ src : './game/assets/img/slayer/spr_alert_boss_2.png',maxSeconds : 10 });
+let spr_alert_boss_3  = loadImage({ src : './game/assets/img/slayer/spr_alert_boss_3.png',maxSeconds : 10 });
 
 let p_hitmarker = loadImage({ src : './game/assets/img/slayer/p_hitmarker.png', maxSeconds : 10 });
 let p_banana    = loadImage({ src : './game/assets/img/slayer/p_banana.png',    maxSeconds : 10 });
@@ -57,16 +61,18 @@ let bg_windows_bliss = loadImage({ src : './game/assets/img/slayer/bg_windows_bl
 var cur_pixel = loadImage({ src : './game/assets/img/cur_pixel.png', maxSeconds : 10 });
 
 // Audio
-var mp3_hitmarker = new Audio('./game/assets/sound/mp3_hitmarker.mp3');
-mp3_hitmarker.volume = 0.1;
+/*
+var audio.mp3_hitmarker = new Audio('./game/assets/sound/audio.mp3_hitmarker.mp3');
+audio.mp3_hitmarker.volume = 0.1;
 
-var wav_hit = new Audio('./game/assets/sound/wav_hit.wav');
-wav_hit.volume = 0.5;
+var audio.wav_hit = new Audio('./game/assets/sound/audio.wav_hit.wav');
+audio.wav_hit.volume = 0.5;
 
-var mp3_spooky_song = new Audio('./game/assets/sound/mp3_spooky_song.mp3');
-mp3_spooky_song.volume = 0.5;
+var audio.mp3_spooky_song = new Audio('./game/assets/sound/audio.mp3_spooky_song.mp3');
+audio.mp3_spooky_song.volume = 0.5;
 
-var mp3_hurt = new Audio('./game/assets/sound/mp3_hurt.mp3');
-mp3_hurt.volume = 0.5;
+var audio.mp3_hurt = new Audio('./game/assets/sound/audio.mp3_hurt.mp3');
+audio.mp3_hurt.volume = 0.5;
 
-var mp3_smoke_weed = new Audio('./game/assets/sound/mp3_smoke_weed.mp3');
+var audio.mp3_smoke_weed = new Audio('./game/assets/sound/audio.mp3_smoke_weed.mp3');
+*/

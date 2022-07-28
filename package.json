@@ -21,6 +21,7 @@
   },
   "dependencies": {
     "easystarjs": "^0.4.3",
-    "mousetrap": "^1.6.3"
+    "mousetrap": "^1.6.3",
+    "xp.css": "^0.3.0"
   }
 }

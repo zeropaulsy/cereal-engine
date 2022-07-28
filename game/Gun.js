@@ -26,8 +26,9 @@ class Gun {
 		this.p1 = p_white;
 		this.p2 = p_orange;
 		this.p3 = p_red_small;
-		// Function to call as the weapon is equipped
-		this.onEquip = function() {};
+		// Function to call as the weapon is equipped / holstered
+		this.onEquip   = function() {};
+		this.onHolster = function() {};
 	}
 	update() {
 		// Set position to parent position

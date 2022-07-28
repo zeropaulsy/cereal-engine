@@ -19,7 +19,7 @@ class Bullet {
 			(Math.cos(this.angle) * p.speed) + random(-p.dither, p.dither),
 			(Math.sin(this.angle) * p.speed) + random(-p.dither, p.dither)
 		);
-		this.hitbox = new CollisionBody(this, w, h, true);
+		this.hitbox = new CollisionBody(this, w, h, true, 1);
 		this.damage = p.damage;
 		this.hitSound = p.hitSound;
 		this.hitParticle = p.hitParticle;
@@ -36,7 +36,7 @@ class Bullet {
 
 		if (this.health <= 0) {
 			if (!this.explosive)  {
-				this.hitSound.play();
+				this.hitSound.play(true);
 				particleSystem.spawnParticle('hitmarker' + particleSystem.particles.length, this.hitParticle, this.pos.x, this.pos.y, 18, 18, 3, random(0, 3), 10, 5);
 			}
 			this.destroy();
@@ -52,6 +52,7 @@ class Bullet {
 		Game.c.restore();
 	}
 	explode() {
+		audio.mp3_vine_boom.play(0, 0.25, true);
 		new Explosion(this.pos.x, this.pos.y, 24, 24, 7, 10, 10, 100, this.parent.p1, this.parent.p2, this.parent.p3);
 	}
 	destroy() {

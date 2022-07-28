@@ -43,9 +43,9 @@ let controls = {
 	inv5: '5',
 }
 
-let upPressed = false;
-let downPressed = false;
-let leftPressed = false;
+let upPressed    = false;
+let downPressed  = false;
+let leftPressed  = false;
 let rightPressed = false;
 let spacePressed = false;
 
@@ -100,6 +100,7 @@ var Game = {
 			rightJoystick.y = applyDeadzone(gp.axes[3], rightDeadzone);
 		}
 
+		// Handle pause menu inputs
 		g_paused ? Game.stateStack.pause() : Game.stateStack.resume();
 
 		// Calculate current framerate
@@ -122,11 +123,15 @@ var Game = {
 	},
 
 	startGame: function() {
-		// this.stateStack.push(new Level01());
 		this.setState(new SnoopSlayer());
 	},
 	pauseGame: function() {
 		g_paused = !g_paused;
+		if (g_paused) {
+			pauseActiveSounds();
+		} else {
+			resumeActiveSounds();
+		}
 	},
 	showPauseMenu: function() {
 		// Show pause menu
@@ -205,14 +210,31 @@ window.onload = function () {
 document.addEventListener('visibilitychange', () => {
 	if (document.hidden) {
 		console.log('Window hidden.')
-		g_paused = true;
+		Game.pauseGame();
 	} else {
 		// Do something...
 	}
 }, false);
 
-document.getElementById('resume').addEventListener('click', (e) => {
-	g_paused = false;
+
+resume.addEventListener('click', (e) => {
+	Game.pauseGame();
+});
+
+toggle_all.addEventListener('click', (e) => {
+	if (audioLoaded) {
+		audio.Group.volume = toggle_all.value / 100;
+	}
+});
+
+toggle_music.addEventListener('click', (e) => {
+	if (audioLoaded) {
+		music.Group.volume = toggle_music.value / 100;
+	}
+});
+
+toggle_fullscreen.addEventListener('click', (e) => {
+
 });
 
 document.addEventListener('keypress', (e) => {

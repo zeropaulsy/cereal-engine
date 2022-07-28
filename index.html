@@ -7,13 +7,14 @@
 		<meta http-equiv="X-Content-Security-Policy" content="default-src 'self'; script-src 'self';">
 		<script type="text/javascript" src="./game/lib/pace/pace.min.js"></script>
 		<link href="./game/lib/pace/pace.css" rel="stylesheet" />
+		<script type="text/javascript" src="./game/lib/pizzicato.min.js"></script>
 		<script type="text/javascript" src="./game/lib/gamepad.js"></script>
 		<script type="text/javascript" src="./game/lib/mousetrap.js"></script>
 		<script type="text/javascript" src="./game/lib/camera.js"></script>
 		<script type="text/javascript" src="./game/lib/easystar-0.4.3.js"></script>
 		<script type="text/javascript" src="./game/Maths.js"></script>
 		<script type="text/javascript" src="./setup.js"></script>
-		<link rel="stylesheet" type="text/css" href="./game/css/styles.css">
+		<link rel="stylesheet" type="text/css" href="./game/css/styles.css" />
 		<title>cereal-engine</title>
 	</head>
 	<body id="body">
@@ -26,17 +27,22 @@
 				</li>
 				<br>
 				<li>
-					<input type="button" id="toggle_all" value="Mute FX: OFF">
-				</li>
-				<li>
-					<input type="button" id="toggle_music" value="Mute music: OFF">
-				</li>
-				<li>
 					<input type="button" id="toggle_fullscreen" value="Fullscreen: OFF">
+				</li>
+				<li>
+					<!--<input type="button" id="toggle_all" value="Sound: ON">-->
+					<h2>Sound</h2>
+					<input type="range" id="toggle_all" value="100" min="0" max="100">
+				</li>
+				<li>
+					<!--<input type="button" id="toggle_music" value="Music: ON">-->
+					<h2>Music</h2>
+					<input type="range" id="toggle_music" value="100" min="0" max="100">
 				</li>
 			</ul>
 		</div>
 		<!-- You can also require other files to run in this process -->
+		<script type="text/javascript" src="./game/Sound.js"></script>
 		<script type="text/javascript" src="./game/LoadImage.js"></script>
 		<script type="text/javascript" src="./game/LoadAssets.js"></script>
 		<script type="text/javascript" src="./game/KeyBinds.js"></script>

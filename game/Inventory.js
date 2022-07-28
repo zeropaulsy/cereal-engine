@@ -25,13 +25,15 @@ class Inventory {
 		return this.contents.find(x => x.equipped === true);
 	}
 	equipItem(id) {
-		// Find item currently equipped using getEquippedItem()
+		// Holster current item
+		this.contents[this.slotActive].onHolster();
 		this.getEquippedItem().equipped = false;
 		// Equip new item using the id specified
 		this.getInventoryItem(id).equipped = true;
 	}
 	selectSlot(slot) {
-		// Find item currently equipped using getEquippedItem()
+		// Holster current item
+		this.contents[this.slotActive].onHolster();
 		this.getEquippedItem().equipped = false;
 		// Select desired slot
 		this.slotActive = slot;

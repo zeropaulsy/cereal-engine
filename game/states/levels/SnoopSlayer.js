@@ -2,9 +2,10 @@ var SnoopSlayer = function() {
 
 	this.name = 'snoop_slayer';
 
-	this.enemySpawnerTop;
-	this.enemySpawnerLeft;
-	this.enemySpawnerRight;
+	this.bossSpawnerTop;
+	this.snoopSpawnerTop;
+	this.snoopSpawnerLeft;
+	this.snoopSpawnerRight;
 
 	this.score;
 
@@ -22,6 +23,14 @@ var SnoopSlayer = function() {
 		g_shake = 0;
 		g_shadows_enabled = false;
 		g_pathfinding_enabled = false;
+		// Create audio groups if undefined
+		if (audio.Group == null && music.group == null) {
+
+			createAudioGroup(audio, audioArray);
+			createAudioGroup(music, musicArray);
+
+			audioLoaded = true;
+		}
 		// Setup camera
 		this.camera = new Camera(Game.c);
 		this.camera.moveTo(Game.canvas.width / 2, Game.canvas.height / 2);
@@ -34,27 +43,32 @@ var SnoopSlayer = function() {
 		// Define the entity manager
 		entityManager = new EntityManager(5000);
 		// Create enemy spawners
-		this.enemySpawnerTop = new EnemySpawner(250, 55, 25, true, function() {
+		this.bossSpawnerTop = new EnemySpawner(250, 500, 25, true, function() {
+			console.log('alert')
+			Game.getCurrentState().spawnAlert(width/2, -120, 420, 1000, 10);
+		}, 1);
+
+		this.snoopSpawnerTop = new EnemySpawner(250, 55, 25, true, function() {
 			if (Math.round(random(0, 5)) != 5) {
-				entityManager.spawnEnemy('enemy' + entityManager.enemies.length, spr_snoop, player, random(150, width - 150), -55, 55, 55, false, random(1.2, 3), 10, mp3_hitmarker, 1, spr_misc_bag);
+				Game.getCurrentState().spawnSnoop(random(150, width - 150), -55, 55, 10, random(1.2, 3));
 			} else {
-				entityManager.spawnEnemy('enemy' + entityManager.enemies.length, spr_snoop, player, random(150, width - 150), -80, 80, 80, false, random(4, 5), 25, mp3_hitmarker, 1, spr_misc_bag);
+				Game.getCurrentState().spawnSnoop(random(150, width - 150), -80, 80, 25, random(3.5, 5));
 			}
 		}, 1);
 
-		this.enemySpawnerLeft = new EnemySpawner(250, 75, 25, true, function() {
+		this.snoopSpawnerLeft = new EnemySpawner(250, 75, 25, true, function() {
 			if (Math.round(random(0, 1)) == 0) {
-				entityManager.spawnEnemy('enemy' + entityManager.enemies.length, spr_snoop, player, -45, random(150, height - 150), 55, 55, false, random(1.2, 3), 10, mp3_hitmarker, 1, spr_misc_bag);
+				Game.getCurrentState().spawnSnoop(-55, random(150, height - 150), 55, 10, random(1.2, 3));
 			} else {
-				entityManager.spawnEnemy('enemy' + entityManager.enemies.length, spr_snoop, player, -45, random(150, height - 150), 80, 80, false, random(3, 4), 25, mp3_hitmarker, 1, spr_misc_bag);
+				Game.getCurrentState().spawnSnoop(-80, random(150, height - 150), 80, 25, random(3.5, 5));
 			}
 		}, 1);
 
-		this.enemySpawnerRight = new EnemySpawner(250, 75, 25, true, function() {
+		this.snoopSpawnerRight = new EnemySpawner(250, 75, 25, true, function() {
 			if (Math.round(random(0, 1)) == 0) {
-				entityManager.spawnEnemy('enemy' + entityManager.enemies.length, spr_snoop, player, width + 45, random(150, height - 150), 55, 55, false, random(1.2, 3), 10, mp3_hitmarker, 1, spr_misc_bag);
+				Game.getCurrentState().spawnSnoop(width + 45, random(150, height - 150), 55, 10, random(1.2, 3));
 			} else {
-				entityManager.spawnEnemy('enemy' + entityManager.enemies.length, spr_snoop, player, width + 45, random(150, height - 150), 80, 80, false, random(3, 4), 25, mp3_hitmarker, 1, spr_misc_bag);
+				Game.getCurrentState().spawnSnoop(width + 80, random(150, height - 150), 80, 25, random(3.5, 5));
 			}
 		}, 1);
 
@@ -65,10 +79,10 @@ var SnoopSlayer = function() {
 		// Assign player entity to global varible for ease of use
 		player = entityManager.getEntityById('player');
 		// Add weapons to inventory (id, gun sprite, bullet sprite, parent, width, height, amount, speed, dither, damage, hit sound, hit particle, eqipped)
-		player.inventory.contents.push( new Gun('chicken_gun', spr_chicken_gun, p_chicken, player, player.width, player.height, 24, 16, 1, 20, 1, 15, mp3_hitmarker, p_hitmarker, true ) );
-		player.inventory.contents.push( new Gun('dorito_gun',  spr_dorito_gun,  p_dorito,  player, player.width, player.height, 24, 24, 2, 10, 2, 25, mp3_hitmarker, p_hitmarker, false) );
-		player.inventory.contents.push( new Gun('banana_gun',  spr_banana_gun,  p_banana,  player, player.width, player.height, 24, 24, 2, 15, 2, 20, mp3_hitmarker, p_hitmarker, false) );
-		player.inventory.contents.push( new Gun('dew_gun',     spr_dew_gun,     p_dew_can, player, player.width, player.height, 24, 16, 2, 15, 2, 20, mp3_hitmarker, p_hitmarker, false) );
+		player.inventory.contents.push( new Gun('chicken_gun', spr_chicken_gun, p_chicken, player, player.width, player.height, 24, 16, 1, 20, 1, 15, audio.mp3_hitmarker, p_hitmarker, true ) );
+		player.inventory.contents.push( new Gun('dorito_gun',  spr_dorito_gun,  p_dorito,  player, player.width, player.height, 24, 24, 2, 10, 2, 25, audio.mp3_hitmarker, p_hitmarker, false) );
+		player.inventory.contents.push( new Gun('banana_gun',  spr_banana_gun,  p_banana,  player, player.width, player.height, 24, 24, 2, 15, 2, 20, audio.mp3_hitmarker, p_hitmarker, false) );
+		player.inventory.contents.push( new Gun('dew_gun',     spr_dew_gun,     p_dew_can, player, player.width, player.height, 24, 16, 2, 15, 2, 20, audio.mp3_hitmarker, p_hitmarker, false) );
 		// Set additional weapon properties
 		player.inventory.getInventoryItem('dew_gun').explosive = true;
 		player.inventory.getInventoryItem('dew_gun').firerate = 3;
@@ -77,6 +91,11 @@ var SnoopSlayer = function() {
 		player.inventory.getInventoryItem('dew_gun').p3 = p_hitmarker;
 		player.inventory.getInventoryItem('dew_gun').onEquip = function() {
 			console.log('dew_gun equipped');
+			music.mp3_skrillex.play(0, 0, true);
+		}
+		player.inventory.getInventoryItem('dew_gun').onHolster = function() {
+			console.log('dew_gun holstered');
+			music.mp3_skrillex.stop();
 		}
 		// Player starting velocity
 		player.vel.x =   0;
@@ -87,7 +106,6 @@ var SnoopSlayer = function() {
 		this.initializeControls();
 
 		console.log(this.name + ' entered.');
-
 	}
 	this.onExit = function() {
 		// CLose turret worker threads
@@ -96,9 +114,10 @@ var SnoopSlayer = function() {
 		}
 
 		// Destroy enemy spawners
-		this.enemySpawnerTop = null;
-		this.enemySpawnerLeft = null;
-		this.enemySpawnerRight = null;
+		this.bossSpawnerTop = null;
+		this.snoopSpawnerTop = null;
+		this.snoopSpawnerLeft = null;
+		this.snoopSpawnerRight = null;
 
 		// Reset managers
 		backgroundManager = null;
@@ -109,8 +128,12 @@ var SnoopSlayer = function() {
 		player = null;
 
 		// Add level score to global score
-		score += this.score;
+		score = this.score;
 		g_shake = 0;
+
+		// Stop all audio
+		audio.Group.stop();
+		music.Group.stop();
 
 		// Reset controls
 		Object.keys(controls).forEach(function(key) {
@@ -130,13 +153,15 @@ var SnoopSlayer = function() {
 		this.camera.moveTo(Game.canvas.width / 2, Game.canvas.height / 2);
 		this.camera.zoomTo(Game.canvas.width);
 
-		this.enemySpawnerTop.run();
-		this.enemySpawnerLeft.run();
-		this.enemySpawnerRight.run();
+		this.bossSpawnerTop.run();
 
-		if ( this.enemySpawnerTop.spawnTime   > 10 ) this.enemySpawnerTop.spawnTime   -= 0.01;
-		if ( this.enemySpawnerLeft.spawnTime  > 10 ) this.enemySpawnerLeft.spawnTime  -= 0.01;
-		if ( this.enemySpawnerRight.spawnTime > 10 ) this.enemySpawnerRight.spawnTime -= 0.01;
+		this.snoopSpawnerTop.run();
+		this.snoopSpawnerLeft.run();
+		this.snoopSpawnerRight.run();
+
+		if ( this.snoopSpawnerTop.spawnTime   > 10 ) this.snoopSpawnerTop.spawnTime   -= 0.01;
+		if ( this.snoopSpawnerLeft.spawnTime  > 10 ) this.snoopSpawnerLeft.spawnTime  -= 0.01;
+		if ( this.snoopSpawnerRight.spawnTime > 10 ) this.snoopSpawnerRight.spawnTime -= 0.01;
 
 	}
 	this.display = function() {
@@ -172,7 +197,9 @@ var SnoopSlayer = function() {
 		Game.c.fillStyle = 'white';
 		Game.c.fillText('enemies: ' + entityManager.enemies.length, 10, 100);
 		Game.c.fillStyle = '#ffff00';
-		Game.c.fillText('score: ' + this.score, 10, 150);
+		Game.c.fillText('scubs rekt: ' + this.score, 10, 150);
+
+		Game.c.drawImage(spr_hypercam, (width / 2) - 125, 0, 250, 22);
 
 		Game.c.restore();
 
@@ -251,5 +278,17 @@ var SnoopSlayer = function() {
 				}, 6000);
 			});
 		}, 'keydown');
+	}
+	this.spawnSnoop = function(x, y, size, health, speed) {
+		entityManager.spawnEnemy('enemy' + entityManager.enemies.length, spr_snoop, player, x, y, size, size, false, speed, health, audio.mp3_hitmarker, 1, spr_misc_bag);
+	}
+	this.spawnAlert = function(x, y, size, health, speed) {
+		let id = 'alert' + + entityManager.enemies.length;
+		entityManager.spawnEnemy(id, spr_alert_boss_1, player, x, y, size, size*0.29, false, speed, 1000, audio.mp3_hitmarker, 1, spr_misc_bag);
+	    entityManager.getEntityById(id).sprite_dmg_enabled = true;
+	    entityManager.getEntityById(id).sprite_dmg_1 = spr_alert_boss_2;
+	    entityManager.getEntityById(id).sprite_dmg_2 = spr_alert_boss_3;
+	    entityManager.getEntityById(id).faceTarget = false;
+		entityManager.getEntityById(id).hitbox.type = 1;
 	}
 }

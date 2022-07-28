@@ -74,26 +74,26 @@ var Level01 = function() {
 		// Create enemy spawners
 		this.enemySpawnerTop = new EnemySpawner(50, 55, 25, true, function() {
 			if (Math.round(random(0, 5)) != 5) {
-				entityManager.spawnEnemy('enemy' + entityManager.enemies.length, spr_enemy, player, width / 2, -25, 50, 55, false, random(1.2, 3), 10, mp3_hitmarker, 1);
+				entityManager.spawnEnemy('enemy' + entityManager.enemies.length, spr_enemy, player, width / 2, -25, 50, 55, false, random(1.2, 3), 10, audio.mp3_hitmarker, 1);
 			} else {
-				//entityManager.spawnEnemy('enemy' + entityManager.enemies.length, spr_enemy_03, player, width / 2, -25, 100, 130, true, random(6, 7), 250, mp3_hitmarker, 1);
-				entityManager.spawnEnemy('enemy' + entityManager.enemies.length, spr_enemy_02, player, -45, 346, 60, 80, false, random(4, 5), 25, mp3_hitmarker, 1);
+				//entityManager.spawnEnemy('enemy' + entityManager.enemies.length, spr_enemy_03, player, width / 2, -25, 100, 130, true, random(6, 7), 250, audio.mp3_hitmarker, 1);
+				entityManager.spawnEnemy('enemy' + entityManager.enemies.length, spr_enemy_02, player, -45, 346, 60, 80, false, random(4, 5), 25, audio.mp3_hitmarker, 1);
 			}
 		}, 1);
 
 		this.enemySpawnerLeft = new EnemySpawner(50, 75, 25, true, function() {
 			if (Math.round(random(0, 1)) == 0) {
-				entityManager.spawnEnemy('enemy' + entityManager.enemies.length, spr_enemy, player, -45, 346, 50, 55, false, random(1.2, 3), 10, mp3_hitmarker, 1);
+				entityManager.spawnEnemy('enemy' + entityManager.enemies.length, spr_enemy, player, -45, 346, 50, 55, false, random(1.2, 3), 10, audio.mp3_hitmarker, 1);
 			} else {
-				entityManager.spawnEnemy('enemy' + entityManager.enemies.length, spr_enemy_02, player, -45, 346, 60, 80, false, random(3, 4), 25, mp3_hitmarker, 1);
+				entityManager.spawnEnemy('enemy' + entityManager.enemies.length, spr_enemy_02, player, -45, 346, 60, 80, false, random(3, 4), 25, audio.mp3_hitmarker, 1);
 			}
 		}, 1);
 
 		this.enemySpawnerRight = new EnemySpawner(50, 75, 25, true, function() {
 			if (Math.round(random(0, 1)) == 0) {
-				entityManager.spawnEnemy('enemy' + entityManager.enemies.length, spr_enemy, player, width + 45, 346, 50, 55, false, random(1.2, 3), 10, mp3_hitmarker, 1);
+				entityManager.spawnEnemy('enemy' + entityManager.enemies.length, spr_enemy, player, width + 45, 346, 50, 55, false, random(1.2, 3), 10, audio.mp3_hitmarker, 1);
 			} else {
-				entityManager.spawnEnemy('enemy' + entityManager.enemies.length, spr_enemy_02, player, width + 45, 346, 60, 80, false, random(3, 4), 25, mp3_hitmarker, 1);
+				entityManager.spawnEnemy('enemy' + entityManager.enemies.length, spr_enemy_02, player, width + 45, 346, 60, 80, false, random(3, 4), 25, audio.mp3_hitmarker, 1);
 			}
 		}, 1);
 
@@ -104,15 +104,15 @@ var Level01 = function() {
 		// Assign player entity to global varible for ease of use
 		player = entityManager.getEntityById('player');
 		// Add weapons to inventory (id, gun sprite, bullet sprite, parent, width, height, amount, speed, dither, damage, hit sound, hit particle, eqipped)
-		player.inventory.contents.push(new Gun('staff00', spr_staff_blue, p_blue, player, player.width, player.height, 16, 16, 1, 20, 1, 5, mp3_hitmarker, p_red_small, true));
+		player.inventory.contents.push(new Gun('staff00', spr_staff_blue, p_blue, player, player.width, player.height, 16, 16, 1, 20, 1, 5, audio.mp3_hitmarker, p_red_small, true));
 
-		player.inventory.contents.push(new Gun('staff01', spr_staff_orange, p_orange, player, player.width, player.height, 24, 24, 2, 10, 2, 6, mp3_hitmarker, p_red_small, false));
+		player.inventory.contents.push(new Gun('staff01', spr_staff_orange, p_orange, player, player.width, player.height, 24, 24, 2, 10, 2, 6, audio.mp3_hitmarker, p_red_small, false));
 
-		player.inventory.contents.push(new Gun('staff03', spr_staff_red, spr_bomb, player, player.width, player.height, 64, 64, 1, 10, 2, 50, mp3_hitmarker, p_red_small, false));
+		player.inventory.contents.push(new Gun('staff03', spr_staff_red, spr_bomb, player, player.width, player.height, 64, 64, 1, 10, 2, 50, audio.mp3_hitmarker, p_red_small, false));
 		player.inventory.contents[2].explosive = true;
 		player.inventory.contents[2].firerate = 15;
 
-		player.inventory.contents.push(new Gun('bow01', spr_bow_01, p_dagger_01, player, player.width, player.height, 75, 24, 1, 25, 0, 10, mp3_hitmarker, p_red_small, false));
+		player.inventory.contents.push(new Gun('bow01', spr_bow_01, p_dagger_01, player, player.width, player.height, 75, 24, 1, 25, 0, 10, audio.mp3_hitmarker, p_red_small, false));
 		// Player starting velocity
 		player.vel.x =   0;
 		player.vel.y = -25;

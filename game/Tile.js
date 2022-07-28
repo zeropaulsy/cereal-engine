@@ -12,7 +12,7 @@ class Tile {
 		this.vel = new Vector(0, 0);
 		this.width = width;
 		this.height = height;
-		this.hitbox = new CollisionBody(this, width, height, true);
+		this.hitbox = new CollisionBody(this, width, height, true, 1);
 		this.collision = collision;
 		this.knockBack = knockBack;
 		this.kill = false;

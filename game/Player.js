@@ -10,7 +10,7 @@ class Player {
 		this.tile = new Vector();
 		this.width = w;
 		this.height = h;
-		this.hitbox = new CollisionBody(this, w, h, true);
+		this.hitbox = new CollisionBody(this, w, h, true, 1);
 		this.speed = s;
 		this.friction = f;
 		this.knockBack = k
@@ -39,7 +39,7 @@ class Player {
 		this.tile.x = Math.floor( this.pos.x / g_tileSize ) * g_tileSize;
 		this.tile.y = Math.floor( this.pos.y / g_tileSize ) * g_tileSize;
 		// Bind movement listeners to player velocity
-		if (upPressed		) this.moveUp();
+		if (upPressed	) this.moveUp();
 		if (downPressed	) this.moveDown();
 		if (leftPressed	) this.moveLeft();
 		if (rightPressed) this.moveRight();
@@ -98,10 +98,6 @@ class Player {
 		// Update player health bar percent
 		this.healthBar.update();
 		this.dashBar.update();
-		// Manage inventory slots
-		//for (let i = 0; i < 4; i++) {
-		//	if (this.inventory.slotActive == i) this.inventory.selectSlot(i);
-		//}
 	}
 	display() {
 		if (g_shadows_enabled) {

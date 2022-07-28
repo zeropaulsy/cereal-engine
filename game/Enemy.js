@@ -6,13 +6,17 @@ class Enemy {
 		this.showId = false;
 		this.parent = entityManager;
 		this.sprite = sprite;
+		this.sprite_dmg_1;
+		this.sprite_dmg_2;
+		this.sprite_dmg_enabled = false;
 		this.target = target;
+		this.faceTarget = true;
 		this.pos = new Vector(x, y);
 		this.vel = new Vector();
 		this.tile = new Vector();
 		this.width = width;
 		this.height = height;
-		this.hitbox = new CollisionBody(this, width, height, true);
+		this.hitbox = new CollisionBody(this, width, height, true, 2);
 		this.speed = speed;
 		this.health = health;
 		this.maxHealth = health;
@@ -58,9 +62,14 @@ class Enemy {
 		this.vel.x += Math.cos(this.rotation) / this.speed;
 		this.vel.y += Math.sin(this.rotation) / this.speed;
 		// Collision between player
-		if (collisionBetween2(this, player) && player.health > 1) {
+		if (collisionBetween1(this, player) && player.health > 1) {
 			player.health -= 1;
-			mp3_hurt.play();
+			audio.mp3_hurt.play(0, 0.1, false);
+		}
+		// Change sprite depending on health
+		if (this.sprite_dmg_enabled) {
+			if (this.health < this.maxHealth * 0.66) this.sprite = this.sprite_dmg_1;
+			if (this.health < this.maxHealth * 0.33) this.sprite = this.sprite_dmg_2;
 		}
 		// Flip the sprite depending on the angle it is facing
 		if (this.rotation < -1.5 || this.rotation > 1.5) {
@@ -71,6 +80,7 @@ class Enemy {
 		if (this.showHealthBar) this.healthBar.update();
 		// Set entity to be destroyed when health runs out
 		if (this.health < 0 || isNaN(this.health)) {
+			Game.getCurrentState().score += this.scoreValue;
 			this.destroy();
 		}
 	}
@@ -81,7 +91,7 @@ class Enemy {
 
 		Game.c.save();
 		// Flip sprite if upside down
-		if (this.flipped) {
+		if (this.flipped && this.faceTarget) {
 			Game.c.scale(-1, 1);
 			Game.c.translate(-this.pos.x, this.pos.y);
 			//Game.c.rotate(-this.rotation);
@@ -103,6 +113,9 @@ class Enemy {
 		if (this.showHealthBar) this.healthBar.display(0, this.height/2 + 15);
 
 		Game.c.restore();
+
+		// Game.c.fillStyle = 'rgba(255, 0, 0, 0.5)';
+		// Game.c.fillRect(this.pos.x - this.hitbox.w/2, this.pos.y - this.hitbox.h/2, this.hitbox.w, this.hitbox.h);
 	}
 	isOnGrid() {
 		if (Game.getCurrentState().map !== undefined) {
@@ -117,8 +130,6 @@ class Enemy {
 		// Play death noise
 		this.deathSound.play();
 		this.deathSound.currentTime = 0;
-		// Increase score if enemy killed by the player with its score value
-		if (this.hitbox.lastCollision.entityType == 'bullet') Game.getCurrentState().score += this.scoreValue;
 		// Spawn blood particles
 		particleSystem.spawnParticle('420s' + particleSystem.particles.length, p_plus_1, this.pos.x, this.pos.y, 16, 16, 10, -1.5, 30, 5);
 		// Drop powerup

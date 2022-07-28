@@ -29,7 +29,7 @@ class EntityManager {
 
 		arrayCollisionBetween2(this.enemies, this.turrets, (a, b) => { b.health--; });
 
-		arrayCollisionBetween2(this.bullets, this.enemies, (a, b) => { a.health -= 1; b.health -= a.damage; });
+		arrayCollisionBetween1(this.bullets, this.enemies, (a, b) => { a.health -= 1; b.health -= a.damage; });
 
 		// Sort zIndex based on Y position
 		this.map = this.entities.map(function(el, index) {

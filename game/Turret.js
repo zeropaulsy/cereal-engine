@@ -24,9 +24,9 @@ class Turret {
 		this.distance = random(128, 256);
 		this.kill = false;
 		this.inventory = new Inventory(5);
-		this.inventory.contents.push( new Gun('chicken_gun', spr_chicken_gun, p_chicken, this, this.width, this.height, 16, 10, 1, 20, 1, 15, mp3_hitmarker, p_hitmarker, true ) );
-		this.inventory.contents.push( new Gun('dorito_gun',  spr_dorito_gun,  p_dorito,  this, this.width, this.height, 16, 16, 2, 10, 2, 25, mp3_hitmarker, p_hitmarker, false) );
-		this.inventory.contents.push( new Gun('banana_gun',  spr_banana_gun,  p_banana,  this, this.width, this.height, 16, 16, 2, 15, 2, 20, mp3_hitmarker, p_hitmarker, false) );
+		this.inventory.contents.push( new Gun('chicken_gun', spr_chicken_gun, p_chicken, this, this.width, this.height, 16, 10, 1, 20, 1, 15, audio.mp3_hitmarker, p_hitmarker, true ) );
+		this.inventory.contents.push( new Gun('dorito_gun',  spr_dorito_gun,  p_dorito,  this, this.width, this.height, 16, 16, 2, 10, 2, 25, audio.mp3_hitmarker, p_hitmarker, false) );
+		this.inventory.contents.push( new Gun('banana_gun',  spr_banana_gun,  p_banana,  this, this.width, this.height, 16, 16, 2, 15, 2, 20, audio.mp3_hitmarker, p_hitmarker, false) );
 		this.inventory.equipItem(equipItem);
 		this.healthBar = new StatBar(this.id + '_health_bar', this, 'health', 55 / 1.45, 7, '#ce9069', '#51bf59');
 		// Add worker thread

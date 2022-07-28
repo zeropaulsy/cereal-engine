@@ -22,8 +22,8 @@ class Turret {
 		this.hitbox.lastCollision = Object();
 		this.kill = false;
 		this.inventory = new Inventory(5);
-		this.inventory.contents.push(new Gun('staff00', spr_staff_orange, p_orange, this, this.width, this.height, 16, 16, 1, 20, 1, 1, mp3_hitmarker, p_red_small, true));
-		this.inventory.contents.push(new Gun('staff01', spr_staff_orange, p_orange, this, this.width, this.height, 16, 16, 1, 10, 2, 0.75, mp3_hitmarker, p_red_small, false));
+		this.inventory.contents.push(new Gun('staff00', spr_staff_orange, p_orange, this, this.width, this.height, 16, 16, 1, 20, 1, 1, audio.mp3_hitmarker, p_red_small, true));
+		this.inventory.contents.push(new Gun('staff01', spr_staff_orange, p_orange, this, this.width, this.height, 16, 16, 1, 10, 2, 0.75, audio.mp3_hitmarker, p_red_small, false));
 		this.healthBar = new HealthBar(this.id + '_health_bar', this, 55, 7, '#ce9069', '#51bf59');
 	}
 	update() {

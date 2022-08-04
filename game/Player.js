@@ -27,8 +27,8 @@ class Player {
 		// Create player inventory to store weapons
 		this.inventory = new Inventory(10);
 		// Create a health bar for the player
-		this.healthBar = new StatBar('player_health_bar', this, 'health', w / 1.45, 7, '#41C1E8', '#E85D41');
-		this.dashBar = new StatBar('player_dash_bar', this, 'dashCharge', w / 1.45, 7, '#41C1E8', '#65e841');
+		this.healthBar = new StatBar('player_health_bar', this, 'health', w / 1.45, h / 12, '#41C1E8', '#E85D41');
+		this.dashBar = new StatBar('player_dash_bar', this, 'dashCharge', w / 1.45, h / 12, '#41C1E8', '#65e841');
 	}
 	update() {
 		this.pos.add(this.vel);
@@ -130,6 +130,16 @@ class Player {
 
 		Game.c.restore();
 	}
+	resize(width, height) {
+		this.width = width;
+		this.height = height;
+		this.hitbox.w = width;
+		this.hitbox.h = height;
+		this.healthBar.cWidth = width / 1.45;
+		this.dashBar.cWidth = width / 1.45;
+		this.healthBar.height = height / 12;
+		this.dashBar.height = height / 12;
+	}
 	moveUp() {
 		if (this.vel.y > -this.speed) this.vel.y--;
 	}
@@ -144,28 +154,26 @@ class Player {
 	}
 	dash(vel) {
 		if (this.dashCharge == this.dashMaxCharge) {
-			// Define value used to alter effects
-			let value = 1;
-			//
+			// Drain dash charge
 			this.dashCharge = 0;
 			// Add vel to player velocity
 			this.vel.multiply(vel);
 			// Scripted dash event
 			g_shake += 5;
-			value -= 1;
 
-			document.getElementById('canvas').style.filter = 'saturate('+value+')';
+			new Explosion(player.pos.x, player.pos.y, 8, 8, 10, 5, 5, 0, spr_dash_emoji, spr_lip_emoji, spr_hot_emoji);
+
+			audio.mp3_fart.play(0, 0.1, true);
 
 			let timer = new Timer(function() {
 
-				new Explosion(player.pos.x, player.pos.y, 24, 24, 20, 10, 10);
+				new Explosion(player.pos.x, player.pos.y, 24, 24, 20, 10, 10, 50, p_explosion, spr_dew_logo, p_hitmarker);
+
+				audio.mp3_vine_boom.play(0, 0.1, true);
 
 				g_shake -= 5;
-				value += 1;
 
-				document.getElementById('canvas').style.filter = 'saturate('+value+')';
-
-			}, 100);
+			}, vel*25);
 		}
 	}
 	run() {

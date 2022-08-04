@@ -60,7 +60,7 @@ class EntityManager {
 			// New bullet to entities array
 			this.entities.push(new Enemy(id, spr, t, x, y, w, h, hb, s, l, ds, sv, ps));
 			// this.enemies.push(new Enemy(id, spr, t, x, y, w, h, hb, s, l, ds, sv));
-			// Update array of bullets
+			// Update array of enemies
 			this.filterEntities('enemy');
 			// this.entities.concat(this.enemies)
 		} else {

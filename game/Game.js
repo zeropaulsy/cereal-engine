@@ -7,6 +7,7 @@ let fps;
 let targetDelta = 1000/maxFps;
 let delta;
 
+let g_speed = 1;
 let g_gravity = 0;
 let g_tileSize = 64;
 let g_particles_enabled = true;
@@ -62,8 +63,8 @@ let player;
 let score = Number();
 
 var Game = {
-	width: 1280,
-	height: 720,
+	width: 1920,
+	height: 1080,
 	canvas: null,
 	c: null,
 
@@ -164,6 +165,9 @@ var Game = {
 	init: function() {
 		this.setupCanvas(document.getElementById('body'));
 		this.startGame();
+
+		this.canvas.width = window.innerWidth;
+		this.canvas.height = window.innerHeight;
 	}
 }
 

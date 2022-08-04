@@ -31,7 +31,7 @@ class Turret {
 		this.healthBar = new StatBar(this.id + '_health_bar', this, 'health', 55 / 1.45, 7, '#ce9069', '#51bf59');
 		// Add worker thread
 		this.worker = new Worker('./game/CalculateAngle.js');
-		this.workerUpdateSpeed = 25;
+		this.workerUpdateSpeed = 0;
 		this.workerTimer = 0;
 		// Listen for worker responce message
 		this.worker.onmessage = function(e) { _this.angle = Math.atan2(e.data.vy, e.data.vx) };

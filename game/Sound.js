@@ -1,20 +1,20 @@
 // Pizzicato audio library variables / effects
 let reverb = new Pizzicato.Effects.Reverb({
-    time: 1.5,
-    decay: 0.01,
+    time: 1,
+    decay: 2,
     reverse: false,
-    mix: 0.6
+    mix: 0.75
 });
 let delay = new Pizzicato.Effects.DubDelay({
-    feedback: 0.6,
+    feedback: 0.2,
     time: 0.5,
     mix: 0.5,
 	cutoff: 700
 });
-let audioIn = new Pizzicato.Sound({
-	source: 'input',
-	options: { volume: 1 }
-});
+// let audioIn = new Pizzicato.Sound({
+// 	source: 'input',
+// 	options: { volume: 1 }
+// });
 
 let audioLoaded = false;
 let audioArray  = [];
@@ -61,7 +61,8 @@ function audioTrack(url, type, volume) {
 		console.log(url + ' loaded.');
 	});
 
-	this.volume = volume || 1;
+	audio.volume = volume || 1;
+
 	this.src    = audio;
 	this.muted  = true;
 
@@ -94,7 +95,7 @@ function audioTrack(url, type, volume) {
     }
     function playSound(delay, position, noResetTime) {
         // for really rapid sound repeat set noResetTime
-        if(!audio.isPaused) {
+        if(!audio.isPaused && noResetTime) {
 			audio.pause();
         	if (noResetTime) audio.stop();
         }
@@ -115,6 +116,9 @@ function preloadAudio(type) {
 		this.mp3_hurt 		 = new audioTrack('./game/assets/sound/mp3_hurt.mp3', type);
 		this.mp3_smoke_weed  = new audioTrack('./game/assets/sound/mp3_smoke_weed.mp3', type);
 		this.mp3_vine_boom   = new audioTrack('./game/assets/sound/mp3_vine_boom.mp3', type);
+        this.mp3_fart        = new audioTrack('./game/assets/sound/mp3_fart.mp3', type, 0.5);
+        this.mp3_bruh        = new audioTrack('./game/assets/sound/mp3_bruh.mp3', type);
+        this.mp3_pop         = new audioTrack('./game/assets/sound/mp3_pop.mp3', type, 1);
 	}
 	if (type == 'music') {
 		this.mp3_snoop_train = new audioTrack('./game/assets/sound/mp3_snoop_train.mp3', type);

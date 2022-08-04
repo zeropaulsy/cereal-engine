@@ -37,7 +37,7 @@ class Bullet {
 		if (this.health <= 0) {
 			if (!this.explosive)  {
 				this.hitSound.play(true);
-				particleSystem.spawnParticle('hitmarker' + particleSystem.particles.length, this.hitParticle, this.pos.x, this.pos.y, 18, 18, 3, random(0, 3), 10, 5);
+				particleSystem.spawnParticle('hitmarker' + particleSystem.particles.length, this.hitParticle, this.pos.x, this.pos.y, 24, 24, 3, random(0, 3), 10, 5);
 			}
 			this.destroy();
 		}

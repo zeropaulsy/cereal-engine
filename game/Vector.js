@@ -5,8 +5,8 @@ class Vector {
   }
   add(vec, mult) {
     let m = mult || 1;
-    this.x += (vec.x * m) * (deltaTime);
-    this.y += (vec.y * m) * (deltaTime);
+    this.x += ( (vec.x * m) * (deltaTime) ) * g_speed;
+    this.y += ( (vec.y * m) * (deltaTime) ) * g_speed;
   }
   subtract(vec) {
     this.x -= vec.x;

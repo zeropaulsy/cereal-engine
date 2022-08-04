@@ -47,6 +47,9 @@ let spr_hypercam      = loadImage({ src : './game/assets/img/slayer/spr_hypercam
 let spr_alert_boss_1  = loadImage({ src : './game/assets/img/slayer/spr_alert_boss_1.png',maxSeconds : 10 });
 let spr_alert_boss_2  = loadImage({ src : './game/assets/img/slayer/spr_alert_boss_2.png',maxSeconds : 10 });
 let spr_alert_boss_3  = loadImage({ src : './game/assets/img/slayer/spr_alert_boss_3.png',maxSeconds : 10 });
+let spr_hot_emoji     = loadImage({ src : './game/assets/img/slayer/spr_hot_emoji.png',   maxSeconds : 10 });
+let spr_lip_emoji     = loadImage({ src : './game/assets/img/slayer/spr_lip_emoji.png',   maxSeconds : 10 });
+let spr_dash_emoji    = loadImage({ src : './game/assets/img/slayer/spr_dash_emoji.png',  maxSeconds : 10 });
 
 let p_hitmarker = loadImage({ src : './game/assets/img/slayer/p_hitmarker.png', maxSeconds : 10 });
 let p_banana    = loadImage({ src : './game/assets/img/slayer/p_banana.png',    maxSeconds : 10 });

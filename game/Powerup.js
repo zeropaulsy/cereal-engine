@@ -15,7 +15,10 @@ class Powerup {
 	}
 	update() {
 		if ( inRangeOf(this, player, this.hitbox.w/2) && !this.kill ) {
-			if (this.onCollision()) this.destroy();
+			if (this.onCollision()) {
+				audio.mp3_pop.play(0, 0.2, true);
+				this.destroy();
+			}
 		}
 		this.health--;
 		if (this.health < 0) this.destroy();

@@ -37,6 +37,9 @@ class Gun {
 		this.timeCounter += (deltaTime);
 
 		this.angle = this.parent.angle;
+
+		this.width = this.parent.width;
+		this.height = this.parent.height;
 	}
 	display() {
 		if (this.equipped) Game.c.drawImage(this.sprite, -this.width / 2, -this.height / 2, this.width, this.height);

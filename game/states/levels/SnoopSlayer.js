@@ -172,7 +172,9 @@ var SnoopSlayer = function() {
 
 		Game.c.scale(g_scale, g_scale);
 
-		Game.c.translate(random(-g_shake, g_shake), random(-g_shake, g_shake));
+		if (g_shake !== 0) {
+			Game.c.translate(random(-g_shake, g_shake), random(-g_shake, g_shake));
+		}
 
 		if (!g_paused) {
 
@@ -192,12 +194,16 @@ var SnoopSlayer = function() {
 
 		// Draw HUD
 		Game.c.font = '50px Comic Sans MS';
-		Game.c.fillStyle = '#ff0000';
-		Game.c.fillText('fps: ' + Math.floor(fps), 10, 50);
-		Game.c.fillStyle = 'white';
-		Game.c.fillText('enemies: ' + entityManager.enemies.length, 10, 100);
 		Game.c.fillStyle = '#ffff00';
-		Game.c.fillText('scubs rekt: ' + this.score, 10, 150);
+		Game.c.fillText('scubs rekt: ' + this.score, 10, 50);
+		Game.c.fillStyle = '#ff0000';
+		Game.c.fillText('ign: ' + player.health / 10 + '/10', 10, 100);
+
+		Game.c.font = '100px m3x6';
+		Game.c.fillStyle = '#000000';
+		Game.c.fillText(Math.floor(fps), Game.canvas.width - 52, 52);
+		Game.c.fillStyle = '#ffff00';
+		Game.c.fillText(Math.floor(fps), Game.canvas.width - 50, 50);
 
 		Game.c.drawImage(spr_hypercam, (width / 2) - 125, 0, 250, 22);
 
@@ -238,52 +244,53 @@ var SnoopSlayer = function() {
 		Mousetrap.bind( controls.inv4,  () => { player.inventory.selectSlot(3); }, 'keydown' );
 		Mousetrap.bind( controls.inv5,  () => { player.inventory.selectSlot(4); }, 'keydown' );
 
-		Mousetrap.bind('t', () => { new Explosion(player.pos.x, player.pos.y, 24, 24, 15, 10, 10, p_explosion, spr_dew_logo, p_hitmarker) }, 'keyup');
-
 		// Spawn bot
-		Mousetrap.bind('i', () => {
-			entityManager.spawnTurret(
-				'player_turret' + entityManager.turrets.length,
-				spr_player_slayer,
-				entityManager.enemies,
-				player.pos.x - player.width/2,
-				player.pos.y - player.width/2,
-				80/1.25, 75/1.25,
-				25, 25,
-				random(0.75, 0.9),
-				false,
-				'dorito_gun'
-			);
-		}, 'keydown');
+		Mousetrap.bind('i', () => { this.spawnTurret() }, 'keydown');
 
 		// Background script(s)
-		Mousetrap.bind('y', () => {
-			let _this = this;
-			backgroundManager.selectBackgroundScreen('bg_level_01_trippy', function() {
-				// Apply filter to canvas
-				document.getElementById('body').style.filter = 'saturate(1.2)';
-				// Set shake amount
-				g_shake += 1;
-				// Start video
-				vid_tunnel.play();
-				// Create timer to reset changes and refer to default backgound
-				let timer = new Timer(function() {
-					// Only execute if game is still in current level
-					if (Game.getCurrentState() == _this) {
-						document.getElementById('body').style.filter = '';
-						backgroundManager.selectBackgroundScreen('bg_windows_bliss');
-						g_shake -= 1;
-						vid_tunnel.pause();
-					}
-				}, 6000);
-			});
-		}, 'keydown');
+		Mousetrap.bind('y', () => { this.trippyMode(6000, 1) }, 'keydown');
+	}
+
+	this.trippyMode = function(time, shake) {
+		let _this = this;
+		backgroundManager.selectBackgroundScreen('bg_level_01_trippy', function() {
+			// Apply filter to canvas
+			document.getElementById('body').style.filter = 'saturate(1.2)';
+			// Set shake amount
+			g_shake += shake;
+			// Start video
+			vid_tunnel.play();
+			// Create timer to reset changes and refer to default backgound
+			let timer = new Timer(function() {
+				// Only execute if game is still in current level
+				if (Game.getCurrentState() == _this) {
+					document.getElementById('body').style.filter = 'saturate(1)';
+					backgroundManager.selectBackgroundScreen('bg_windows_bliss');
+					g_shake -= shake;
+					vid_tunnel.pause();
+				}
+			}, time);
+		});
+	}
+	this.spawnTurret = function() {
+		entityManager.spawnTurret(
+			'player_turret' + entityManager.turrets.length,
+			spr_player_slayer,
+			entityManager.enemies,
+			player.pos.x - player.width/2,
+			player.pos.y - player.width/2,
+			80/1.25, 75/1.25,
+			25, 25,
+			random(0.75, 0.9),
+			false,
+			'dorito_gun'
+		);
 	}
 	this.spawnSnoop = function(x, y, size, health, speed) {
 		entityManager.spawnEnemy('enemy' + entityManager.enemies.length, spr_snoop, player, x, y, size, size, false, speed, health, audio.mp3_hitmarker, 1, spr_misc_bag);
 	}
 	this.spawnAlert = function(x, y, size, health, speed) {
-		let id = 'alert' + + entityManager.enemies.length;
+		let id = 'alert' + entityManager.enemies.length;
 		entityManager.spawnEnemy(id, spr_alert_boss_1, player, x, y, size, size*0.29, false, speed, 1000, audio.mp3_hitmarker, 1, spr_misc_bag);
 	    entityManager.getEntityById(id).sprite_dmg_enabled = true;
 	    entityManager.getEntityById(id).sprite_dmg_1 = spr_alert_boss_2;

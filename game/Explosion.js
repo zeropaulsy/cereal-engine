@@ -19,9 +19,9 @@ class Explosion {
 		let timer = new Timer(function() { g_shake -= 3 }, 100);
 		// Create particles for explosion effect
 		for (let i = 0; i < this.amount; i++) {
-			particleSystem.spawnParticle('boom' + particleSystem.particles.length, this.p1, this.pos.x, this.pos.y, 24, 24, this.range, random(-3, 3), random(35, 55), this.dither);
-			particleSystem.spawnParticle('boom' + particleSystem.particles.length, this.p2, this.pos.x, this.pos.y, 24, 24, this.range, random(-3, 3), random(25, 35), this.dither);
-			particleSystem.spawnParticle('boom' + particleSystem.particles.length, this.p3, this.pos.x, this.pos.y, 24, 24, this.range, random(-3, 3), random(25, 35), this.dither);
+			particleSystem.spawnParticle('boom' + particleSystem.particles.length, this.p1, this.pos.x, this.pos.y, this.pWidth, this.pHeight, this.range, random(-this.range/2, this.range/2), random(35, 55), this.dither);
+			particleSystem.spawnParticle('boom' + particleSystem.particles.length, this.p2, this.pos.x, this.pos.y, this.pWidth, this.pHeight, this.range, random(-this.range/2, this.range/2), random(25, 35), this.dither);
+			particleSystem.spawnParticle('boom' + particleSystem.particles.length, this.p3, this.pos.x, this.pos.y, this.pWidth, this.pHeight, this.range, random(-this.range/2, this.range/2), random(25, 35), this.dither);
 		}
 		// Check for enemies in range
 		for (let i = entityManager.enemies.length-1; i >= 0; i--) {

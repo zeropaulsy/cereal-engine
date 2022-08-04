@@ -6,8 +6,8 @@ class Particle {
     this.sprite = sprite;
     this.pos = new Vector(x, y);
     this.vel = new Vector(
-      (Math.cos(direction) * velocity) + random(-dither, dither),
-      (Math.sin(direction) * velocity) + random(-dither, dither)
+      Math.cos(direction) * velocity + random(-dither, dither),
+      Math.sin(direction) * velocity + random(-dither, dither)
     );
     this.width = width;
     this.height = height;

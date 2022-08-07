@@ -6,6 +6,7 @@ let lastCalledTime;
 let fps;
 let targetDelta = 1000/maxFps;
 let delta;
+let inputTime = 0;
 
 let g_speed = 1;
 let g_gravity = 0;
@@ -63,8 +64,8 @@ let player;
 let score = Number();
 
 var Game = {
-	width: 1920,
-	height: 1080,
+	width: 1280,
+	height: 720,
 	canvas: null,
 	c: null,
 
@@ -156,8 +157,8 @@ var Game = {
 	setupCanvas: function(wrapper) {
 		this.canvas = document.createElement('canvas');
 		this.canvas.id = 'canvas';
-        this.canvas.width = this.width;
-        this.canvas.height = this.height;
+        this.canvas.width = window.innerWidth * window.devicePixelRatio;
+        this.canvas.height = window.innerHeight * window.devicePixelRatio;
         this.c = this.canvas.getContext('2d');
 
         wrapper.appendChild(this.canvas);
@@ -165,9 +166,6 @@ var Game = {
 	init: function() {
 		this.setupCanvas(document.getElementById('body'));
 		this.startGame();
-
-		this.canvas.width = window.innerWidth;
-		this.canvas.height = window.innerHeight;
 	}
 }
 
@@ -204,8 +202,8 @@ window.onload = function () {
 	Game.canvas.addEventListener('mousemove', function(evt) {
 		var mousePos = getMousePos(canvas, evt);
 
-		this.mouseX = mousePos.x / g_scale;
-		this.mouseY = mousePos.y / g_scale;
+		this.mouseX = (mousePos.x * window.devicePixelRatio) / g_scale;
+		this.mouseY = (mousePos.y * window.devicePixelRatio) / g_scale;
 
 		g_lastInput = 'computer';
 	}, true);
@@ -225,15 +223,15 @@ resume.addEventListener('click', (e) => {
 	Game.pauseGame();
 });
 
-toggle_all.addEventListener('click', (e) => {
+audio_volume.addEventListener('click', (e) => {
 	if (audioLoaded) {
-		audio.Group.volume = toggle_all.value / 100;
+		audio.Group.volume = audio_volume.value / 100;
 	}
 });
 
-toggle_music.addEventListener('click', (e) => {
+music_volume.addEventListener('click', (e) => {
 	if (audioLoaded) {
-		music.Group.volume = toggle_music.value / 100;
+		music.Group.volume = music_volume.value / 100;
 	}
 });
 
@@ -243,11 +241,12 @@ toggle_fullscreen.addEventListener('click', (e) => {
 
 document.addEventListener('keypress', (e) => {
 	g_lastInput = 'computer';
+	inputTime = 0;
 });
 
 window.addEventListener('resize', function() {
-	Game.canvas.width = window.innerWidth;
-	Game.canvas.height = window.innerHeight;
+	Game.canvas.width = window.innerWidth * window.devicePixelRatio;
+	Game.canvas.height = window.innerHeight * window.devicePixelRatio;
 
 	//width = Game.canvas.width / g_scale;
 	//height = Game.canvas.height / g_scale;

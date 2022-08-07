@@ -110,6 +110,7 @@ function audioTrack(url, type, volume) {
 }
 
 function preloadAudio(type) {
+
 	if (type == 'soundfx') {
 		this.mp3_hitmarker 	 = new audioTrack('./game/assets/sound/mp3_hitmarker.mp3', type);
 		this.wav_hit 		 = new audioTrack('./game/assets/sound/wav_hit.wav', type);

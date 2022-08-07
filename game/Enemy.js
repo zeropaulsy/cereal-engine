@@ -113,9 +113,6 @@ class Enemy {
 		if (this.showHealthBar) this.healthBar.display(0, this.height/2 + 15);
 
 		Game.c.restore();
-
-		// Game.c.fillStyle = 'rgba(255, 0, 0, 0.5)';
-		// Game.c.fillRect(this.pos.x - this.hitbox.w/2, this.pos.y - this.hitbox.h/2, this.hitbox.w, this.hitbox.h);
 	}
 	isOnGrid() {
 		if (Game.getCurrentState().map !== undefined) {
@@ -154,7 +151,7 @@ class Enemy {
 
 				console.log(this.id + ' picked up.');
 
-				player.inventory.selectSlot( Math.round(random(1, 3)) );
+				player.inventory.selectSlot( Math.round( random(1, 3) ) );
 
 				let timer = new Timer(function() {
 					player.inventory.selectSlot(0);
@@ -165,7 +162,6 @@ class Enemy {
 			} else {
 				return false;
 			}
-
 		});
 	}
 	run() {

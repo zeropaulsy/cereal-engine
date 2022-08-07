@@ -14,7 +14,7 @@ var SnoopSlayer = function() {
 	this.onEnter = function() {
 		// Set image rendering mode
 		Game.c.imageSmoothingEnabled = true;
-		Game.canvas.style.cursor = 'none';
+		Game.canvas.style.cursor = 'none';	
 		// Set mouse position
 		Game.canvas.mouseX = width;
 		Game.canvas.mouseY = height / 2;
@@ -23,8 +23,9 @@ var SnoopSlayer = function() {
 		g_shake = 0;
 		g_shadows_enabled = false;
 		g_pathfinding_enabled = false;
+		inputTime = 0;
 		// Create audio groups if undefined
-		if (audio.Group == null && music.group == null) {
+		if (!audioLoaded) {
 
 			createAudioGroup(audio, audioArray);
 			createAudioGroup(music, musicArray);
@@ -130,6 +131,7 @@ var SnoopSlayer = function() {
 		// Add level score to global score
 		score = this.score;
 		g_shake = 0;
+		inputTime = 0;
 
 		// Stop all audio
 		audio.Group.stop();
@@ -146,12 +148,15 @@ var SnoopSlayer = function() {
 
 		console.log(this.name + ' left.');
 	}
+	this.restart = function () {
+		this.onExit();
+		this.onEnter();
+	}
 
 	this.update = function() {
 
-		// this.camera.moveTo(player.pos.x * g_scale, player.pos.y * g_scale);
 		this.camera.moveTo(Game.canvas.width / 2, Game.canvas.height / 2);
-		this.camera.zoomTo(Game.canvas.width);
+		this.camera.zoomTo(Game.canvas.width - (g_shake * 3));
 
 		this.bossSpawnerTop.run();
 
@@ -162,6 +167,17 @@ var SnoopSlayer = function() {
 		if ( this.snoopSpawnerTop.spawnTime   > 10 ) this.snoopSpawnerTop.spawnTime   -= 0.01;
 		if ( this.snoopSpawnerLeft.spawnTime  > 10 ) this.snoopSpawnerLeft.spawnTime  -= 0.01;
 		if ( this.snoopSpawnerRight.spawnTime > 10 ) this.snoopSpawnerRight.spawnTime -= 0.01;
+
+		if (player.health <= 1) this.restart();
+
+		inputTime++;
+		if (inputTime > 500) {
+			g_shake += 0.55;
+		}
+
+		if (g_shake > 0) g_shake -= 0.5;
+
+		if (g_shake < 0) g_shake = 0;
 
 	}
 	this.display = function() {
@@ -194,8 +210,12 @@ var SnoopSlayer = function() {
 
 		// Draw HUD
 		Game.c.font = '50px Comic Sans MS';
-		Game.c.fillStyle = '#ffff00';
+		Game.c.fillStyle = '#000';
+		Game.c.fillText('scubs rekt: ' + this.score, 12, 52);
+		Game.c.fillStyle = '#fff';
 		Game.c.fillText('scubs rekt: ' + this.score, 10, 50);
+		Game.c.fillStyle = '#800000';
+		Game.c.fillText('ign: ' + player.health / 10 + '/10', 12, 102);
 		Game.c.fillStyle = '#ff0000';
 		Game.c.fillText('ign: ' + player.health / 10 + '/10', 10, 100);
 
@@ -206,6 +226,15 @@ var SnoopSlayer = function() {
 		Game.c.fillText(Math.floor(fps), Game.canvas.width - 50, 50);
 
 		Game.c.drawImage(spr_hypercam, (width / 2) - 125, 0, 250, 22);
+
+		if (inputTime > 500 && !g_paused) {
+			Game.c.font = '42pt Comic Sans MS';
+			Game.c.textAlign = "center";
+			Game.c.fillStyle = '#000'
+			Game.c.fillText("stop camping", Game.canvas.width / 2 + 2, Game.canvas.height / 2 + 2);
+			Game.c.fillStyle = '#fff'
+			Game.c.fillText("stop camping", Game.canvas.width / 2, Game.canvas.height / 2);
+		}
 
 		Game.c.restore();
 

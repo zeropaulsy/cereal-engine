@@ -17,10 +17,10 @@ class Particle {
   }
   update() {
     this.pos.add(this.vel);
-    this.vel.multiply(0.9);
+    this.vel.dampen(0.9);
     this.vel.y += g_gravity;
 
-    this.health--;
+    this.health -= g_speed * deltaTime;
 
     if (this.health <= 0) this.destroy();
   }
@@ -29,6 +29,9 @@ class Particle {
 
     Game.c.translate(this.pos.x, this.pos.y);
     Game.c.rotate(this.angle);
+    //Game.c.shadowColor = 'rgba(0, 0, 0, 0.5)';
+    //Game.c.shadowOffsetX = 5;
+    //Game.c.shadowOffsetY = 5;
     Game.c.drawImage(this.sprite, -(this.width + this.health)/2, -(this.height + this.health)/2, this.width + this.health, this.height + this.health);
 
     Game.c.restore();

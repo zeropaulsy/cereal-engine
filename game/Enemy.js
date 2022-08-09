@@ -38,7 +38,7 @@ class Enemy {
 	}
 	update() {
 		this.pos.add(this.vel);
-		this.vel.multiply(0.875);
+		this.vel.dampen(0.875);
 		this.tile.x = Math.floor(this.pos.x/g_tileSize)*g_tileSize;
 		this.tile.y = Math.floor(this.pos.y/g_tileSize)*g_tileSize;
 		// Find player and follow path
@@ -59,8 +59,8 @@ class Enemy {
 		}
 		this.rotation = averageNums(this.rotation, this.angle, this.rotationSpeed);
 		// Set velocity to move in direction of angle
-		this.vel.x += Math.cos(this.rotation) / this.speed;
-		this.vel.y += Math.sin(this.rotation) / this.speed;
+		this.vel.x += (Math.cos(this.rotation) / this.speed) * g_speed;
+		this.vel.y += (Math.sin(this.rotation) / this.speed) * g_speed;
 		// Collision between player
 		if (collisionBetween1(this, player) && player.health > 1) {
 			player.health -= 1;
@@ -103,6 +103,9 @@ class Enemy {
 		// Draw shadow
 		if (g_shadows_enabled) Game.c.drawImage(spr_shadow, -this.width/2, (this.height/2)-8, this.width, 16);
 		// Draw sprite
+		Game.c.shadowColor = 'rgba(0, 0, 0, 0.5)';
+		Game.c.shadowOffsetX = 5;
+		Game.c.shadowOffsetY = 5;
 		Game.c.drawImage(this.sprite, -this.width/2, -this.height/2, this.width, this.height);
 
 		Game.c.restore();

@@ -31,19 +31,19 @@ class Turret {
 		this.healthBar = new StatBar(this.id + '_health_bar', this, 'health', 55 / 1.45, 7, '#ce9069', '#51bf59');
 		// Add worker thread
 		this.worker = new Worker('./game/CalculateAngle.js');
-		this.workerUpdateSpeed = 0;
+		this.workerUpdateSpeed = 50;
 		this.workerTimer = 0;
 		// Listen for worker responce message
 		this.worker.onmessage = function(e) { _this.angle = Math.atan2(e.data.vy, e.data.vx) };
 	}
 	update() {
 
-		this.workerTimer--;
+		this.workerTimer -= g_speed * deltaTime;
 		this.calculateAngle();
 		if ( isNaN(this.rotation) ) this.rotation = 1, console.warn(this.id + ': Could not calculate rotation. Instead set to 1.');
 
 		this.pos.add(this.vel);
-		this.vel.multiply(this.friction);
+		this.vel.dampen(this.friction);
 
 		if (this.health < 0) this.destroy(10);
 		// Set flipped variable depending if turret is facing left or right
@@ -77,11 +77,15 @@ class Turret {
 			Game.c.rotate(this.rotation);
 		}
 
-		// Render player sprite
-		Game.c.drawImage(this.sprite, -this.width / 2, -this.height / 2, this.width, this.height);
-
 		// Run health bar and inventory within the save restore to inherit player position and rotation
 		this.healthBar.display(0, this.height / 1.5);
+
+		// Render player sprite
+		Game.c.shadowColor = 'rgba(0, 0, 0, 0.5)';
+		Game.c.shadowOffsetX = 5;
+		Game.c.shadowOffsetY = 5;
+		Game.c.drawImage(this.sprite, -this.width / 2, -this.height / 2, this.width, this.height);
+
 		this.inventory.run();
 		Game.c.restore();
 	}

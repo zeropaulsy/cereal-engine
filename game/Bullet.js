@@ -32,7 +32,7 @@ class Bullet {
 
 		if (this.pos.x > width || this.pos.y > height || this.pos.x < 0 || this.pos.y < 0 || this.angle==NaN) this.destroy();
 
-		this.rotation += 0.25 * (deltaTime);
+		this.rotation += (0.25 * g_speed) * deltaTime;
 
 		if (this.health <= 0) {
 			if (!this.explosive)  {
@@ -47,6 +47,9 @@ class Bullet {
 
 		Game.c.translate(this.pos.x, this.pos.y);
 		Game.c.rotate(this.rotation);
+		//Game.c.shadowColor = 'rgba(0, 0, 0, 0.5)';
+		//Game.c.shadowOffsetX = 5;
+		//Game.c.shadowOffsetY = 5;
 		Game.c.drawImage(this.sprite, -this.width/2, -this.height/2, this.width, this.height);
 
 		Game.c.restore();

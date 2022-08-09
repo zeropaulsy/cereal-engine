@@ -7,6 +7,8 @@ var SnoopSlayer = function() {
 	this.snoopSpawnerLeft;
 	this.snoopSpawnerRight;
 
+	this.trippyModeActive = false;
+
 	this.score;
 
 	this.camera;
@@ -40,6 +42,7 @@ var SnoopSlayer = function() {
 		backgroundManager = new BackgroundManager(10, 0);
 		// Create backgrounds
 		backgroundManager.screens.push(new BackgroundScreen('bg_windows_bliss', [bg_windows_bliss], 1));
+		backgroundManager.screens.push(new BackgroundScreen('bg_windows_98', [bg_windows_98], 1));
 		backgroundManager.screens.push(new BackgroundScreen('bg_level_01_trippy', [vid_tunnel, bg_trip_full, bg_windows_bliss], 0.1));
 		// Define the entity manager
 		entityManager = new EntityManager(5000);
@@ -155,7 +158,17 @@ var SnoopSlayer = function() {
 
 	this.update = function() {
 
-		this.camera.moveTo(Game.canvas.width / 2, Game.canvas.height / 2);
+		if (g_shake !== 0 && !g_paused) {
+			this.camera.moveTo(
+				(Game.canvas.width  / 2) + random(-g_shake, g_shake), 
+				(Game.canvas.height / 2) + random(-g_shake, g_shake)
+			);
+		} else {
+			this.camera.moveTo(
+				(Game.canvas.width  / 2), 
+				(Game.canvas.height / 2)
+			);
+		}
 		this.camera.zoomTo(Game.canvas.width - (g_shake * 3));
 
 		this.bossSpawnerTop.run();
@@ -175,7 +188,7 @@ var SnoopSlayer = function() {
 			g_shake += 0.55;
 		}
 
-		if (g_shake > 0) g_shake -= 0.5;
+		if (g_shake > 0 && !this.trippyModeActive) g_shake -= 0.5;
 
 		if (g_shake < 0) g_shake = 0;
 
@@ -187,10 +200,6 @@ var SnoopSlayer = function() {
 		Game.c.save();
 
 		Game.c.scale(g_scale, g_scale);
-
-		if (g_shake !== 0) {
-			Game.c.translate(random(-g_shake, g_shake), random(-g_shake, g_shake));
-		}
 
 		if (!g_paused) {
 
@@ -220,20 +229,27 @@ var SnoopSlayer = function() {
 		Game.c.fillText('ign: ' + player.health / 10 + '/10', 10, 100);
 
 		Game.c.font = '100px m3x6';
-		Game.c.fillStyle = '#000000';
-		Game.c.fillText(Math.floor(fps), Game.canvas.width - 52, 52);
+		Game.c.fillStyle = '#000';
+		Game.c.fillText(Math.floor(fps), Game.width - 52, 52);
 		Game.c.fillStyle = '#ffff00';
-		Game.c.fillText(Math.floor(fps), Game.canvas.width - 50, 50);
+		Game.c.fillText(Math.floor(fps), Game.width - 50, 50);
 
-		Game.c.drawImage(spr_hypercam, (width / 2) - 125, 0, 250, 22);
+		Game.c.drawImage(spr_hypercam, (width / 2) - 125, 0, 210, 20);
+
+		Game.c.restore();
+
+		// Render ontop on the game
+		Game.c.save();
+
+		Game.c.scale(g_scale, g_scale);
 
 		if (inputTime > 500 && !g_paused) {
 			Game.c.font = '42pt Comic Sans MS';
 			Game.c.textAlign = "center";
 			Game.c.fillStyle = '#000'
-			Game.c.fillText("stop camping", Game.canvas.width / 2 + 2, Game.canvas.height / 2 + 2);
+			Game.c.fillText("stop camping", Game.width / 2 + 2, Game.height / 2 + 2);
 			Game.c.fillStyle = '#fff'
-			Game.c.fillText("stop camping", Game.canvas.width / 2, Game.canvas.height / 2);
+			Game.c.fillText("stop camping", Game.width / 2, Game.height / 2);
 		}
 
 		Game.c.restore();
@@ -265,7 +281,7 @@ var SnoopSlayer = function() {
 		Mousetrap.bind( controls.right, () => { rightPressed = false; }, 'keyup'  );
 
 		Mousetrap.bind( controls.space, () => { spacePressed = true; }, 'keydown' );
-		Mousetrap.bind( controls.space, () => { spacePressed = false, player.dash(player.dashVel) }, 'keyup'  );
+		Mousetrap.bind( controls.space, () => { spacePressed = false, this.playerDashEvent(); }, 'keyup'  );
 
 		Mousetrap.bind( controls.inv1,  () => { player.inventory.selectSlot(0); }, 'keydown' );
 		Mousetrap.bind( controls.inv2,  () => { player.inventory.selectSlot(1); }, 'keydown' );
@@ -277,25 +293,46 @@ var SnoopSlayer = function() {
 		Mousetrap.bind('i', () => { this.spawnTurret() }, 'keydown');
 
 		// Background script(s)
-		Mousetrap.bind('y', () => { this.trippyMode(6000, 1) }, 'keydown');
+		Mousetrap.bind('y', () => { this.trippyMode(6000, 3) }, 'keydown');
 	}
 
+	this.playerDashEvent = function() {
+		player.dash(player.dashVel, function() {
+			g_shake += 5;
+			// Dash explosion
+			new Explosion(player.pos.x, player.pos.y, 8, 8, 10, 5, 5, 0, spr_dash_emoji, spr_lip_emoji, spr_hot_emoji);
+
+			audio.mp3_fart.play(0, 0.1, true);
+
+			let timer = new Timer(function() {
+				// Dash damage explosion
+				new Explosion(player.pos.x, player.pos.y, 24, 24, 20, 10, 10, 50, p_explosion, spr_dew_logo, p_hitmarker);
+
+				audio.mp3_vine_boom.play(0, 0.1, true);
+
+				g_shake -= 5;
+
+			}, player.dashVel*25);
+		});
+	}
 	this.trippyMode = function(time, shake) {
 		let _this = this;
 		backgroundManager.selectBackgroundScreen('bg_level_01_trippy', function() {
 			// Apply filter to canvas
-			document.getElementById('body').style.filter = 'saturate(1.2)';
+			// Game.canvas.filter = 'saturate(1.2)';
 			// Set shake amount
 			g_shake += shake;
+			g_speed -= 0.5;
 			// Start video
 			vid_tunnel.play();
 			// Create timer to reset changes and refer to default backgound
 			let timer = new Timer(function() {
 				// Only execute if game is still in current level
 				if (Game.getCurrentState() == _this) {
-					document.getElementById('body').style.filter = 'saturate(1)';
+					// Game.canvas.filter = '';
 					backgroundManager.selectBackgroundScreen('bg_windows_bliss');
 					g_shake -= shake;
+					g_speed += 0.5;
 					vid_tunnel.pause();
 				}
 			}, time);

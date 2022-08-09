@@ -8,7 +8,7 @@ function EnemySpawner(max, spawnTime, spawnTimer, active, spawnFunction, amount)
 	this.amount = amount;
 	EnemySpawner.prototype.update = function() {
 		if (this.active) {
-			this.spawnTimer--;
+			this.spawnTimer -= g_speed * deltaTime;
 			if (this.spawnTimer < 0 && entityManager.enemies.length < this.max) {
 				this.spawnTimer = this.spawnTime;
 				for (let i = 0; i < this.amount; i++) {

@@ -17,7 +17,7 @@ class Gun {
 		this.hitSound = hitSound;
 		this.hitParticle = hitParticle;
 		this.equipped = equipped;
-		this.firerate = 1.5;
+		this.firerate = 2;
 		this.explosive = false;
 		this.timeCounter = 0;
 		this.angle = parent.angle;
@@ -34,7 +34,7 @@ class Gun {
 		// Set position to parent position
 		this.pos.equals(this.parent.pos);
 		// Count time passed
-		this.timeCounter += (deltaTime);
+		this.timeCounter += g_speed * deltaTime;
 
 		this.angle = this.parent.angle;
 

@@ -32,7 +32,7 @@ class Player {
 	}
 	update() {
 		this.pos.add(this.vel);
-		this.vel.multiply(this.friction);
+		this.vel.dampen(this.friction);
 
 		if (this.friction > 1) this.friction = 1;
 		// Calculate white tile player is on
@@ -120,11 +120,14 @@ class Player {
 			Game.c.translate(this.pos.x, this.pos.y);
 			Game.c.rotate(this.rotation);
 		}
-		// Draw player sprite
-		Game.c.drawImage(this.sprite, -this.width / 2, -this.height / 2, this.width, this.height);
 		// Run health bar and inventory within the save restore to inherit player position and rotation
 		this.healthBar.display(0, this.height / 1.5);
 		this.dashBar.display(0, this.height / 1.25);
+		// Draw player sprite
+		Game.c.shadowColor = 'rgba(0, 0, 0, 0.5)';
+		Game.c.shadowOffsetX = 5;
+		Game.c.shadowOffsetY = 5;
+		Game.c.drawImage(this.sprite, -this.width / 2, -this.height / 2, this.width, this.height);
 		// Run inventory and render ontop of the player
 		this.inventory.run();
 
@@ -152,28 +155,14 @@ class Player {
 	moveRight() {
 		if (this.vel.x <  this.speed) this.vel.x++;
 	}
-	dash(vel) {
+	dash(vel, callback) {
 		if (this.dashCharge == this.dashMaxCharge) {
 			// Drain dash charge
 			this.dashCharge = 0;
 			// Add vel to player velocity
 			this.vel.multiply(vel);
 			// Scripted dash event
-			g_shake += 5;
-
-			new Explosion(player.pos.x, player.pos.y, 8, 8, 10, 5, 5, 0, spr_dash_emoji, spr_lip_emoji, spr_hot_emoji);
-
-			audio.mp3_fart.play(0, 0.1, true);
-
-			let timer = new Timer(function() {
-
-				new Explosion(player.pos.x, player.pos.y, 24, 24, 20, 10, 10, 50, p_explosion, spr_dew_logo, p_hitmarker);
-
-				audio.mp3_vine_boom.play(0, 0.1, true);
-
-				g_shake -= 5;
-
-			}, vel*25);
+			callback();
 		}
 	}
 	run() {

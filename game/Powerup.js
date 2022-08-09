@@ -36,6 +36,9 @@ class Powerup {
 
 		Game.c.translate(this.pos.x, this.pos.y + Math.round(Math.sin(lastCalledTime/250)));
 		// Draw sprite
+		Game.c.shadowColor = 'rgba(0, 0, 0, 0.5)';
+		Game.c.shadowOffsetX = 5;
+		Game.c.shadowOffsetY = 5;
 		Game.c.drawImage(this.sprite, -this.width / 2, -this.height / 2, this.width, this.height);
 
 		Game.c.restore();

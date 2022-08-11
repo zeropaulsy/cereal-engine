@@ -36,7 +36,6 @@ let ts_map = loadImage({ src : './game/assets/img/ts_map.png', maxSeconds : 10 }
 
 // Snoop Slayer Assets
 let spr_player_slayer = loadImage({ src : './game/assets/img/slayer/spr_player_org.png',   maxSeconds : 10 });
-let spr_player_shadow = loadImage({ src : './game/assets/img/slayer/spr_player_shadow.png',maxSeconds : 10 });
 let spr_chicken_gun   = loadImage({ src : './game/assets/img/slayer/spr_chicken_gun.png',  maxSeconds : 10 });
 let spr_dorito_gun    = loadImage({ src : './game/assets/img/slayer/spr_dorito_gun.png',   maxSeconds : 10 });
 let spr_banana_gun    = loadImage({ src : './game/assets/img/slayer/spr_banana_gun.png',   maxSeconds : 10 });

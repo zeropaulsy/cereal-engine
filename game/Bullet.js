@@ -43,13 +43,22 @@ class Bullet {
 		}
 	}
 	display() {
+		// Shadow
+		Game.c.save();
+
+		Game.c.translate(this.pos.x + g_shadow_distance, this.pos.y + g_shadow_distance);
+		Game.c.rotate(this.rotation);
+		if (this.sprite.shadow) {
+			Game.c.drawImage(this.sprite.shadow, -this.width / 2, -this.height / 2, this.width, this.height);
+		}
+
+		Game.c.restore();
+
+		// Bullet
 		Game.c.save();
 
 		Game.c.translate(this.pos.x, this.pos.y);
 		Game.c.rotate(this.rotation);
-		//Game.c.shadowColor = 'rgba(0, 0, 0, 0.5)';
-		//Game.c.shadowOffsetX = 5;
-		//Game.c.shadowOffsetY = 5;
 		Game.c.drawImage(this.sprite, -this.width/2, -this.height/2, this.width, this.height);
 
 		Game.c.restore();

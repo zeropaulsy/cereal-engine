@@ -17,6 +17,7 @@ let g_shake = 0;
 let g_gamepadConnected = false;
 let g_lastInput = 'computer';
 let g_scale = 1;
+let g_shadow_distance = 3;
 let g_shadows_enabled = true;
 let g_pathfinding_enabled = true;
 

@@ -10,5 +10,6 @@ class CollisionBody {
 		this.collisionsEnabled = col;
 		this.type = type || 2;
 		this.lastCollision = Object();
+		this.onCollision = function() {};
 	}
 }

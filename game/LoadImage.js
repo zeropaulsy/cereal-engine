@@ -1,6 +1,7 @@
 function loadImage(options, callback) {
     var seconds = 0,
         maxSeconds = 10,
+        genShadow = true,
         complete = false,
         done = false;
 

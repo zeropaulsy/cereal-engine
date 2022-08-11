@@ -1,9 +1,10 @@
 function collisionBetween1(shapeA, shapeB) {
 	if (shapeA.hitbox.type == 1) {
+		//console.log('in range 1')
 		// get the vectors to check against
 		var vA = new Vector(shapeA.pos.x - shapeB.pos.x, shapeA.pos.y - shapeB.pos.y),
 			// add the half widths and half heights of the objects
-			hWidths = (shapeA.hitbox.w / 2) + (shapeB.hitbox.w / 2),
+			hWidths  = (shapeA.hitbox.w / 2) + (shapeB.hitbox.w / 2),
 			hHeights = (shapeA.hitbox.h / 2) + (shapeB.hitbox.h / 2),
 			colDir = null;
 
@@ -27,7 +28,7 @@ function collisionBetween1(shapeA, shapeB) {
 		}
 		return colDir;
 	}
-	if (shapeA.hitbox.type == 2) {
+	if (shapeA.hitbox.type == 2 && inRangeOf(shapeA, shapeB, shapeA.hitbox.w + shapeB.hitbox.w)) {
 		var dx = (shapeB.pos.x) - (shapeA.pos.x),
 			dy = (shapeB.pos.y) - (shapeA.pos.y),
 			angle = Math.atan2(dx, dy),
@@ -113,8 +114,8 @@ function inRangeOf(shapeA, shapeB, range) {
 	// Compare distance to radii
 	if ((dx * dx) + (dy * dy) < radii * radii && !g_paused) {
 		// Store last collision in objects
-		shapeA.hitbox.lastCollision = shapeB;
-		shapeB.hitbox.lastCollision = shapeA;
+		//shapeA.hitbox.lastCollision = shapeB;
+		//shapeB.hitbox.lastCollision = shapeA;
 		return true;
 	} else {
 		return false;

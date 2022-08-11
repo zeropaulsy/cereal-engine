@@ -27,7 +27,7 @@ class EntityManager {
 
 		arrayCollisionBetween1(this.bullets, this.tiles,   (a, b) => { a.destroy() });
 
-		arrayCollisionBetween2(this.enemies, this.turrets, (a, b) => { b.health--; });
+		arrayCollisionBetween1(this.enemies, this.turrets, (a, b) => { b.health--; });
 
 		arrayCollisionBetween1(this.bullets, this.enemies, (a, b) => { a.health -= 1; b.health -= a.damage; });
 
@@ -62,7 +62,6 @@ class EntityManager {
 			// this.enemies.push(new Enemy(id, spr, t, x, y, w, h, hb, s, l, ds, sv));
 			// Update array of enemies
 			this.filterEntities('enemy');
-			// this.entities.concat(this.enemies)
 		} else {
 			// Log warning if entity limit reached or exceeded
 			console.warn('Could not spawn enemy. Maximum number of entities reached: ' + this.max);
@@ -125,7 +124,7 @@ class EntityManager {
 			// Update entity specific arrays on kill
 			this.filterEntities(e.entityType);
 		} else {
-			console.log('out of scope');
+			console.log('Entity could not be found.');
 		}
 	}
 }

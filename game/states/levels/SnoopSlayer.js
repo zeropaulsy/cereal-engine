@@ -104,6 +104,17 @@ var SnoopSlayer = function() {
 		// Player starting velocity
 		player.vel.x =   0;
 		player.vel.y = -25;
+		// Generate shadows
+		spr_player_slayer.shadow = generateShadow(spr_player_slayer);
+		spr_snoop.shadow 		 = generateShadow(spr_snoop);
+		spr_alert_boss_1.shadow  = generateShadow(spr_alert_boss_1);
+		spr_alert_boss_2.shadow  = generateShadow(spr_alert_boss_2);
+		spr_alert_boss_3.shadow  = generateShadow(spr_alert_boss_3);
+		
+		p_chicken.shadow  = generateShadow(p_chicken);
+		p_dew_can.shadow  = generateShadow(p_dew_can);
+		p_dorito.shadow   = generateShadow(p_dorito );
+		p_banana.shadow   = generateShadow(p_banana );
 
 		this.score = 0;
 
@@ -185,7 +196,7 @@ var SnoopSlayer = function() {
 
 		inputTime++;
 		if (inputTime > 500) {
-			g_shake += 0.55;
+			//g_shake += 0.55;
 		}
 
 		if (g_shake > 0 && !this.trippyModeActive) g_shake -= 0.5;

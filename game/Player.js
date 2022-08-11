@@ -108,6 +108,24 @@ class Player {
 
 			Game.c.restore();
 		}
+		// Render Shadow
+		Game.c.save();
+		// Flip sprite on Y axis when updside down
+		if (this.flipped) {
+			Game.c.scale(1, -1);
+			Game.c.translate(this.pos.x + g_shadow_distance, -this.pos.y - g_shadow_distance);
+			Game.c.rotate(-this.rotation);
+		} else {
+			Game.c.scale(1, 1);
+			Game.c.translate(this.pos.x + g_shadow_distance, this.pos.y + g_shadow_distance);
+			Game.c.rotate(this.rotation);
+		}
+		// Draw player shadow
+		if (this.sprite.shadow) {
+			Game.c.drawImage(this.sprite.shadow, -this.width / 2, -this.height / 2, this.width, this.height);
+		}
+
+		Game.c.restore();
 		// Render player
 		Game.c.save();
 		// Flip sprite on Y axis when updside down
@@ -124,9 +142,9 @@ class Player {
 		this.healthBar.display(0, this.height / 1.5);
 		this.dashBar.display(0, this.height / 1.25);
 		// Draw player sprite
-		Game.c.shadowColor = 'rgba(0, 0, 0, 0.5)';
-		Game.c.shadowOffsetX = 5;
-		Game.c.shadowOffsetY = 5;
+		//Game.c.shadowColor = 'rgba(0, 0, 0, 0.5)';
+		//Game.c.shadowOffsetX = 5;
+		//Game.c.shadowOffsetY = 5;
 		Game.c.drawImage(this.sprite, -this.width / 2, -this.height / 2, this.width, this.height);
 		// Run inventory and render ontop of the player
 		this.inventory.run();

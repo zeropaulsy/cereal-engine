@@ -16,6 +16,49 @@ function findEntityPath(e, t) {
 	}
 }
 
+function contrastImage(imgData, contrast){  //input range [-100..100]
+    var d = imgData.data;
+    contrast = (contrast/100) + 1;  //convert to decimal & shift range: [0..2]
+    var intercept = 128 * (1 - contrast);
+    for(var i=0;i<d.length;i+=4){   //r,g,b,a
+        d[i] = d[i]*contrast + intercept;
+        d[i+1] = d[i+1]*contrast + intercept;
+        d[i+2] = d[i+2]*contrast + intercept;
+    }
+    return imgData;
+}
+
+function darkenImage(imgData, value, alpha) {
+    var d = imgData.data;
+    for(var i = 0; i < d.length; i += 4) {   //r,g,b,a
+        d[i]   = d[i]   - value;
+        d[i+1] = d[i+1] - value;
+        d[i+2] = d[i+2] - value;
+        d[i+3] = d[i+3] - alpha;
+    }
+    return imgData;
+}
+
+function generateShadow(image) {
+	let shadow = document.createElement('canvas');
+	let sc = shadow.getContext('2d');
+
+	shadow.id = 'shadow';
+    shadow.width = image.width;
+    shadow.height = image.height;
+
+    sc.drawImage(image, 0, 0, shadow.width, shadow.height);
+
+    let imgData = sc.getImageData(0, 0, shadow.width, shadow.height);
+
+    shadowData = darkenImage(imgData, 255, 127);
+    sc.putImageData(shadowData, 0, 0);
+
+    var image = new Image();
+    image.src = shadow.toDataURL("image/png");
+    return image;
+}
+
 function normalize(val, min, max) {
 	return (val - min) / (max - min);
 }

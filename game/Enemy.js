@@ -89,23 +89,37 @@ class Enemy {
 		// Game.c.fillStyle = 'rgba(255, 0, 0, 0.5)';
 		// Game.c.fillRect(this.tile.x, this.tile.y, g_tileSize, g_tileSize);
 
+		// Render shadow
+		Game.c.save();
+		// Flip sprite if upside down
+		if (this.flipped && this.faceTarget) {
+			Game.c.scale(-1, 1);
+			Game.c.translate(-this.pos.x - g_shadow_distance, this.pos.y + g_shadow_distance);
+			// Game.c.rotate(-this.rotation);
+		} else {
+			Game.c.scale(1, 1);
+			Game.c.translate(this.pos.x + g_shadow_distance, this.pos.y + g_shadow_distance);
+			// Game.c.rotate(this.rotation);
+		}
+		// Draw shadow
+		if (this.sprite.shadow) {
+			Game.c.drawImage(this.sprite.shadow, -this.width / 2, -this.height / 2, this.width, this.height);
+		}
+		Game.c.restore();
+
+		// Render enemy
 		Game.c.save();
 		// Flip sprite if upside down
 		if (this.flipped && this.faceTarget) {
 			Game.c.scale(-1, 1);
 			Game.c.translate(-this.pos.x, this.pos.y);
-			//Game.c.rotate(-this.rotation);
+			// Game.c.rotate(-this.rotation);
 		} else {
 			Game.c.scale(1, 1);
 			Game.c.translate(this.pos.x, this.pos.y);
-			//Game.c.rotate(this.rotation);
+			// Game.c.rotate(this.rotation);
 		}
-		// Draw shadow
-		if (g_shadows_enabled) Game.c.drawImage(spr_shadow, -this.width/2, (this.height/2)-8, this.width, 16);
 		// Draw sprite
-		Game.c.shadowColor = 'rgba(0, 0, 0, 0.5)';
-		Game.c.shadowOffsetX = 5;
-		Game.c.shadowOffsetY = 5;
 		Game.c.drawImage(this.sprite, -this.width/2, -this.height/2, this.width, this.height);
 
 		Game.c.restore();

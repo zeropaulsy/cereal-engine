@@ -13,7 +13,7 @@ class Player {
 		this.hitbox = new CollisionBody(this, w, h, true, 1);
 		this.speed = s;
 		this.friction = f;
-		this.knockBack = k
+		this.knockBack = k;
 		this.health = 100;
 		this.maxHealth = 100;
 		this.angle = 1;
@@ -35,7 +35,7 @@ class Player {
 		this.vel.dampen(this.friction);
 
 		if (this.friction > 1) this.friction = 1;
-		// Calculate white tile player is on
+		// Calculate tile player is on
 		this.tile.x = Math.floor( this.pos.x / g_tileSize ) * g_tileSize;
 		this.tile.y = Math.floor( this.pos.y / g_tileSize ) * g_tileSize;
 		// Bind movement listeners to player velocity
@@ -142,9 +142,6 @@ class Player {
 		this.healthBar.display(0, this.height / 1.5);
 		this.dashBar.display(0, this.height / 1.25);
 		// Draw player sprite
-		//Game.c.shadowColor = 'rgba(0, 0, 0, 0.5)';
-		//Game.c.shadowOffsetX = 5;
-		//Game.c.shadowOffsetY = 5;
 		Game.c.drawImage(this.sprite, -this.width / 2, -this.height / 2, this.width, this.height);
 		// Run inventory and render ontop of the player
 		this.inventory.run();

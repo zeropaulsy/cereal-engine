@@ -25,7 +25,7 @@ class Enemy {
 		this.deathSound = deathSound;
 		this.scoreValue = scoreValue;
 		this.powerupSprite = powerupSprite || spr_box;
-		this.knockBack = 0;
+		this.knockBack = 15;
 		this.angle = 1;
 		this.rotation = this.pos.angle(target.pos);
 		this.rotationSpeed = random(0.875, 0.95);
@@ -147,7 +147,7 @@ class Enemy {
 		// Spawn blood particles
 		particleSystem.spawnParticle('420s' + particleSystem.particles.length, p_plus_1, this.pos.x, this.pos.y, 16, 16, 10, -1.5, 30, 5);
 		// Drop powerup
-		if (random(0, 100) < 3 && !this.powerupDropped) {
+		if (random(0, 100) < 5 && !this.powerupDropped) {
 			this.dropPowerup();
 			this.powerupDropped = true;
 		}

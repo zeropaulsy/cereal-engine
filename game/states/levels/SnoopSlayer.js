@@ -339,12 +339,12 @@ var SnoopSlayer = function() {
 			// Create timer to reset changes and refer to default backgound
 			let timer = new Timer(function() {
 				// Only execute if game is still in current level
+				vid_tunnel.pause();
 				if (Game.getCurrentState() == _this) {
 					// Game.canvas.filter = '';
 					backgroundManager.selectBackgroundScreen('bg_windows_bliss');
 					g_shake -= shake;
 					g_speed += 0.5;
-					vid_tunnel.pause();
 				}
 			}, time);
 		});
@@ -374,5 +374,6 @@ var SnoopSlayer = function() {
 	    entityManager.getEntityById(id).sprite_dmg_2 = spr_alert_boss_3;
 	    entityManager.getEntityById(id).faceTarget = false;
 		entityManager.getEntityById(id).hitbox.type = 1;
+		entityManager.getEntityById(id).knockBack = 10;
 	}
 }

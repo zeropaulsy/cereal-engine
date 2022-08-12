@@ -54,7 +54,7 @@ var Test01 = function() {
 
 		backgroundManager = new BackgroundManager(10, 0);
 
-		backgroundManager.screens.push(new BackgroundScreen('bg_level_02', [bg_trip], 1));
+		backgroundManager.screens.push(new BackgroundScreen('bg_level_02', [bg_windows_98], 1));
 		backgroundManager.screens.push(new BackgroundScreen('bg_level_02_trippy', [vid_tunnel, bg_trip, bg_level_02], 0.1));
 
 		entityManager = new EntityManager(5000);
@@ -79,7 +79,7 @@ var Test01 = function() {
 		particleSystem = new ParticleSystem(2000);
 
 		// Create player entity and initialize instructions
-		entityManager.spawnPlayer('player', spr_player_02, width - 100, height / 2, 80 / 1.25, 75 / 1.25, 7, 0.875, 15);
+		entityManager.spawnPlayer('player', spr_player_02, width - 100, height / 2, 80 / 1.25, 75 / 1.25, 7, 0.875, 0);
 		// Assign player entity to global varible for ease of use
 		player = entityManager.getEntityById('player');
 		// Set player health bar colour
@@ -142,7 +142,10 @@ var Test01 = function() {
 
 	this.update = function() {
 
-		this.camera.moveTo(player.pos.x * g_scale, player.pos.y * g_scale);
+		//this.camera.moveTo(player.pos.x * g_scale, player.pos.y * g_scale);
+		//this.camera.zoomTo(Game.canvas.width);
+
+		this.camera.moveTo(Game.canvas.width / 2, Game.canvas.height / 2);
 		this.camera.zoomTo(Game.canvas.width);
 
 		this.enemySpawnerLeft.run();

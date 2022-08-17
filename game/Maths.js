@@ -54,10 +54,20 @@ function generateShadow(image) {
     shadowData = darkenImage(imgData, 255, 127);
     sc.putImageData(shadowData, 0, 0);
 
-    var image = new Image();
-    image.src = shadow.toDataURL("image/png");
-    return image;
+    //var image = new Image();
+    //image.src = shadow.toDataURL("image/png");
+    //return image;
+    return loadImage({ src : shadow.toDataURL("image/png") });
 }
+
+
+function canvasDataToImage(canvas) {
+    // var image = new Image();
+    // image.src = canvas.toDataURL("image/png");
+    // return image;
+    return loadImage({ src : canvas.toDataURL("image/png") });
+}
+
 
 function normalize(val, min, max) {
 	return (val - min) / (max - min);
@@ -65,6 +75,12 @@ function normalize(val, min, max) {
 
 function random(min, max) {
 	return Math.random() * (max - min) + min;
+}
+
+function randomInt(min, max) {
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
 function decimalPlace(num, val) {

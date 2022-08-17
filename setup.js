@@ -1,5 +1,5 @@
 const easystar = new EasyStar.js();
-const gamepad = new Gamepad();
+const gamepad  = new Gamepad();
 
 var EmptyState = function() {
 	this.name = "EmptyState";

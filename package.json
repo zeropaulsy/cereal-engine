@@ -1,5 +1,5 @@
 {
-  "name": "cereal-engine",
+  "name": "Snoop Slayer",
   "version": "1.0.0",
   "description": "here we go boyos",
   "main": "main.js",
@@ -16,12 +16,10 @@
   "license": "CC0-1.0",
   "devDependencies": {
     "devtron": "^1.4.0",
-    "electron": "^12.0.0",
-    "electron-packager": "^15.2.0"
+    "electron": "^20.0.2"
   },
   "dependencies": {
     "easystarjs": "^0.4.3",
-    "mousetrap": "^1.6.3",
-    "xp.css": "^0.3.0"
+    "mousetrap": "^1.6.3"
   }
 }

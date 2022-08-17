@@ -16,7 +16,7 @@ class Explosion {
 	explode() {
 		// Shake screen
 		g_shake += 3;
-		let timer = new Timer(function() { g_shake -= 3 }, 100);
+		timerManager.addTimer(function() { g_shake -= 3 }, 100);
 		// Create particles for explosion effect
 		for (let i = 0; i < this.amount; i++) {
 			particleSystem.spawnParticle('boom' + particleSystem.particles.length, this.p1, this.pos.x, this.pos.y, this.pWidth, this.pHeight, this.range, random(-this.range/2, this.range/2), random(35, 55), this.dither);

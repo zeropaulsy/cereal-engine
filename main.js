@@ -9,39 +9,32 @@ let mainWindow
 function createWindow () {
 	// Create the browser window.
 	mainWindow = new BrowserWindow({
+		useContentSize: true,
 		width: 1280,
-		height: 742,
-		// height: 759,
-		minWidth: 980,
-		minHeight: 450,
+		height: 720,
+		minWidth: 640,
+		minHeight: 360,
 		webPreferences: {
 			nodeIntegrationInWorker: true,
 			preload: path.join(__dirname, 'preload.js')
 		}
 	})
 
-	// Require devtron
-	// require('devtron').install();
-
-	// mainWindow.__devtron = {require: require, process: process}
-
 	// Set window aspect ratio
-	// mainWindow.setAspectRatio(1.77);
-	// mainWindow.setMenu(null);
+	mainWindow.setAspectRatio(16/9);
+	if (process.platform !== 'darwin') mainWindow.setMenu(null);
 
 	// and load the index.html of the app.
-	mainWindow.loadFile('index.html')
+	mainWindow.loadFile('index.html');
 
-	// Open the DevTools.
-	// mainWindow.webContents.openDevTools();
-
-	mainWindow.on('resize', function () {
-	  setTimeout(function () {
-	    var size = mainWindow.getSize();
-	    // windows mainWindow.setSize( size[0], ( parseInt(size[0] * 9 / 16) ) + 30 );
-		mainWindow.setSize( size[0], ( parseInt(size[0] * 9 / 16) ) + 22 );
-	  }, 0);
-	});
+	// mainWindow.on('resize', function () {
+	//   setTimeout(function () {
+	//     var size = mainWindow.getContentSize();
+	//     // windows mainWindow.setSize( size[0], ( parseInt(size[0] * 9 / 16) ) + 30 );
+	// 	// osx mainWindow.setSize( size[0], ( parseInt(size[0] * 9 / 16) ) + 22 );
+	// 	mainWindow.setSize( size[0], ( parseInt(size[0] * 9 / 16) ) );
+	//   }, 0);
+	// });
 
 
 	// Emitted when the window is closed.
@@ -64,7 +57,8 @@ app.on('ready', function () {
 app.on('window-all-closed', function () {
 	// On macOS it is common for applications and their menu bar
 	// to stay active until the user quits explicitly with Cmd + Q
-	if (process.platform !== 'darwin') app.quit();
+	// if (process.platform !== 'darwin') app.quit();
+	app.quit();
 })
 
 app.on('activate', function () {

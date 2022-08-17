@@ -25,6 +25,7 @@ class Bullet {
 		this.hitParticle = p.hitParticle;
 		this.explosive = p.explosive;
 		this.health = 1;
+		this.knockBack = 0;
 		this.kill = false;
 	}
 	update() {
@@ -37,8 +38,8 @@ class Bullet {
 		if (this.health <= 0) {
 			if (!this.explosive)  {
 				this.hitSound.play(true);
-				particleSystem.spawnParticle('hitmarker' + particleSystem.particles.length, this.hitParticle, this.pos.x, this.pos.y, 24, 24, 3, random(0, 3), 10, 5);
 			}
+			this.hitmarker();
 			this.destroy();
 		}
 	}
@@ -51,7 +52,6 @@ class Bullet {
 		if (this.sprite.shadow) {
 			Game.c.drawImage(this.sprite.shadow, -this.width / 2, -this.height / 2, this.width, this.height);
 		}
-
 		Game.c.restore();
 
 		// Bullet
@@ -62,6 +62,9 @@ class Bullet {
 		Game.c.drawImage(this.sprite, -this.width/2, -this.height/2, this.width, this.height);
 
 		Game.c.restore();
+	}
+	hitmarker() {
+		particleSystem.spawnParticle('hitmarker' + particleSystem.particles.length, this.hitParticle, this.pos.x, this.pos.y, 24, 24, 3, random(0, 3), 10, 5);
 	}
 	explode() {
 		audio.mp3_vine_boom.play(0, 0.25, true);

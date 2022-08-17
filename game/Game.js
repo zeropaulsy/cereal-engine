@@ -1,4 +1,5 @@
 let loading = true;
+let tick = 0;
 
 let backgroundAlpha = 1;
 let maxFps = 60;
@@ -7,6 +8,8 @@ let fps;
 let targetDelta = 1000/maxFps;
 let delta;
 let inputTime = 0;
+let lastScreen;
+let root = document.querySelector(':root');
 
 let g_speed = 1;
 let g_gravity = 0;
@@ -17,6 +20,7 @@ let g_shake = 0;
 let g_gamepadConnected = false;
 let g_lastInput = 'computer';
 let g_scale = 1;
+let g_powerup_drop_rate = 5;
 let g_shadow_distance = 3;
 let g_shadows_enabled = true;
 let g_pathfinding_enabled = true;
@@ -57,12 +61,13 @@ let rightJoystick = {x: 0, y: 0};
 let leftDeadzone  = 0.25;
 let rightDeadzone = 0.25;
 
+let timerManager = new TimerManager();
 let backgroundManager;
 let entityManager;
 let particleSystem;
 let player;
 
-let score = Number();
+let score = 0;
 
 var Game = {
 	width: 1280,
@@ -88,10 +93,10 @@ var Game = {
 	},
 	run: function() {
 		requestAnimationFrame(Game.run);
-		// Set loading to false once pace completes asset preload
-		if (Pace.bar.progress == 100) loading = false;
 		// Set scale based on window size
 		g_scale = canvas.width / 1280;
+		// Prevent speed going below 0
+		if (g_speed < 0) g_speed = 0;
 		// Apply deadzones to gamepad to stop drifting
 		if (g_gamepadConnected) {
 			let gp = navigator.getGamepads()[0];
@@ -123,24 +128,28 @@ var Game = {
 			}
 			Game.stateStack.display();
 		}
+		tick++;
 	},
 
 	startGame: function() {
 		this.setState(new SnoopSlayer());
 	},
 	pauseGame: function() {
-		g_paused = !g_paused;
+		g_paused = !g_paused; 
 		if (g_paused) {
 			pauseActiveSounds();
+			timerManager.pauseTimers();
 		} else {
 			resumeActiveSounds();
+			timerManager.resumeTimers();
 		}
 	},
 	showPauseMenu: function() {
 		// Show pause menu
 		document.getElementById("pause_menu").style.display = 'block';
 		canvas.style.cursor = 'auto';
-		canvas.style.filter = 'brightness(0.5)';
+		// canvas.style.filter = 'brightness(0.5)';
+		root.style.setProperty('--brightness', 0.5);
 
 		if (window.fullscreen) {
 			document.getElementById("toggle_fullscreen").value = "Fullscreen: ON";
@@ -152,7 +161,7 @@ var Game = {
 		// Hide pause menu
 		document.getElementById("pause_menu").style.display = 'none';
 		canvas.style.cursor = 'auto';
-		canvas.style.filter = 'brightness(1)';
+		root.style.setProperty('--brightness', 1);
 	},
 
 	setupCanvas: function(wrapper) {
@@ -187,27 +196,36 @@ window.onload = function () {
 		};
 	}
 
-	Game.init();
-	Game.run();
+	Pace.on('hide', function(e) {
+		loading = false;
 
-	Game.canvas.addEventListener('mousedown', function(e) {
-		mouseDown = true;
-		g_lastInput = 'computer';
+		Game.init();
+		Game.run();
+
+		Game.canvas.addEventListener('mousedown', function(e) {
+			mouseDown = true;
+			g_lastInput = 'computer';
+		});
+
+		Game.canvas.addEventListener('mouseup', function(e) {
+			mouseDown = false;
+			g_lastInput = 'computer';
+		});
+
+		Game.canvas.addEventListener('mousemove', function(evt) {
+			var mousePos = getMousePos(canvas, evt);
+
+			this.mouseX = (mousePos.x * window.devicePixelRatio) / g_scale;
+			this.mouseY = (mousePos.y * window.devicePixelRatio) / g_scale;
+
+			g_lastInput = 'computer';
+		}, true);
+
+		window.addEventListener('resize', function() {
+			Game.canvas.width = window.innerWidth * window.devicePixelRatio;
+			Game.canvas.height = window.innerHeight * window.devicePixelRatio;
+		});
 	});
-
-	Game.canvas.addEventListener('mouseup', function(e) {
-		mouseDown = false;
-		g_lastInput = 'computer';
-	});
-
-	Game.canvas.addEventListener('mousemove', function(evt) {
-		var mousePos = getMousePos(canvas, evt);
-
-		this.mouseX = (mousePos.x * window.devicePixelRatio) / g_scale;
-		this.mouseY = (mousePos.y * window.devicePixelRatio) / g_scale;
-
-		g_lastInput = 'computer';
-	}, true);
 };
 
 document.addEventListener('visibilitychange', () => {
@@ -219,6 +237,10 @@ document.addEventListener('visibilitychange', () => {
 	}
 }, false);
 
+document.addEventListener('keypress', (e) => {
+	g_lastInput = 'computer';
+	inputTime = 0;
+});
 
 resume.addEventListener('click', (e) => {
 	Game.pauseGame();
@@ -238,17 +260,4 @@ music_volume.addEventListener('click', (e) => {
 
 toggle_fullscreen.addEventListener('click', (e) => {
 
-});
-
-document.addEventListener('keypress', (e) => {
-	g_lastInput = 'computer';
-	inputTime = 0;
-});
-
-window.addEventListener('resize', function() {
-	Game.canvas.width = window.innerWidth * window.devicePixelRatio;
-	Game.canvas.height = window.innerHeight * window.devicePixelRatio;
-
-	//width = Game.canvas.width / g_scale;
-	//height = Game.canvas.height / g_scale;
 });

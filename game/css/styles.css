@@ -1,14 +1,33 @@
+:root {
+    --blur:0px;
+    --contrast:100%;
+    --brightness:100%;
+    --contrast:100%;
+    --grayscale:0%;
+    --hue-rotate:0deg;
+    --invert:0%;
+    --opacity:100%;
+    --saturate:100%;
+    --sepia:0%;
+}
+
 @font-face {
-  font-family: 'm3x6';
-  src: './game/assets/fonts/m3x6.ttf';
+    font-family: 'm3x6';
+    src: './game/assets/fonts/m3x6.ttf';
 }
 
 body {
-  font-family: "Comic Sans MS", "Comic Sans", cursive;
-  user-select: none;
-  margin: 0px;
-  overflow: hidden;
-  background: black;
+    font-family: "Comic Sans MS", "Comic Sans", cursive;
+    user-select: none;
+    margin: 0px;
+    overflow: hidden;
+
+    width: 100vw;
+    height: 100vh;
+
+    background-image: url('../../game/assets/img/slayer/bg_windows_startup.png');
+    background-position: center;
+    background-size: contain;
 }
 
 /*
@@ -22,32 +41,33 @@ body {
 */
 
 video {
-  display: none;
+    display: none;
 }
 
 canvas {
-  position: absolute;
-  image-rendering: pixelated;
-  transition: filter 0.5s;
-  width: 100%;
-  height: 100%;
+    position: absolute;
+    image-rendering: pixelated;
+    transition: filter 0.5s;
+    width: 100%;
+    height: 100%;
+    filter: blur(var(--blur)) contrast(var(--contrast)) brightness(var(--brightness)) contrast(var(--contrast)) grayscale(var(--grayscale)) hue-rotate(var(--hue-rotate)) invert(var(--invert)) opacity(var(--opacity)) saturate(var(--saturate)) sepia(var(--sepia)); 
 }
 
 .header {
-  background-color: #3E79EA;
-  border: 1px solid #2459E4;
-  border-bottom: 2px solid #2459E4;
-  z-index: 2;
-  height: 24px;
-  -webkit-app-region: drag;
-  width: calc(100% - 2px);
+    background-color: #3E79EA;
+    border: 1px solid #2459E4;
+    border-bottom: 2px solid #2459E4;
+    z-index: 2;
+    height: 24px;
+    -webkit-app-region: drag;
+    width: calc(100% - 2px);
 }
 
 #title {
-  margin-left: calc(50% - 130px);
-  font-size: 6pt;
-  font-family: "Comic Sans MS", "Comic Sans", cursive;
-  color: #fff;
+    margin-left: calc(50% - 130px);
+    font-size: 6pt;
+    font-family: "Comic Sans MS", "Comic Sans", cursive;
+    color: #fff;
 }
 
 /*
@@ -60,18 +80,18 @@ canvas {
 */
 
 #close {
-  margin-left: 7px;
+    margin-left: 7px;
 }
 
 img {
-  -webkit-app-region: no-drag;
-  -webkit-filter: brightness(100%);
-  -webkit-transition: all 0.25s ease;
+    -webkit-app-region: no-drag;
+    -webkit-filter: brightness(100%);
+    -webkit-transition: all 0.25s ease;
 }
 
 img:hover {
-  cursor: pointer;
-  -webkit-filter: brightness(115%);
+    cursor: pointer;
+    -webkit-filter: brightness(115%);
 }
 
 h1 {
@@ -81,50 +101,52 @@ h1 {
 }
 
 h2 {
-  font-size: 2vw;
-  margin-top: 10px;
-  margin-bottom: 5px;
-  color: #fff;
+    font-size: 2vw;
+    margin-top: 10px;
+    margin-bottom: 5px;
+    color: #fff;
 }
 
 #pause_menu {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  margin: auto;
-  z-index: 1;
-  width: 27%;
-  background-color: rgba(0, 0, 0, 0.25);
-  -webkit-filter: drop-shadow(0px 0px 20px black);
-  -webkit-transition: all 0.5s ease;
+    display: none;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
+    z-index: 1;
+    width: 27%;
+    background-color: rgba(0, 0, 0, 0.25);
+    -webkit-filter: drop-shadow(0px 0px 20px black);
+    -webkit-transition: all 0.5s ease;
 }
 
 ul {
-  padding-left: 0px;
-  margin-left: 16px;
-  margin-right: 16px;
-  list-style-type:none;
+    padding-left: 0px;
+    margin-left: 16px;
+    margin-right: 16px;
+    list-style-type: none;
 }
 
-input, a {
-  font-family: "Comic Sans MS", "Comic Sans", cursive;
-  border: 0px solid rgb(4, 26, 55);
-  display: inline-block;
-  cursor: pointer;
-  color: #fff;
-  font-size: 2.5vh;
-  text-shadow: rgb(40, 57, 102) 0px 2px 0px;
-  text-align: center;
-  background-color: #e85a23;
-  width: 100%;
-  margin-bottom: 1%;
-  margin-top: 1%;
-  height: 6vh;
-  -webkit-app-region: no-drag;
-  -webkit-filter: brightness(100%);
-  -webkit-transition: all 0.25s ease;
+input,
+a {
+    font-family: "Comic Sans MS", "Comic Sans", cursive;
+    border: 0px solid rgb(4, 26, 55);
+    display: inline-block;
+    cursor: pointer;
+    color: #fff;
+    font-size: 2.5vh;
+    text-shadow: rgb(40, 57, 102) 0px 2px 0px;
+    text-align: center;
+    background-color: #e85a23;
+    width: 100%;
+    margin-bottom: 1%;
+    margin-top: 1%;
+    height: 6vh;
+    -webkit-app-region: no-drag;
+    -webkit-filter: brightness(100%);
+    -webkit-transition: all 0.25s ease;
 }
 
 /*
@@ -148,6 +170,7 @@ input, select, a {
 }
 */
 
-input:hover, select:hover {
-  -webkit-filter: brightness(125%);
+input:hover,
+select:hover {
+    -webkit-filter: brightness(125%);
 }

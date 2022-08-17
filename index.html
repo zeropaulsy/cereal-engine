@@ -10,14 +10,17 @@
 		<script type="text/javascript" src="./game/lib/gamepad.js"></script>
 		<script type="text/javascript" src="./game/lib/mousetrap.js"></script>
 		<script type="text/javascript" src="./game/lib/camera.js"></script>
+		<script type="text/javascript" src="./game/lib/GIF.js"></script>
 		<script type="text/javascript" src="./game/lib/easystar-0.4.3.js"></script>
 		<script type="text/javascript" src="./game/Maths.js"></script>
+		<script type="text/javascript" src="./game/Sound.js"></script>
+		<script type="text/javascript" src="./game/LoadImage.js"></script>
+		<script type="text/javascript" src="./game/LoadAssets.js"></script>
 		<script type="text/javascript" src="./setup.js"></script>
 		<link rel="stylesheet" type="text/css" href="./game/css/styles.css" />
-		<title>cereal-engine</title>
+		<title>Snoop Slayer</title>
 	</head>
 	<body id="body">
-		<video id="vid_tunnel" src="./game/assets/video/vid_tunnel.mp4"></video>
 		<div id="pause_menu" align="center">
 			<ul>
 				<h1>Game Paused</h1>
@@ -29,21 +32,16 @@
 					<input type="button" id="toggle_fullscreen" value="Fullscreen: OFF">
 				</li>
 				<li>
-					<!--<input type="button" id="toggle_all" value="Sound: ON">-->
 					<h2>Sound</h2>
 					<input type="range" id="audio_volume" value="100" min="0" max="100">
 				</li>
 				<li>
-					<!--<input type="button" id="toggle_music" value="Music: ON">-->
 					<h2>Music</h2>
 					<input type="range" id="music_volume" value="100" min="0" max="100">
 				</li>
 			</ul>
 		</div>
 		<!-- You can also require other files to run in this process -->
-		<script type="text/javascript" src="./game/Sound.js"></script>
-		<script type="text/javascript" src="./game/LoadImage.js"></script>
-		<script type="text/javascript" src="./game/LoadAssets.js"></script>
 		<script type="text/javascript" src="./game/KeyBinds.js"></script>
 		<script type="text/javascript" src="./game/Controller.js"></script>
 		<script type="text/javascript" src="./game/Timer.js"></script>

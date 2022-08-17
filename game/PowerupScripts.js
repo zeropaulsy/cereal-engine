@@ -10,7 +10,7 @@ entityManager.spawnPowerup('bomb' + entityManager.powerups.length, spr_bomb, 200
 	if (currentInvSlot != 2) {
 		hitbox.lastCollision.inventory.slotActive = 2;
 
-		let timer = new Timer(function() {
+		timerManager.addTimer(function() {
 			hitbox.lastCollision.inventory.slotActive = currentInvSlot;
 		}, powerupTime);
 	}

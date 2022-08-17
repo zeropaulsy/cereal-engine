@@ -120,6 +120,7 @@ function preloadAudio(type) {
         this.mp3_fart        = new audioTrack('./game/assets/sound/mp3_fart.mp3', type, 0.5);
         this.mp3_bruh        = new audioTrack('./game/assets/sound/mp3_bruh.mp3', type);
         this.mp3_pop         = new audioTrack('./game/assets/sound/mp3_pop.mp3', type, 1);
+        this.mp3_1up         = new audioTrack('./game/assets/sound/mp3_1up.mp3', type);
 	}
 	if (type == 'music') {
 		this.mp3_snoop_train = new audioTrack('./game/assets/sound/mp3_snoop_train.mp3', type);

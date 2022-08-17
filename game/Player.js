@@ -96,6 +96,7 @@ class Player {
 			this.flipped = false;
 		}
 		// Update player health bar percent
+		this.healthBar.maxValue = this.maxHealth;
 		this.healthBar.update();
 		this.dashBar.update();
 	}

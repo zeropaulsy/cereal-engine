@@ -143,43 +143,17 @@ class Enemy {
 	destroy() {
 		// Play death noise
 		this.deathSound.play();
-		this.deathSound.currentTime = 0;
 		// Spawn blood particles
 		particleSystem.spawnParticle('420s' + particleSystem.particles.length, p_plus_1, this.pos.x, this.pos.y, 16, 16, 10, -1.5, 30, 5);
 		// Drop powerup
-		if (random(0, 100) < 5 && !this.powerupDropped) {
-			this.dropPowerup();
+		if (random(0, 100) < g_powerup_drop_rate && !this.powerupDropped) {
+			Game.getCurrentState().dropPowerup(this);
 			this.powerupDropped = true;
 		}
 		// Cancel easystar pathfinding
 		easystar.cancelPath(this.pathInstanceId);
 		// Destroy collision body
 		this.parent.removeEntity(this);
-	}
-	dropPowerup() {
-		let id = 'powerup' + entityManager.powerups.length;
-
-		entityManager.spawnPowerup(id, this.powerupSprite, this.pos.x, this.pos.y, 48, 48, function() {
-
-			let powerupTime = 5000;
-
-			if (!player.powerupActive) {
-				player.powerupActive = true;
-
-				console.log(this.id + ' picked up.');
-
-				player.inventory.selectSlot( Math.round( random(1, 3) ) );
-
-				let timer = new Timer(function() {
-					player.inventory.selectSlot(0);
-					player.powerupActive = false;
-				}, powerupTime);
-
-				return true;
-			} else {
-				return false;
-			}
-		});
 	}
 	run() {
 		this.update();

@@ -18,13 +18,15 @@ function BackgroundManager(max, bg_selected) {
     }
 }
 
-function BackgroundScreen(id, images, alpha, func) {
+function BackgroundScreen(id, images, alpha, gifs) {
     this.id = id;
     this.images = images;
+    this.gifs = gifs || null;
     this.defaultImage = this.images[0];
     this.alpha = alpha;
-    this.timer = new Timer(function() {}, 0);
+    this.timer = timerManager.addTimer(function() {}, 0);
     BackgroundScreen.prototype.update = function() {
+        /*
         if (g_paused && !this.timer.paused) {
             console.log(this.id + ' background paused.');
             this.timer.pause();
@@ -33,11 +35,19 @@ function BackgroundScreen(id, images, alpha, func) {
             console.log(this.id + ' background resumed.');
             this.timer.resume();
         }
+        */
     }
     BackgroundScreen.prototype.display = function() {
         Game.c.save();
 
         Game.c.globalAlpha = this.alpha;
+        Game.c.imageSmoothingEnabled = false;
+
+        if (this.gifs) {
+            for (let i = 0; i < this.gifs.length; i++) {
+                if (!this.gifs[i].loading) Game.c.drawImage(this.gifs[i].image, 0, 0, 1280, 720);
+            }
+        }
 
         for (let i = 0; i < this.images.length; i++) {
             Game.c.drawImage(this.images[i], 0, 0, 1280, 720);

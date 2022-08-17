@@ -24,17 +24,32 @@ class Inventory {
 		// Return the item currently equipped to the player
 		return this.contents.find(x => x.equipped === true);
 	}
-	equipItem(id) {
+	getContentIds() {
+		// Return array containing weapon ID strings
+		let ids = [];
+		for (let i = 0; i < this.contents.length; i++) {
+			ids.push(this.contents[i].id);
+		}
+		return ids;
+	}
+	holsterItem() {
 		// Holster current item
 		this.contents[this.slotActive].onHolster();
 		this.getEquippedItem().equipped = false;
+	}
+	equipItem(id) {
+		// Holster current item
+		if (this.getEquippedItem()) this.holsterItem();
 		// Equip new item using the id specified
 		this.getInventoryItem(id).equipped = true;
+		// Select slot
+		this.slotActive = this.contents.indexOf(this.getEquippedItem());
+		// Call on equip function
+		this.contents[this.slotActive].onEquip();
 	}
 	selectSlot(slot) {
 		// Holster current item
-		this.contents[this.slotActive].onHolster();
-		this.getEquippedItem().equipped = false;
+		if (this.getEquippedItem()) this.holsterItem();
 		// Select desired slot
 		this.slotActive = slot;
 		// Equip active slot

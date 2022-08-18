@@ -6,24 +6,24 @@ class Turret extends Entity {
 		// Class specific properties
 		let self = this;
 		this.entityType = 'turret';
+		this.target = target;
 		this.health = health;
 		this.maxHealth = health;
 		this.ammo = ammo;
-		this.target = target;
-		this.angle = 0;
 		this.rotation = 0;
 		this.rotationSpeed = rotationSpeed;
 		this.stationary = stationary;
+		this.angle = 0;
 		this.speed = random(1, 2);
 		this.friction = 0.9;
 		this.distance = random(128, 256);
 		this.kill = false;
 		// Create inventory
-		this.inventory = new Inventory(5);
-		// Create inventory contents
-		this.inventory.contents.push( new Gun('chicken_gun', spr_chicken_gun, p_chicken, this, this.width, this.height, 16, 10, 1, 20, 1, 15, audio.mp3_hitmarker, p_hitmarker, true ) );
-		this.inventory.contents.push( new Gun('dorito_gun',  spr_dorito_gun,  p_dorito,  this, this.width, this.height, 16, 16, 2, 10, 2, 25, audio.mp3_hitmarker, p_hitmarker, false) );
-		this.inventory.contents.push( new Gun('banana_gun',  spr_banana_gun,  p_banana,  this, this.width, this.height, 16, 16, 2, 15, 2, 20, audio.mp3_hitmarker, p_hitmarker, false) );
+		this.inventory = new Inventory(5, [
+			new Gun('chicken_gun', spr_chicken_gun, p_chicken, this, this.width, this.height, 16, 10, 1, 20, 1, 15, audio.mp3_hitmarker, p_hitmarker, false),
+			new Gun('dorito_gun',  spr_dorito_gun,  p_dorito,  this, this.width, this.height, 16, 16, 2, 10, 2, 25, audio.mp3_hitmarker, p_hitmarker, false),
+			new Gun('banana_gun',  spr_banana_gun,  p_banana,  this, this.width, this.height, 16, 16, 2, 15, 2, 20, audio.mp3_hitmarker, p_hitmarker, false)
+		]);
 		this.inventory.equipItem(equipItem);
 		// Create healthbar
 		this.healthBar = new StatBar(this.id + '_health_bar', this, 'health', 55 / 1.45, 7, '#ce9069', '#51bf59');
@@ -55,14 +55,22 @@ class Turret extends Entity {
 		this.healthBar.update();
 	}
 	display() {
-		if (g_shadows_enabled) {
-			Game.c.save();
-			// Draw Shadow
-			Game.c.translate(this.pos.x, this.pos.y + Math.sin(this.rotation)*10);
-			Game.c.drawImage(spr_shadow, -this.width/2, (this.height/2)-8, this.width, 16);
-
-			Game.c.restore();
+		// Render Shadow
+		Game.c.save();
+		// Flip sprite on Y axis when updside down
+		if (this.flipped) {
+			Game.c.scale(1, -1);
+			Game.c.translate(this.pos.x + g_shadow_distance, -this.pos.y - g_shadow_distance );
+			Game.c.rotate(-this.rotation);
+		} else {
+			Game.c.scale(1, 1);
+			Game.c.translate( this.pos.x + g_shadow_distance, this.pos.y + g_shadow_distance );
+			Game.c.rotate(this.rotation);
 		}
+		// Draw player shadow
+		this.drawShadow();
+
+		Game.c.restore();
 
 		Game.c.save();
 		// Flip sprite on Y axis when updside down
@@ -80,12 +88,10 @@ class Turret extends Entity {
 		this.healthBar.display(0, this.height / 1.5);
 
 		// Render player sprite
-		Game.c.shadowColor = 'rgba(0, 0, 0, 0.5)';
-		Game.c.shadowOffsetX = 5;
-		Game.c.shadowOffsetY = 5;
-		Game.c.drawImage(this.sprite, -this.width / 2, -this.height / 2, this.width, this.height);
+		this.drawSprite();
 
 		this.inventory.run();
+
 		Game.c.restore();
 	}
 	findTarget() {
@@ -149,7 +155,8 @@ class Turret extends Entity {
 			particleSystem.spawnParticle('hitmarker' + particleSystem.particles.length, p_red_small , this.pos.x, this.pos.y, 18, 18, 3, random(0, 3), 15, 5);
 		}
 		// Remove entity from main array
-		entityManager.removeEntity(this);
+		this.explode(audio.mp3_vine_boom, p_explosion, spr_dew_logo, p_hitmarker);
+		// entityManager.removeEntity(this);
 	}
 	run() {
 		this.update()

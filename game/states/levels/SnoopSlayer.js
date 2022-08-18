@@ -28,6 +28,7 @@ var SnoopSlayer = function() {
 		console.time('Snoop Slayer loading');
 		// Generate shadows
 		console.time('Generate Shadows');
+		// Sprites
 		spr_player_slayer.shadow = generateShadow(spr_player_slayer);
 		spr_snoop.shadow 		 = generateShadow(spr_snoop);
 		spr_alert_boss_1.shadow  = generateShadow(spr_alert_boss_1);
@@ -36,7 +37,7 @@ var SnoopSlayer = function() {
 		spr_misc_bag.shadow      = generateShadow(spr_misc_bag);
 		spr_heart.shadow         = generateShadow(spr_heart);
 		spr_joint.shadow         = generateShadow(spr_joint);
-
+		// Particles
 		p_chicken.shadow  = generateShadow(p_chicken);
 		p_dew_can.shadow  = generateShadow(p_dew_can);
 		p_dorito.shadow   = generateShadow(p_dorito );
@@ -108,29 +109,32 @@ var SnoopSlayer = function() {
 				Game.getCurrentState().spawnSnoop(width + 80, random(150, height - 150), 80, 25, random(3.5, 5));
 			}
 		}, 1);
-
+		// Create particle system
 		particleSystem = new ParticleSystem(2000);
-
 		// Spawn player and initialize instructions
 		entityManager.spawnPlayer('player', spr_player_slayer, width / 2, height - 75, 85, 85, 7, 0.875, 15);
 		// Assign player entity to global varible for ease of use
 		player = entityManager.getEntityById('player');
 		// Add weapons to inventory (id, gun sprite, bullet sprite, parent, width, height, amount, speed, dither, damage, hit sound, hit particle, eqipped)
-		player.inventory.contents.push( new Gun('chicken_gun', spr_chicken_gun, p_chicken, player, player.width, player.height, 24, 16, 1, 20, 1, 15, audio.mp3_hitmarker, p_hitmarker, true ) );
-		player.inventory.contents.push( new Gun('dorito_gun',  spr_dorito_gun,  p_dorito,  player, player.width, player.height, 24, 24, 2, 10, 2, 25, audio.mp3_hitmarker, p_hitmarker, false) );
-		player.inventory.contents.push( new Gun('banana_gun',  spr_banana_gun,  p_banana,  player, player.width, player.height, 24, 24, 2, 15, 2, 20, audio.mp3_hitmarker, p_hitmarker, false) );
-		player.inventory.contents.push( new Gun('dew_gun',     spr_dew_gun,     p_dew_can, player, player.width, player.height, 24, 16, 2, 15, 2, 20, audio.mp3_hitmarker, p_hitmarker, false) );
+		player.inventory = new Inventory(10, [
+			new Gun('chicken_gun', spr_chicken_gun, p_chicken, player, player.width, player.height, 24, 16, 1, 20, 1, 15, audio.mp3_hitmarker, p_hitmarker, true ),
+			new Gun('dorito_gun',  spr_dorito_gun,  p_dorito,  player, player.width, player.height, 24, 24, 2, 10, 2, 25, audio.mp3_hitmarker, p_hitmarker, false),
+			new Gun('banana_gun',  spr_banana_gun,  p_banana,  player, player.width, player.height, 24, 24, 2, 15, 2, 20, audio.mp3_hitmarker, p_hitmarker, false),
+			new Gun('dew_gun',     spr_dew_gun,     p_dew_can, player, player.width, player.height, 24, 16, 2, 15, 2, 20, audio.mp3_hitmarker, p_hitmarker, false)
+		]);
 		// Set additional weapon properties
-		player.inventory.getInventoryItem('dew_gun').explosive = true;
-		player.inventory.getInventoryItem('dew_gun').firerate = 3;
-		player.inventory.getInventoryItem('dew_gun').p1 = p_explosion;
-		player.inventory.getInventoryItem('dew_gun').p2 = spr_dew_logo;
-		player.inventory.getInventoryItem('dew_gun').p3 = p_hitmarker;
-		player.inventory.getInventoryItem('dew_gun').onEquip = function() {
+		let dew_gun = player.inventory.getInventoryItem('dew_gun')
+
+		dew_gun.explosive = true;
+		dew_gun.firerate = 3;
+		dew_gun.p1 = p_explosion;
+		dew_gun.p2 = spr_dew_logo;
+		dew_gun.p3 = p_hitmarker;
+		dew_gun.onEquip = function() {
 			console.log('dew_gun equipped');
 			music.mp3_skrillex.play(0, 0, true);
 		}
-		player.inventory.getInventoryItem('dew_gun').onHolster = function() {
+		dew_gun.onHolster = function() {
 			console.log('dew_gun holstered');
 			music.mp3_skrillex.stop();
 		}
@@ -139,7 +143,7 @@ var SnoopSlayer = function() {
 		// Player starting velocity
 		player.vel.x =   0;
 		player.vel.y = -25;
-
+		// Reset score
 		this.score = 0;
 
 		this.initializeControls();
@@ -270,8 +274,6 @@ var SnoopSlayer = function() {
 			Game.c.fillText(Math.floor(fps), Game.width - 50, 50);
 
 			Game.c.drawImage(spr_hypercam, (width / 2) - 105, 0, 210, 20);
-		} else {
-			// Game.c.drawImage(bg_windows_bliss, 0, 0, width, height);
 		}
 
 		Game.c.restore();
@@ -338,7 +340,7 @@ var SnoopSlayer = function() {
 		Mousetrap.bind( controls.inv4,  () => { player.inventory.selectSlot(3); }, 'keydown' );
 		Mousetrap.bind( controls.inv5,  () => { player.inventory.selectSlot(4); }, 'keydown' );
 
-		// Spawn bot
+		// Spawn turret
 		Mousetrap.bind('i', () => { this.spawnTurret() }, 'keydown');
 
 		// Background script(s)
@@ -419,14 +421,14 @@ var SnoopSlayer = function() {
 		let _this = this;
 		backgroundManager.selectBackgroundScreen('bg_level_01_trippy', function() {
 			// Apply filter to canvas
-			root.style.setProperty('--saturate', saturation);
+			Game.setFilter('--saturate', saturation);
 			// Set shake amount
 			g_shake += shake;
 			g_speed  = 0.25;
 			_this.dampenShake = false;
 			// Create timer to reset changes and refer to default backgound
 			timerManager.addTimer(function() {
-				root.style.setProperty('--saturate', 1);
+				Game.setFilter('--saturate', 1);
 				// Only execute if game is still in current level
 				if (Game.getCurrentState() == _this) {
 					backgroundManager.selectBackgroundScreen('bg_windows_bliss');
@@ -440,16 +442,16 @@ var SnoopSlayer = function() {
 	this.spookyMode = function(time, shake) {
 		let _this = this;
 		// Apply filter to canvas
-		root.style.setProperty('--grayscale', 1);
-		root.style.setProperty('--contrast', 1.5);
+		Game.setFilter('--grayscale', 1);
+		Game.setFilter('--contrast', 1.5);
 		// Set shake amount
 		g_shake += shake;
 		// Disable shake dampening
 		this.dampenShake = false;
 		// Create timer to reset changes and refer to default backgound
 		timerManager.addTimer(function() {
-			root.style.setProperty('--grayscale', 0);
-			root.style.setProperty('--contrast',  1);
+			Game.setFilter('--grayscale', 0);
+			Game.setFilter('--contrast',  1);
 			// Only execute if game is still in current level
 			if (Game.getCurrentState() == _this) {
 				backgroundManager.selectBackgroundScreen('bg_windows_bliss');

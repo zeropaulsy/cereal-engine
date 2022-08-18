@@ -17,8 +17,6 @@ class Player extends Entity {
 		this.dashMaxCharge = 1500;
 		this.dashCharge = this.dashMaxCharge;
 		this.powerupActive = false;
-		// Create player inventory to store weapons
-		this.inventory = new Inventory(10);
 		// Create a health bar for the player
 		this.healthBar = new StatBar('player_health_bar', this, 'health', width / 1.45, height / 12, '#41C1E8', '#E85D41');
 		this.dashBar = new StatBar('player_dash_bar', this, 'dashCharge', width / 1.45, height / 12, '#41C1E8', '#65e841');
@@ -59,9 +57,9 @@ class Player extends Entity {
 			}
 		} else {
 			// Calculate player angle in relation to mouse
-			this.dx = canvas.mouseX - (this.pos.x);
-			this.dy = canvas.mouseY - (this.pos.y);
-			this.angle = Math.atan2(this.dy, this.dx);
+			let dx = canvas.mouseX - (this.pos.x);
+			let dy = canvas.mouseY - (this.pos.y);
+			this.angle = Math.atan2(dy, dx);
 			this.rotation = averageNums(this.rotation, this.angle, 0.35);
 		}
 		// Constrain player to screen
@@ -91,17 +89,15 @@ class Player extends Entity {
 		// Flip sprite on Y axis when updside down
 		if (this.flipped) {
 			Game.c.scale(1, -1);
-			Game.c.translate(this.pos.x + g_shadow_distance, -this.pos.y - g_shadow_distance);
+			Game.c.translate(this.pos.x + g_shadow_distance, -this.pos.y - g_shadow_distance );
 			Game.c.rotate(-this.rotation);
 		} else {
 			Game.c.scale(1, 1);
-			Game.c.translate(this.pos.x + g_shadow_distance, this.pos.y + g_shadow_distance);
+			Game.c.translate( this.pos.x + g_shadow_distance, this.pos.y + g_shadow_distance );
 			Game.c.rotate(this.rotation);
 		}
 		// Draw player shadow
-		if (this.sprite.shadow) {
-			Game.c.drawImage(this.sprite.shadow, -this.width / 2, -this.height / 2, this.width, this.height);
-		}
+		this.drawShadow();
 
 		Game.c.restore();
 		// Render player
@@ -120,7 +116,7 @@ class Player extends Entity {
 		this.healthBar.display(0, this.height / 1.5);
 		this.dashBar.display(0, this.height / 1.25);
 		// Draw player sprite
-		Game.c.drawImage(this.sprite, -this.width / 2, -this.height / 2, this.width, this.height);
+		this.drawSprite();
 		// Run inventory and render ontop of the player
 		this.inventory.run();
 

@@ -18,8 +18,8 @@ var DeathScreen01 = function() {
 		Mousetrap.bind( 'r',  function() { Game.setState(new SnoopSlayer()) }, 'keydown');
 		// Apply canvas filters
 		timerManager.addTimer(function() {
-			root.style.setProperty('--grayscale', 1.00);
-			root.style.setProperty('--contrast' , 1.15);
+			Game.setFilter('--grayscale', 1.00);
+			Game.setFilter('--contrast' , 1.15);
 		}, 300);
 	}
 	this.onExit = function() {

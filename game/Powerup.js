@@ -19,23 +19,14 @@ class Powerup extends Entity {
 		if (this.health < 0) this.destroy();
 	}
 	display() {
-		if (g_shadows_enabled) {
-			Game.c.save();
-			// Draw Shadow
-			Game.c.translate(this.pos.x, this.pos.y);
-			Game.c.drawImage(spr_shadow, -this.width/2, this.height/2, this.width, 16);
-
-			Game.c.restore();
-		}
 		Game.c.save();
-
+		// Move entity to position and rotation
 		Game.c.translate(this.pos.x, this.pos.y + Math.round(Math.sin(lastCalledTime/250)));
 		Game.c.rotate(this.rotation);
-		if (this.sprite.shadow) {
-			Game.c.drawImage(this.sprite.shadow, -this.width / 2 + g_shadow_distance, -this.height / 2 + g_shadow_distance, this.width, this.height);
-		}
+		// Draw drop shadow behind sprite
+		this.drawShadow();
 		// Draw sprite
-		Game.c.drawImage(this.sprite, -this.width / 2, -this.height / 2, this.width, this.height);
+		this.drawSprite();
 
 		Game.c.restore();
 	}

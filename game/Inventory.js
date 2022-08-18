@@ -1,9 +1,9 @@
 // Inventory Class : Inventory(Maximum Items)
 class Inventory {
-	constructor(max) {
+	constructor(max, contents) {
 		this.max = max;
 		this.slotActive = 0;
-		this.contents = [];
+		this.contents = contents || [];
 	}
 	run() {
 		// Overflow inventory position

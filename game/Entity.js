@@ -14,6 +14,7 @@ class Entity {
 		this.knockBack = 15;
 		this.friction  = 0.875;
 		this.speed 	   = 1;
+		this.angle     = 1;
 		this.rotation  = 0;
 	}
 	// Extra
@@ -24,6 +25,14 @@ class Entity {
 		new Explosion(this.pos.x, this.pos.y, 24, 24, 7, 10, 10, 100, p1, p2, p3);
 		// Destroy entity
 		this.parent.removeEntity(this);
+	}
+	drawShadow() {
+		if (this.sprite.shadow) {
+			Game.c.drawImage(this.sprite.shadow, -this.width / 2, -this.height / 2, this.width, this.height);
+		}
+	}
+	drawSprite() {
+		Game.c.drawImage(this.sprite, -this.width / 2, -this.height / 2, this.width, this.height);
 	}
 	// Position
 	getPosition() {

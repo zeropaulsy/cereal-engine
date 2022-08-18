@@ -9,15 +9,13 @@ class Enemy extends Entity {
 		this.showHealthBar = showHealthBar;
 		this.speed = speed;
 		this.health = health;
+		this.maxHealth = health;
 		this.deathSound = deathSound;
 		this.scoreValue = scoreValue;
 		this.sprite_dmg_1;
 		this.sprite_dmg_2;
 		this.sprite_dmg_enabled = false;
 		this.faceTarget = true;
-		this.maxHealth = health;
-		this.angle = 1;
-		this.rotation = this.pos.angle(target.pos);
 		this.rotationSpeed = random(0.875, 0.95);
 		this.flipped = false;
 		this.kill = false;
@@ -86,17 +84,14 @@ class Enemy extends Entity {
 		// Flip sprite if upside down
 		if (this.flipped && this.faceTarget) {
 			Game.c.scale(-1, 1);
-			Game.c.translate(-this.pos.x - g_shadow_distance, this.pos.y + g_shadow_distance);
-			// Game.c.rotate(-this.rotation);
+			Game.c.translate(-this.pos.x - g_shadow_distance, this.pos.y + g_shadow_distance );
 		} else {
 			Game.c.scale(1, 1);
-			Game.c.translate(this.pos.x + g_shadow_distance, this.pos.y + g_shadow_distance);
-			// Game.c.rotate(this.rotation);
+			Game.c.translate( this.pos.x + g_shadow_distance, this.pos.y + g_shadow_distance );
 		}
 		// Draw shadow
-		if (this.sprite.shadow) {
-			Game.c.drawImage(this.sprite.shadow, -this.width / 2, -this.height / 2, this.width, this.height);
-		}
+		this.drawShadow();
+
 		Game.c.restore();
 
 		// Render enemy
@@ -112,7 +107,7 @@ class Enemy extends Entity {
 			// Game.c.rotate(this.rotation);
 		}
 		// Draw sprite
-		Game.c.drawImage(this.sprite, -this.width/2, -this.height/2, this.width, this.height);
+		this.drawSprite();
 
 		Game.c.restore();
 

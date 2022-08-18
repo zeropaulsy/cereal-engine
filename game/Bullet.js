@@ -48,9 +48,8 @@ class Bullet extends Entity {
 
 		Game.c.translate(this.pos.x + g_shadow_distance, this.pos.y + g_shadow_distance);
 		Game.c.rotate(this.rotation);
-		if (this.sprite.shadow) {
-			Game.c.drawImage(this.sprite.shadow, -this.width / 2, -this.height / 2, this.width, this.height);
-		}
+		this.drawShadow();
+
 		Game.c.restore();
 
 		// Bullet
@@ -58,7 +57,7 @@ class Bullet extends Entity {
 
 		Game.c.translate(this.pos.x, this.pos.y);
 		Game.c.rotate(this.rotation);
-		Game.c.drawImage(this.sprite, -this.width/2, -this.height/2, this.width, this.height);
+		this.drawSprite();
 
 		Game.c.restore();
 	}

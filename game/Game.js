@@ -166,6 +166,10 @@ function GameObject() {
 			root.style.setProperty('--brightness', 1);
 		}
 	}
+	this.setFilter = function(filter, value) {
+		// Apply canvas filter
+		root.style.setProperty(filter, value);
+	}
 	this.resetFilters = function() {
 		root.style.setProperty('--blur',       0);
 		root.style.setProperty('--contrast',   1);

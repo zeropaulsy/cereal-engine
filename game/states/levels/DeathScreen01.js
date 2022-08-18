@@ -17,8 +17,10 @@ var DeathScreen01 = function() {
 		Mousetrap.bind('esc', function() { Game.setState(new SnoopSlayer()) }, 'keydown');
 		Mousetrap.bind( 'r',  function() { Game.setState(new SnoopSlayer()) }, 'keydown');
 		// Apply canvas filters
-		root.style.setProperty('--grayscale', 1.00);
-		root.style.setProperty('--contrast' , 1.15);
+		timerManager.addTimer(function() {
+			root.style.setProperty('--grayscale', 1.00);
+			root.style.setProperty('--contrast' , 1.15);
+		}, 300);
 	}
 	this.onExit = function() {
 		// Clear the canvas

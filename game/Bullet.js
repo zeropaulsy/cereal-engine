@@ -1,11 +1,10 @@
 // Bullet Class : Bullet(id, sprite, parent, width, height)
-class Bullet {
-	constructor(id, sprite, p, w, h) {
+class Bullet extends Entity {
+	constructor(id, sprite, x, y, width, height, p) {
+		// Call properties from Entity class
+		super(id, sprite, x, y, width, height);
+		// Class specific properties
 		this.entityType = 'bullet';
-		this.id = id;
-		this.sprite = sprite;
-		this.width = w;
-		this.height = h;
 		this.parent = p;
 		this.speed = p.speed;
 		this.dither = p.dither;
@@ -19,21 +18,21 @@ class Bullet {
 			(Math.cos(this.angle) * p.speed) + random(-p.dither, p.dither),
 			(Math.sin(this.angle) * p.speed) + random(-p.dither, p.dither)
 		);
-		this.hitbox = new CollisionBody(this, w, h, true, 1);
 		this.damage = p.damage;
 		this.hitSound = p.hitSound;
 		this.hitParticle = p.hitParticle;
 		this.explosive = p.explosive;
 		this.health = 1;
 		this.knockBack = 0;
-		this.kill = false;
+		this.friction = 1;
+		this.hitbox.type = 1;
 	}
 	update() {
-		this.pos.add(this.vel);
+		this.applyVelocity();
 
 		if (this.pos.x > width || this.pos.y > height || this.pos.x < 0 || this.pos.y < 0 || this.angle==NaN) this.destroy();
 
-		this.rotation += (0.25 * g_speed) * deltaTime;
+		this.addRotation( (0.25 * g_speed) * deltaTime );
 
 		if (this.health <= 0) {
 			if (!this.explosive)  {

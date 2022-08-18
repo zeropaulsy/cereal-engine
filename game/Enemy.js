@@ -1,31 +1,21 @@
 // Enemy Class : Enemy(id, sprite, target, x, y, width, height, speed, health, death sound, score value)
-class Enemy {
-	constructor(id, sprite, target, x, y, width, height, showHealthBar, speed, health, deathSound, scoreValue, powerupSprite) {
+class Enemy extends Entity {
+	constructor(id, sprite, x, y, width, height, target, showHealthBar, speed, health, deathSound, scoreValue) {
+		// Call properties from Entity class
+		super(id, sprite, x, y, width, height);
+		// Set class specific properties
 		this.entityType = 'enemy';
-		this.id = id;
-		this.showId = false;
-		this.parent = entityManager;
-		this.sprite = sprite;
+		this.target = target;
+		this.showHealthBar = showHealthBar;
+		this.speed = speed;
+		this.health = health;
+		this.deathSound = deathSound;
+		this.scoreValue = scoreValue;
 		this.sprite_dmg_1;
 		this.sprite_dmg_2;
 		this.sprite_dmg_enabled = false;
-		this.target = target;
 		this.faceTarget = true;
-		this.pos = new Vector(x, y);
-		this.vel = new Vector();
-		this.tile = new Vector();
-		this.width = width;
-		this.height = height;
-		this.hitbox = new CollisionBody(this, width, height, true, 2);
-		this.speed = speed;
-		this.health = health;
 		this.maxHealth = health;
-		this.showHealthBar = showHealthBar;
-		this.healthBar = new StatBar(id + '_healthbar', this, 'health', width / 1.5, 7, '#f0f0dd', '#686e46');
-		this.deathSound = deathSound;
-		this.scoreValue = scoreValue;
-		this.powerupSprite = powerupSprite || spr_box;
-		this.knockBack = 15;
 		this.angle = 1;
 		this.rotation = this.pos.angle(target.pos);
 		this.rotationSpeed = random(0.875, 0.95);
@@ -34,11 +24,10 @@ class Enemy {
 		this.path = [];
 		this.pathInstanceId = 'none';
 		this.pathfinding = false;
-		this.powerupDropped = false;
+		// Create healthbar
+		this.healthBar = new StatBar(id + '_healthbar', this, 'health', width / 1.5, 7, '#f0f0dd', '#686e46');
 	}
 	update() {
-		this.pos.add(this.vel);
-		this.vel.dampen(0.875);
 		this.tile.x = Math.floor(this.pos.x/g_tileSize)*g_tileSize;
 		this.tile.y = Math.floor(this.pos.y/g_tileSize)*g_tileSize;
 		// Find player and follow path
@@ -59,8 +48,11 @@ class Enemy {
 		}
 		this.rotation = averageNums(this.rotation, this.angle, this.rotationSpeed);
 		// Set velocity to move in direction of angle
-		this.vel.x += (Math.cos(this.rotation) / this.speed) * g_speed;
-		this.vel.y += (Math.sin(this.rotation) / this.speed) * g_speed;
+		this.addVelocity(
+			(Math.cos(this.rotation) / this.speed) * g_speed, 
+			(Math.sin(this.rotation) / this.speed) * g_speed
+		)
+		this.applyVelocity();
 		// Collision between player
 		if (collisionBetween1(this, player) && player.health > 1) {
 			player.health -= 1;
@@ -152,7 +144,8 @@ class Enemy {
 		}
 		// Cancel easystar pathfinding
 		easystar.cancelPath(this.pathInstanceId);
-		// Destroy collision body
+		// Destroy entity body
+		// this.explode(audio.mp3_vine_boom, p_explosion, spr_dew_logo, p_hitmarker);
 		this.parent.removeEntity(this);
 	}
 	run() {

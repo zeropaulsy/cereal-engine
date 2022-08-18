@@ -15,7 +15,7 @@ class Camera {
             scale: [1.0, 1.0]
         };
 
-        this.addListeners();
+        // this.addListeners();
         this.updateViewport();
     }
 

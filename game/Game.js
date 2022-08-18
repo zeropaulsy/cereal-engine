@@ -37,11 +37,11 @@ let mouseMoving = false;
 
 let controls = {
 	// Movement
-	up: 'w',
+	up:   'w',
 	left: 'a',
 	down: 's',
-	right: 'd',
-	space: 'space',
+	right:'d',
+	space:'space',
 	// Inventory
 	inv1: '1',
 	inv2: '2',
@@ -69,30 +69,31 @@ let player;
 
 let score = 0;
 
-var Game = {
-	width: 1280,
-	height: 720,
-	canvas: null,
-	c: null,
+let Game = new GameObject();
 
-	stateStack: new StateStack(),
+function GameObject() {
+	this.width  = width;
+	this.height = height;
+	this.canvas = null;
+	this.c      = null;
 
-	getCurrentState: function() {
+	this.stateStack = new StateStack();
+
+	this.getCurrentState = function() {
 		return this.stateStack.stateList.top();
-	},
-	setState: function(state) {
-		Game.stateStack.pop();
-		Game.stateStack.push(state);
-	},
-
-	update: function() {
+	}
+	this.setState = function(state) {
+		this.stateStack.pop();
+		this.stateStack.push(state);
+	}
+	this.update = function() {
 		this.stateStack.update();
-	},
-	display: function() {
+	}
+	this.display = function() {
 		this.stateStack.display();
-	},
-	run: function() {
-		requestAnimationFrame(Game.run);
+	}
+	this.run = function() {
+		requestAnimationFrame(this.run.bind(this));
 		// Set scale based on window size
 		g_scale = canvas.width / 1280;
 		// Prevent speed going below 0
@@ -109,7 +110,7 @@ var Game = {
 		}
 
 		// Handle pause menu inputs
-		g_paused ? Game.stateStack.pause() : Game.stateStack.resume();
+		g_paused ? this.stateStack.pause() : this.stateStack.resume();
 
 		// Calculate current framerate
 		if (!lastCalledTime) {
@@ -124,17 +125,16 @@ var Game = {
 		// Update and render current state
 		if (!loading) {
 			if (!g_paused) {
-				Game.stateStack.update();
+				this.stateStack.update();
 			}
-			Game.stateStack.display();
+			this.stateStack.display();
 		}
 		tick++;
-	},
-
-	startGame: function() {
+	}
+	this.startGame = function() {
 		this.setState(new SnoopSlayer());
-	},
-	pauseGame: function() {
+	}
+	this.pauseGame = function() {
 		g_paused = !g_paused; 
 		if (g_paused) {
 			pauseActiveSounds();
@@ -143,28 +143,43 @@ var Game = {
 			resumeActiveSounds();
 			timerManager.resumeTimers();
 		}
-	},
-	showPauseMenu: function() {
-		// Show pause menu
-		document.getElementById("pause_menu").style.display = 'block';
-		canvas.style.cursor = 'auto';
-		// canvas.style.filter = 'brightness(0.5)';
-		root.style.setProperty('--brightness', 0.5);
-
-		if (window.fullscreen) {
-			document.getElementById("toggle_fullscreen").value = "Fullscreen: ON";
-		} else {
-			document.getElementById("toggle_fullscreen").value = "Fullscreen: OFF";
+	}
+	this.showPauseMenu = function() {
+		if (pause_menu.style.display !== 'block') {
+			// Set html body background as canvas data
+			// body.style.backgroundImage = 'url(' + Game.canvas.toDataURL() + ')';
+			// Show pause menu if hidden
+			pause_menu.style.display = 'block';
+			// Set game cursor style
+			canvas.style.cursor = 'auto';
+			// Apply canvas filter
+			root.style.setProperty('--brightness', 0.5);
 		}
-	},
-	hidePauseMenu: function() {
-		// Hide pause menu
-		document.getElementById("pause_menu").style.display = 'none';
-		canvas.style.cursor = 'auto';
+	}
+	this.hidePauseMenu = function() {
+		if (pause_menu.style.display !== 'none') {
+			// Hide pause menu if visible
+			pause_menu.style.display = 'none';
+			// Set game cursor style
+			canvas.style.cursor = 'auto';
+			// Remove canvas filter
+			root.style.setProperty('--brightness', 1);
+		}
+	}
+	this.resetFilters = function() {
+		root.style.setProperty('--blur',       0);
+		root.style.setProperty('--contrast',   1);
 		root.style.setProperty('--brightness', 1);
-	},
-
-	setupCanvas: function(wrapper) {
+		root.style.setProperty('--grayscale',  0);
+		root.style.setProperty('--hue-rotate', 0);
+		root.style.setProperty('--opacity',    1);
+		root.style.setProperty('--saturate',   1);
+		root.style.setProperty('--sepia',      0);
+	}
+	this.clearCanvas = function(context) {
+		context.clearRect(0, 0, width, height);
+	}
+	this.setupCanvas = function(wrapper) {
 		this.canvas = document.createElement('canvas');
 		this.canvas.id = 'canvas';
         this.canvas.width = window.innerWidth * window.devicePixelRatio;
@@ -172,8 +187,14 @@ var Game = {
         this.c = this.canvas.getContext('2d');
 
         wrapper.appendChild(this.canvas);
-	},
-	init: function() {
+	}
+	this.getWindowSize = function() {
+		return {
+			width  : window.innerWidth * window.devicePixelRatio,
+			height : window.innerHeight * window.devicePixelRatio
+		};
+	}
+	this.init = function() {
 		this.setupCanvas(document.getElementById('body'));
 		this.startGame();
 	}

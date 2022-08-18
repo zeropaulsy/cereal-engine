@@ -1,20 +1,15 @@
 // Powerup
-class Powerup {
+class Powerup extends Entity {
 	constructor(id, sprite, x, y, width, height, onCollision) {
+		// Call Entity properties
+		super(id, sprite, x, y, width, height);
+		// Class specific properties
 		this.entityType = 'powerup';
-		this.id = id;
-		this.sprite = sprite;
-		this.pos = new Vector(x, y);
-		this.width = width;
-		this.height = height;
-		this.hitbox = {w: width, h: height};
 		this.onCollision = onCollision;
-		this.hitbox.lastCollision = Object();
 		this.health = random(500, 750);
-		this.kill = false;
 	}
 	update() {
-		if ( inRangeOf(this, player, this.hitbox.w/2) && !this.kill ) {
+		if ( inRangeOf(this, player, this.hitbox.w/2) ) {
 			if (this.onCollision()) {
 				audio.mp3_pop.play(0, 0.2, true);
 				this.destroy();
@@ -35,6 +30,7 @@ class Powerup {
 		Game.c.save();
 
 		Game.c.translate(this.pos.x, this.pos.y + Math.round(Math.sin(lastCalledTime/250)));
+		Game.c.rotate(this.rotation);
 		if (this.sprite.shadow) {
 			Game.c.drawImage(this.sprite.shadow, -this.width / 2 + g_shadow_distance, -this.height / 2 + g_shadow_distance, this.width, this.height);
 		}

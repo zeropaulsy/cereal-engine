@@ -7,6 +7,8 @@ var SnoopSlayer = function() {
 	this.snoopSpawnerLeft;
 	this.snoopSpawnerRight;
 
+	this.turrentWorker;
+
 	this.dampenShake = true;
 
 	this.weaponIds;
@@ -23,13 +25,35 @@ var SnoopSlayer = function() {
 	this.camera;
 
 	this.onEnter = function() {
+		console.time('Snoop Slayer loading');
+		// Generate shadows
+		console.time('Generate Shadows');
+		spr_player_slayer.shadow = generateShadow(spr_player_slayer);
+		spr_snoop.shadow 		 = generateShadow(spr_snoop);
+		spr_alert_boss_1.shadow  = generateShadow(spr_alert_boss_1);
+		spr_alert_boss_2.shadow  = generateShadow(spr_alert_boss_2);
+		spr_alert_boss_3.shadow  = generateShadow(spr_alert_boss_3);
+		spr_misc_bag.shadow      = generateShadow(spr_misc_bag);
+		spr_heart.shadow         = generateShadow(spr_heart);
+		spr_joint.shadow         = generateShadow(spr_joint);
+
+		p_chicken.shadow  = generateShadow(p_chicken);
+		p_dew_can.shadow  = generateShadow(p_dew_can);
+		p_dorito.shadow   = generateShadow(p_dorito );
+		p_banana.shadow   = generateShadow(p_banana );
+		console.timeEnd('Generate Shadows');
+		// Set html body background
+		body.style.backgroundImage = 'url(' + bg_windows_bliss.src + ')';
 		// Set image rendering mode
 		Game.c.imageSmoothingEnabled = true;
-		Game.canvas.style.cursor = 'none';	
+		Game.canvas.style.cursor = 'none';
 		// Set mouse position
 		Game.canvas.mouseX = width;
 		Game.canvas.mouseY = height / 2;
+		// Add turret worker thread
+		this.turretWorker = new Worker('./game/CalculateAngle.js');
 		// Set global variables
+		g_speed = 1;
 		g_tileSize = 64;
 		g_shake = 0;
 		g_shadows_enabled = false;
@@ -115,34 +139,21 @@ var SnoopSlayer = function() {
 		// Player starting velocity
 		player.vel.x =   0;
 		player.vel.y = -25;
-		// Generate shadows
-		console.time('Generate Shadows');
-		spr_player_slayer.shadow = generateShadow(spr_player_slayer);
-		spr_snoop.shadow 		 = generateShadow(spr_snoop);
-		spr_alert_boss_1.shadow  = generateShadow(spr_alert_boss_1);
-		spr_alert_boss_2.shadow  = generateShadow(spr_alert_boss_2);
-		spr_alert_boss_3.shadow  = generateShadow(spr_alert_boss_3);
-		spr_misc_bag.shadow      = generateShadow(spr_misc_bag);
-		spr_heart.shadow         = generateShadow(spr_heart);
-		spr_joint.shadow         = generateShadow(spr_joint);
-
-		p_chicken.shadow  = generateShadow(p_chicken);
-		p_dew_can.shadow  = generateShadow(p_dew_can);
-		p_dorito.shadow   = generateShadow(p_dorito );
-		p_banana.shadow   = generateShadow(p_banana );
-		console.timeEnd('Generate Shadows');
 
 		this.score = 0;
 
 		this.initializeControls();
 
 		console.log(this.name + ' entered.');
+
+		console.timeEnd('Snoop Slayer loading');
 	}
 	this.onExit = function() {
-		// CLose turret worker threads
-		for (let i = 0; i < entityManager.turrets.length; i++) {
-			entityManager.turrets[i].worker.terminate();
-		}
+		// CLose turret worker thread
+		this.turretWorker.terminate();
+
+		// Destroy camera
+		this.camera = null;
 
 		// Destroy enemy spawners
 		this.bossSpawnerTop = null;
@@ -161,6 +172,7 @@ var SnoopSlayer = function() {
 		// Add level score to global score
 		score = this.score;
 		g_shake = 0;
+		g_speed = 1;
 		inputTime = 0;
 
 		// Stop all audio
@@ -169,14 +181,20 @@ var SnoopSlayer = function() {
 
 		// Reset controls
 		Object.keys(controls).forEach(function(key) {
-			Mousetrap.bind(controls[key], function() {}, 'keydown');
+			Mousetrap.unbind(controls[key], 'keydown');
 		});
 
-		Mousetrap.bind('i', function() {}, 'keydown');
-		Mousetrap.bind('t', function() {}, 'keydown');
-		Mousetrap.bind('y', function() {}, 'keydown');
+		Mousetrap.unbind( 'i',  'keydown');
+		Mousetrap.unbind( 't',  'keydown');
+		Mousetrap.unbind( 'y',  'keydown');
+		Mousetrap.unbind('esc', 'keydown');
 
 		console.log(this.name + ' left.');
+	}
+	this.onDeath = function() {
+		lastScreen = canvasDataToImage(Game.canvas);
+
+		Game.setState(new DeathScreen01());
 	}
 	this.restart = function () {
 		this.onExit();
@@ -208,7 +226,9 @@ var SnoopSlayer = function() {
 		if ( this.snoopSpawnerLeft.spawnTime  > 10 ) this.snoopSpawnerLeft.spawnTime  -= 0.01;
 		if ( this.snoopSpawnerRight.spawnTime > 10 ) this.snoopSpawnerRight.spawnTime -= 0.01;
 
-		if (player.health <= 1) this.restart();
+		if (player.health <= 1) {
+			this.onDeath();
+		}
 
 		inputTime++;
 		if (inputTime > 500) {
@@ -242,9 +262,26 @@ var SnoopSlayer = function() {
 			Game.c.drawImage(cur_pixel, -20, -20, 40, 40);
 
 			Game.c.restore();
+
+			Game.c.font = '100px m3x6';
+			Game.c.fillStyle = '#000';
+			Game.c.fillText(Math.floor(fps), Game.width - 52, 52);
+			Game.c.fillStyle = '#ffff00';
+			Game.c.fillText(Math.floor(fps), Game.width - 50, 50);
+
+			Game.c.drawImage(spr_hypercam, (width / 2) - 105, 0, 210, 20);
 		} else {
-			// Game.c.drawImage(lastScreen, 0, 0, width, height);
+			// Game.c.drawImage(bg_windows_bliss, 0, 0, width, height);
 		}
+
+		Game.c.restore();
+
+		this.camera.end();
+
+		// Render ontop on the game
+		Game.c.save();
+
+		Game.c.scale(g_scale, g_scale);
 
 		// Draw HUD
 		Game.c.font = '50px Comic Sans MS';
@@ -256,23 +293,6 @@ var SnoopSlayer = function() {
 		Game.c.fillText('ign: ' + player.health / 10 + '/10', 12, 102);
 		Game.c.fillStyle = '#ff0000';
 		Game.c.fillText('ign: ' + player.health / 10 + '/10', 10, 100);
-
-		Game.c.font = '100px m3x6';
-		Game.c.fillStyle = '#000';
-		Game.c.fillText(Math.floor(fps), Game.width - 52, 52);
-		Game.c.fillStyle = '#ffff00';
-		Game.c.fillText(Math.floor(fps), Game.width - 50, 50);
-
-		Game.c.drawImage(spr_hypercam, (width / 2) - 105, 0, 210, 20);
-
-		Game.c.restore();
-
-		this.camera.end();
-
-		// Render ontop on the game
-		Game.c.save();
-
-		Game.c.scale(g_scale, g_scale);
 
 		if (inputTime > 500 && !g_paused) {
 			Game.c.font = '42pt Comic Sans MS';
@@ -322,7 +342,9 @@ var SnoopSlayer = function() {
 		Mousetrap.bind('i', () => { this.spawnTurret() }, 'keydown');
 
 		// Background script(s)
-		Mousetrap.bind('y', () => { this.trippyMode(6000, 3, 1.25) }, 'keydown');
+		Mousetrap.bind('y', () => { this.trippyMode(5000, 15, 1.25) }, 'keydown');
+
+		Mousetrap.bind('esc', () => { Game.pauseGame() }, 'keydown');
 	}
 
 	// Stage specific functions
@@ -361,7 +383,7 @@ var SnoopSlayer = function() {
 		// Trigger state event
 		function slowmo() {
 			audio.mp3_smoke_weed.play();
-			Game.getCurrentState().trippyMode(5000, 5, 1.25);
+			Game.getCurrentState().trippyMode(5000, 15, 1.25);
 
 			return true;
 		}
@@ -452,14 +474,14 @@ var SnoopSlayer = function() {
 		);
 	}
 	this.spawnSnoop = function(x, y, size, health, speed) {
-		entityManager.spawnEnemy('enemy' + entityManager.enemies.length, spr_snoop, player, x, y, size, size, false, speed, health, audio.mp3_hitmarker, 1, spr_misc_bag);
+		entityManager.spawnEnemy('enemy' + entityManager.enemies.length, spr_snoop, x, y, size, size, player, false, speed, health, audio.mp3_hitmarker, 1);
 	}
 	this.spawnSkull = function(x, y, size, health, speed) {
-		entityManager.spawnEnemy('enemy' + entityManager.enemies.length, spr_skull, player, x, y, size, size, false, speed, health, audio.mp3_hitmarker, 1, spr_misc_bag);
+		entityManager.spawnEnemy('enemy' + entityManager.enemies.length, spr_skull, x, y, size, size, player, false, speed, health, audio.mp3_hitmarker, 1);
 	}
 	this.spawnAlert = function(x, y, size, health, speed) {
 		let id = 'alert' + entityManager.enemies.length;
-		entityManager.spawnEnemy(id, spr_alert_boss_1, player, x, y, size, size*0.29, false, speed, 1000, audio.mp3_hitmarker, 1, spr_misc_bag);
+		entityManager.spawnEnemy(id, spr_alert_boss_1, x, y, size, size*0.29, player, false, speed, 1000, audio.mp3_hitmarker, 1);
 	    entityManager.getEntityById(id).sprite_dmg_enabled = true;
 	    entityManager.getEntityById(id).sprite_dmg_1 = spr_alert_boss_2;
 	    entityManager.getEntityById(id).sprite_dmg_2 = spr_alert_boss_3;

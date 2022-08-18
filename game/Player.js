@@ -1,19 +1,12 @@
-// Player Class : Player(id, sprite, x, y, width, height, speed, friction, knockback)
-class Player {
-	constructor(id, sprite, x, y, w, h, s, f, k) {
-		this.entityType = 'player';
-		this.id = id;
-		this.showId = false;
-		this.sprite = sprite;
-		this.pos = new Vector(x, y);
-		this.vel = new Vector(0, 0);
-		this.tile = new Vector();
-		this.width = w;
-		this.height = h;
-		this.hitbox = new CollisionBody(this, w, h, true, 1);
-		this.speed = s;
-		this.friction = f;
-		this.knockBack = k;
+// Player Class : Player(id, sprite, x, y, width, height, speed, friction, knockBack)
+class Player extends Entity {
+	constructor(id, sprite, x, y, width, height, speed, friction, knockBack) {
+		// Call properties from Entity class
+		super(id, sprite, x, y, width, height);
+		// Set class specific properties
+		this.speed = speed;
+		this.friction = friction;
+		this.knockBack = knockBack;
 		this.health = 100;
 		this.maxHealth = 100;
 		this.angle = 1;
@@ -27,12 +20,11 @@ class Player {
 		// Create player inventory to store weapons
 		this.inventory = new Inventory(10);
 		// Create a health bar for the player
-		this.healthBar = new StatBar('player_health_bar', this, 'health', w / 1.45, h / 12, '#41C1E8', '#E85D41');
-		this.dashBar = new StatBar('player_dash_bar', this, 'dashCharge', w / 1.45, h / 12, '#41C1E8', '#65e841');
+		this.healthBar = new StatBar('player_health_bar', this, 'health', width / 1.45, height / 12, '#41C1E8', '#E85D41');
+		this.dashBar = new StatBar('player_dash_bar', this, 'dashCharge', width / 1.45, height / 12, '#41C1E8', '#65e841');
 	}
 	update() {
-		this.pos.add(this.vel);
-		this.vel.dampen(this.friction);
+		this.applyVelocity();
 
 		if (this.friction > 1) this.friction = 1;
 		// Calculate tile player is on
@@ -55,8 +47,8 @@ class Player {
 		// Handle controller movement
 		if (g_gamepadConnected && g_lastInput == 'controller') {
 			// Add joystick pos to player velocity
-			this.vel.x += leftJoystick.x;
-			this.vel.y += leftJoystick.y;
+			this.vel.x += this.speed * leftJoystick.x;
+			this.vel.y += this.speed * leftJoystick.y;
 			// Shoot when aiming with right joystick
 			if (rightJoystick.x != 0 || rightJoystick.y != 0) {
 				this.inventory.getEquippedItem().shoot(this.inventory.getEquippedItem().amount);
@@ -73,22 +65,7 @@ class Player {
 			this.rotation = averageNums(this.rotation, this.angle, 0.35);
 		}
 		// Constrain player to screen
-		if (this.pos.x < this.width/2) {
-			this.vel.x = 0;
-			this.pos.x = this.width/2;
-		}
-		if (this.pos.x > width - this.width/2) {
-			this.vel.x = 0;
-			this.pos.x = width - this.width/2;
-		}
-		if (this.pos.y < this.height/2) {
-			this.vel.y = 0;
-			this.pos.y = this.height/2;
-		}
-		if (this.pos.y > height - this.height/2) {
-			this.vel.y = 0;
-			this.pos.y = height - this.height/2;
-		}
+		this.constrainToScreen();
 		// Set flipped variable depending if player is facing left or right
 		if (this.rotation < -1.5 || this.rotation > 1.5) {
 			this.flipped = true;
@@ -149,27 +126,14 @@ class Player {
 
 		Game.c.restore();
 	}
-	resize(width, height) {
-		this.width = width;
-		this.height = height;
-		this.hitbox.w = width;
-		this.hitbox.h = height;
+	adjustSize(width, height) {
+		// Call resize function from Entity class
+		this.setSize(width, height);
+		// Resize player stat bars
 		this.healthBar.cWidth = width / 1.45;
 		this.dashBar.cWidth = width / 1.45;
 		this.healthBar.height = height / 12;
 		this.dashBar.height = height / 12;
-	}
-	moveUp() {
-		if (this.vel.y > -this.speed) this.vel.y--;
-	}
-	moveDown() {
-		if (this.vel.y <  this.speed) this.vel.y++;
-	}
-	moveLeft() {
-		if (this.vel.x > -this.speed) this.vel.x--;
-	}
-	moveRight() {
-		if (this.vel.x <  this.speed) this.vel.x++;
 	}
 	dash(vel, callback) {
 		if (this.dashCharge == this.dashMaxCharge) {

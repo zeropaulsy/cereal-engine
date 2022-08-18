@@ -40,31 +40,29 @@ function darkenImage(imgData, value, alpha) {
 }
 
 function generateShadow(image) {
-	let shadow = document.createElement('canvas');
-	let sc = shadow.getContext('2d');
+    if (!image.shadow) {
+    	let shadow = document.createElement('canvas');
+    	let sc = shadow.getContext('2d');
 
-	shadow.id = 'shadow';
-    shadow.width = image.width;
-    shadow.height = image.height;
+    	shadow.id     = 'shadow';
+        shadow.width  = image.width;
+        shadow.height = image.height;
 
-    sc.drawImage(image, 0, 0, shadow.width, shadow.height);
+        sc.drawImage(image, 0, 0, shadow.width, shadow.height);
 
-    let imgData = sc.getImageData(0, 0, shadow.width, shadow.height);
+        let imgData = sc.getImageData(0, 0, shadow.width, shadow.height);
 
-    shadowData = darkenImage(imgData, 255, 127);
-    sc.putImageData(shadowData, 0, 0);
+        shadowData = darkenImage(imgData, 255, 127);
+        sc.putImageData(shadowData, 0, 0);
 
-    //var image = new Image();
-    //image.src = shadow.toDataURL("image/png");
-    //return image;
-    return loadImage({ src : shadow.toDataURL("image/png") });
+        return loadImage({ src : shadow.toDataURL("image/png") });
+    } else {
+        return image.shadow;
+    }
 }
 
 
 function canvasDataToImage(canvas) {
-    // var image = new Image();
-    // image.src = canvas.toDataURL("image/png");
-    // return image;
     return loadImage({ src : canvas.toDataURL("image/png") });
 }
 

@@ -1,15 +1,11 @@
 // Turret Class
-class Turret {
+class Turret extends Entity {
 	constructor(id, sprite, target, x, y, width, height, health, ammo, rotationSpeed, stationary, equipItem) {
-		let _this = this;
+		// Call Entity properties
+		super(id, sprite, x, y, width, height);
+		// Class specific properties
+		let self = this;
 		this.entityType = 'turret';
-		this.id = id;
-		this.sprite = sprite;
-		this.pos = new Vector(x, y);
-		this.vel = new Vector();
-		this.width = width;
-		this.height = height;
-		this.hitbox = new CollisionBody(this, width, height, true);
 		this.health = health;
 		this.maxHealth = health;
 		this.ammo = ammo;
@@ -20,21 +16,25 @@ class Turret {
 		this.stationary = stationary;
 		this.speed = random(1, 2);
 		this.friction = 0.9;
-		this.knockBack = 10;
 		this.distance = random(128, 256);
 		this.kill = false;
+		// Create inventory
 		this.inventory = new Inventory(5);
+		// Create inventory contents
 		this.inventory.contents.push( new Gun('chicken_gun', spr_chicken_gun, p_chicken, this, this.width, this.height, 16, 10, 1, 20, 1, 15, audio.mp3_hitmarker, p_hitmarker, true ) );
 		this.inventory.contents.push( new Gun('dorito_gun',  spr_dorito_gun,  p_dorito,  this, this.width, this.height, 16, 16, 2, 10, 2, 25, audio.mp3_hitmarker, p_hitmarker, false) );
 		this.inventory.contents.push( new Gun('banana_gun',  spr_banana_gun,  p_banana,  this, this.width, this.height, 16, 16, 2, 15, 2, 20, audio.mp3_hitmarker, p_hitmarker, false) );
 		this.inventory.equipItem(equipItem);
+		// Create healthbar
 		this.healthBar = new StatBar(this.id + '_health_bar', this, 'health', 55 / 1.45, 7, '#ce9069', '#51bf59');
-		// Add worker thread
-		this.worker = new Worker('./game/CalculateAngle.js');
+		// Worker message timings
+		this.worker = Game.getCurrentState().turretWorker;
 		this.workerUpdateSpeed = 50;
 		this.workerTimer = 0;
 		// Listen for worker responce message
-		this.worker.onmessage = function(e) { _this.angle = Math.atan2(e.data.vy, e.data.vx) };
+		this.worker.onmessage = function(e) { 
+			self.angle = Math.atan2(e.data.vy, e.data.vx) 
+		};
 	}
 	update() {
 
@@ -42,8 +42,7 @@ class Turret {
 		this.calculateAngle();
 		if ( isNaN(this.rotation) ) this.rotation = 1, console.warn(this.id + ': Could not calculate rotation. Instead set to 1.');
 
-		this.pos.add(this.vel);
-		this.vel.dampen(this.friction);
+		this.applyVelocity();
 
 		if (this.health < 0) this.destroy(10);
 		// Set flipped variable depending if turret is facing left or right
@@ -89,19 +88,21 @@ class Turret {
 		this.inventory.run();
 		Game.c.restore();
 	}
+	findTarget() {
+		// Find closest enemy
+		for (var target, d = Number.MAX_VALUE, i = 0; i < entityManager.enemies.length; i++) {
+			let enemy = entityManager.enemies[i],
+				distance = Math.pow(this.pos.x - enemy.pos.x, 2) + Math.pow(this.pos.y - enemy.pos.y, 2);
+			distance < d && (target = enemy, d = distance)
+		}
+
+		return target;
+	}
 	calculateAngle() {
 		if (0 < entityManager.enemies.length) {
-			// Find closest enemy
-			for (var target, d = Number.MAX_VALUE, i = 0; i < entityManager.enemies.length; i++) {
-				let enemy = entityManager.enemies[i],
-					distance = Math.pow(this.pos.x - enemy.pos.x, 2) + Math.pow(this.pos.y - enemy.pos.y, 2);
-				distance < d && (target = enemy, d = distance)
-			}
-
-			let t = target;
-
-			// Send to worker thread
+			// Send data to worker thread
 			if (this.workerTimer < 0) {
+				let t = this.findTarget();
 				this.worker.postMessage({
 					'worker_message': 'calculate_angle',
 					'turret': {
@@ -121,7 +122,6 @@ class Turret {
 				// Reset worker timer
 				this.workerTimer = this.workerUpdateSpeed;
 			}
-
 			this.rotation = averageNums(this.rotation, this.angle, this.rotationSpeed);
 
 			if (!this.stationary && !inRangeOf(this, player, this.distance)) {
@@ -148,8 +148,6 @@ class Turret {
 		for (let i = 0; i < amount; i++) {
 			particleSystem.spawnParticle('hitmarker' + particleSystem.particles.length, p_red_small , this.pos.x, this.pos.y, 18, 18, 3, random(0, 3), 15, 5);
 		}
-		// Terminate worker thread
-		this.worker.terminate();
 		// Remove entity from main array
 		entityManager.removeEntity(this);
 	}

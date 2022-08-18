@@ -44,10 +44,10 @@ class EntityManager {
 		  return entityManager.entities[el.index];
 		});
 	}
-	spawnPlayer(id, spr, x, y, w, h, s, f, k) {
+	spawnPlayer(id, sprite, x, y, width, height, speed, friction, knockBack) {
 		// Create player and add to entities array
 		if (!this.playerSpawned) {
-			this.entities.push(new Player(id, spr, x, y, w, h, s, f, k));
+			this.entities.push(new Player(id, sprite, x, y, width, height, speed, friction, knockBack));
 			// Toggle boolean meaning only one player entity can be added to array
 			this.playerSpawned = true;
 		} else {
@@ -55,10 +55,10 @@ class EntityManager {
 			console.log('Player has already been spawned.');
 		}
 	}
-	spawnEnemy(id, spr, t, x, y, w, h, hb, s, l, ds, sv, ps) {
+	spawnEnemy(id, sprite, x, y, width, height, target, showHealthBar, speed, health, deathSound, scoreValue, powerupSprite) {
 		if (this.entities.length < this.max) {
 			// New bullet to entities array
-			this.entities.push(new Enemy(id, spr, t, x, y, w, h, hb, s, l, ds, sv, ps));
+			this.entities.push(new Enemy(id, sprite, x, y, width, height, target, showHealthBar, speed, health, deathSound, scoreValue, powerupSprite));
 			// this.enemies.push(new Enemy(id, spr, t, x, y, w, h, hb, s, l, ds, sv));
 			// Update array of enemies
 			this.filterEntities('enemy');
@@ -89,10 +89,10 @@ class EntityManager {
 			console.warn('Could not spawn turret. Maximum number of entities reached: ' + this.max);
 		}
 	}
-	spawnBullet(id, spr, p, w, h) {
+	spawnBullet(id, sprite, x, y, width, height, p) {
 		if (this.entities.length < this.max) {
 			// New entities to entities array
-			this.entities.push(new Bullet(id, spr, p, w, h));
+			this.entities.push(new Bullet(id, sprite, x, y, width, height, p));
 			// Update array of bullets
 			this.filterEntities('bullet');
 		} else {

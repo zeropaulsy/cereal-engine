@@ -1,6 +1,8 @@
 // Modules to control application life and create native browser window
 const {app, BrowserWindow} = require('electron')
+const remote = require('electron').remote;
 const path                 = require('path')
+const {ipcMain}            = require('electron');
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -14,28 +16,23 @@ function createWindow () {
 		height: 720,
 		minWidth: 640,
 		minHeight: 360,
+		backgroundColor: '#000000',
+		frame: false,
 		webPreferences: {
+			enableRemoteModule: true,
+			nodeIntegration: true,
 			nodeIntegrationInWorker: true,
+			contextIsolation: false,
 			preload: path.join(__dirname, 'preload.js')
 		}
 	})
 
 	// Set window aspect ratio
-	mainWindow.setAspectRatio(16/9);
+	// mainWindow.setAspectRatio(1280/720);
 	if (process.platform !== 'darwin') mainWindow.setMenu(null);
 
 	// and load the index.html of the app.
 	mainWindow.loadFile('index.html');
-
-	// mainWindow.on('resize', function () {
-	//   setTimeout(function () {
-	//     var size = mainWindow.getContentSize();
-	//     // windows mainWindow.setSize( size[0], ( parseInt(size[0] * 9 / 16) ) + 30 );
-	// 	// osx mainWindow.setSize( size[0], ( parseInt(size[0] * 9 / 16) ) + 22 );
-	// 	mainWindow.setSize( size[0], ( parseInt(size[0] * 9 / 16) ) );
-	//   }, 0);
-	// });
-
 
 	// Emitted when the window is closed.
 	mainWindow.on('closed', function () {
@@ -66,6 +63,12 @@ app.on('activate', function () {
 	// dock icon is clicked and there are no other windows open.
 	if (mainWindow === null) createWindow();
 })
-
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.
+ipcMain.on('minimize', () => {
+	mainWindow.minimize();
+})
+
+ipcMain.on('maximize', () => {
+	mainWindow.maximize();
+})

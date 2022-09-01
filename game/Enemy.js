@@ -1,33 +1,26 @@
 // Enemy Class : Enemy(id, sprite, target, x, y, width, height, speed, health, death sound, score value)
-class Enemy extends Entity {
-	constructor(id, sprite, x, y, width, height, target, showHealthBar, speed, health, deathSound, scoreValue) {
-		// Call properties from Entity class
-		super(id, sprite, x, y, width, height);
+class Enemy extends Creature {
+	constructor(id, sprite, x, y, width, height, target, health, speed, friction, showHealthBar, deathSound, scoreValue) {
+		// Set properties from Creature class
+		super(id, sprite, x, y, width, height, health, speed, friction);
 		// Set class specific properties
 		this.entityType = 'enemy';
 		this.target = target;
-		this.showHealthBar = showHealthBar;
-		this.speed = speed;
-		this.health = health;
-		this.maxHealth = health;
+		this.showHealthBar = false;
 		this.deathSound = deathSound;
 		this.scoreValue = scoreValue;
 		this.sprite_dmg_1;
 		this.sprite_dmg_2;
 		this.sprite_dmg_enabled = false;
-		this.faceTarget = true;
 		this.rotationSpeed = random(0.875, 0.95);
-		this.flipped = false;
-		this.kill = false;
+		this.faceTarget = false;
+		this.explosive = false;
+		this.hitmarker = p_hitmarker;
 		this.path = [];
 		this.pathInstanceId = 'none';
 		this.pathfinding = false;
-		// Create healthbar
-		this.healthBar = new StatBar(id + '_healthbar', this, 'health', width / 1.5, 7, '#f0f0dd', '#686e46');
 	}
 	update() {
-		this.tile.x = Math.floor(this.pos.x/g_tileSize)*g_tileSize;
-		this.tile.y = Math.floor(this.pos.y/g_tileSize)*g_tileSize;
 		// Find player and follow path
 		if (this.isOnGrid() && g_pathfinding_enabled) {
 			findEntityPath(this, this.target);
@@ -36,36 +29,29 @@ class Enemy extends Entity {
 			try {
 				this.dx = ( (this.path[1].x - random(-1, 1) ) * g_tileSize ) - ( this.pos.x - (this.width / 2) );
 				this.dy = ( (this.path[1].y - random(-1, 1) ) * g_tileSize ) - ( this.pos.y - (this.height/ 2) );
-				this.angle = Math.atan2(this.dy, this.dx);
+				this.rotateTo(Math.atan2(this.dy, this.dx), this.rotationSpeed);
 			}
 			catch {
-				this.angle = this.pos.angle(this.target.pos);
+				this.rotateTo(this.pos.angle(this.target.pos), this.rotationSpeed);
 			}
 		} else {
-			this.angle = this.pos.angle(this.target.pos);
+			this.rotateTo(this.pos.angle(this.target.pos), this.rotationSpeed);
 		}
-		this.rotation = averageNums(this.rotation, this.angle, this.rotationSpeed);
 		// Set velocity to move in direction of angle
-		this.addVelocity(
-			(Math.cos(this.rotation) / this.speed) * g_speed, 
-			(Math.sin(this.rotation) / this.speed) * g_speed
-		)
-		this.applyVelocity();
-		// Collision between player
-		if (collisionBetween1(this, player) && player.health > 1) {
-			player.health -= 1;
-			audio.mp3_hurt.play(0, 0.1, false);
-		}
+		this.moveTo(this.pos.angle(this.target.pos), this.speed, this.rotationSpeed);
+		this.applyVelocity(this.friction);
+		// Collision between entities excluding player, collisions with player handled in player class
+		this.handleCollision('player', function(e, self) {
+			if (e.entityType == 'bullet') {
+				self.spawnHitmarker(e.pos.x, e.pos.y, false);
+				e.health = 0;
+				self.health -= e.damage;
+			}
+		});
 		// Change sprite depending on health
 		if (this.sprite_dmg_enabled) {
 			if (this.health < this.maxHealth * 0.66) this.sprite = this.sprite_dmg_1;
 			if (this.health < this.maxHealth * 0.33) this.sprite = this.sprite_dmg_2;
-		}
-		// Flip the sprite depending on the angle it is facing
-		if (this.rotation < -1.5 || this.rotation > 1.5) {
-			this.flipped = false;
-		} else {
-			this.flipped = true;
 		}
 		if (this.showHealthBar) this.healthBar.update();
 		// Set entity to be destroyed when health runs out
@@ -75,63 +61,37 @@ class Enemy extends Entity {
 		}
 	}
 	display() {
-		// Draw tile enemy is on
-		// Game.c.fillStyle = 'rgba(255, 0, 0, 0.5)';
-		// Game.c.fillRect(this.tile.x, this.tile.y, g_tileSize, g_tileSize);
-
-		// Render shadow
-		Game.c.save();
-		// Flip sprite if upside down
-		if (this.flipped && this.faceTarget) {
-			Game.c.scale(-1, 1);
-			Game.c.translate(-this.pos.x - g_shadow_distance, this.pos.y + g_shadow_distance );
-		} else {
-			Game.c.scale(1, 1);
-			Game.c.translate( this.pos.x + g_shadow_distance, this.pos.y + g_shadow_distance );
-		}
-		// Draw shadow
-		this.drawShadow();
-
-		Game.c.restore();
-
-		// Render enemy
-		Game.c.save();
-		// Flip sprite if upside down
-		if (this.flipped && this.faceTarget) {
-			Game.c.scale(-1, 1);
-			Game.c.translate(-this.pos.x, this.pos.y);
-			// Game.c.rotate(-this.rotation);
-		} else {
-			Game.c.scale(1, 1);
-			Game.c.translate(this.pos.x, this.pos.y);
-			// Game.c.rotate(this.rotation);
-		}
-		// Draw sprite
-		this.drawSprite();
-
-		Game.c.restore();
-
-		Game.c.save();
-
-		Game.c.translate(Math.round(this.pos.x), Math.round(this.pos.y));
-		if (this.showHealthBar) this.healthBar.display(0, this.height/2 + 15);
-
-		Game.c.restore();
-	}
-	isOnGrid() {
-		if (Game.getCurrentState().map !== undefined) {
-			if (this.tile.x/g_tileSize < Game.getCurrentState().map.cols && this.tile.y/g_tileSize < Game.getCurrentState().map.rows && this.tile.x/g_tileSize > 0 && this.tile.y/g_tileSize > 0) {
-				return true;
-			} else {
-				return false;
+		// Draw shadow if generated
+		if (this.sprite.shadow) this.drawSprite(this.sprite.shadow, g_shadow_distance);
+		// Draw sprite and healthbar
+		this.drawSprite(this.sprite, 0, function() {
+			// Display healthbar if enabled
+			if (this.showHealthBar) this.healthBar.display(0, this.height/2 + 15);
+			// Flip x-axis only if facetarget is enabled
+			if (this.faceTarget) {
+				if (this.rotation < -1.5 || this.rotation > 1.5) {
+                   	this.setSpriteScale(-1, 1);
+                } else {
+                   	this.setSpriteScale( 1, 1);
+                }
 			}
-		}
+		});
+	}
+	spawnHitmarker(x, y) {
+		let id = 'hitmarker' + particleSystem.particles.length;
+		let particle = new Particle(id, this.hitmarker, x, y, 24, 24, 3, random(0, 3), 10, 5);
+		particleSystem.spawnParticle(particle);
+	}
+	spawnDeathParticle(x, y) {
+		let id = 'death_particle' + particleSystem.particles.length;
+		let particle = new Particle(id, p_plus_1, this.pos.x, this.pos.y, 16, 16, 10, -1.5, 30, 5);
+		particleSystem.spawnParticle(particle);
 	}
 	destroy() {
 		// Play death noise
 		this.deathSound.play();
 		// Spawn blood particles
-		particleSystem.spawnParticle('420s' + particleSystem.particles.length, p_plus_1, this.pos.x, this.pos.y, 16, 16, 10, -1.5, 30, 5);
+		this.spawnDeathParticle(this.pos.x, this.pos.y, false);
 		// Drop powerup
 		if (random(0, 100) < g_powerup_drop_rate && !this.powerupDropped) {
 			Game.getCurrentState().dropPowerup(this);
@@ -139,8 +99,14 @@ class Enemy extends Entity {
 		}
 		// Cancel easystar pathfinding
 		easystar.cancelPath(this.pathInstanceId);
-		// Destroy entity body
-		// this.explode(audio.mp3_vine_boom, p_explosion, spr_dew_logo, p_hitmarker);
+		// Explode if explosive enemy
+		if (this.explosive) {
+			// Play sound
+			audio.mp3_tnt.play(0, 0, true);
+			// Create explosion
+			new Explosion(this.pos.x, this.pos.y, 64, 64, 20, this.width/8, 10, this.width/8, gif_tnt_exp, p_dust, p_smoke);
+		}
+		// Destroy entity
 		this.parent.removeEntity(this);
 	}
 	run() {

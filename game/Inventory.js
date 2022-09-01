@@ -1,4 +1,4 @@
-// Inventory Class : Inventory(Maximum Items)
+// Inventory Class : Inventory(Maximum Items, [contents])
 class Inventory {
 	constructor(max, contents) {
 		this.max = max;

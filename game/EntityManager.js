@@ -4,13 +4,7 @@ class EntityManager {
 		let self = this;
 		this.max = max;
 		this.playerSpawned = false;
-		this.entityTypes = ['tile', 'enemy', 'bullet', 'turret', 'powerup'];
 		this.entities = [];
-		this.tiles    = [];
-		this.enemies  = [];
-		this.powerups = [];
-		this.turrets  = [];
-		this.bullets  = [];
 	}
 	run() {
 		// Loop through entites array
@@ -20,17 +14,6 @@ class EntityManager {
 			if (!g_paused) e.update();
 			e.display();
 		}
-		// Check for collisions between arrays
-		arrayCollisionBetween1(this.enemies, this.tiles,   (a, b) => { });
-
-		arrayCollisionBetween1(this.turrets, this.tiles,   (a, b) => { });
-
-		arrayCollisionBetween1(this.bullets, this.tiles,   (a, b) => { a.destroy() });
-
-		arrayCollisionBetween1(this.enemies, this.turrets, (a, b) => { b.health--; });
-
-		arrayCollisionBetween1(this.bullets, this.enemies, (a, b) => { a.health -= 1; b.health -= a.damage; });
-
 		// Sort zIndex based on Y position
 		this.map = this.entities.map(function(el, index) {
 			return { index : index, value : el.pos.y + (el.height/2) };
@@ -44,73 +27,8 @@ class EntityManager {
 		  return entityManager.entities[el.index];
 		});
 	}
-	spawnPlayer(id, sprite, x, y, width, height, speed, friction, knockBack) {
-		// Create player and add to entities array
-		if (!this.playerSpawned) {
-			this.entities.push(new Player(id, sprite, x, y, width, height, speed, friction, knockBack));
-			// Toggle boolean meaning only one player entity can be added to array
-			this.playerSpawned = true;
-		} else {
-			// Log player already spawned if multiple attemps to spawn a player are made
-			console.log('Player has already been spawned.');
-		}
-	}
-	spawnEnemy(id, sprite, x, y, width, height, target, showHealthBar, speed, health, deathSound, scoreValue, powerupSprite) {
-		if (this.entities.length < this.max) {
-			// New bullet to entities array
-			this.entities.push(new Enemy(id, sprite, x, y, width, height, target, showHealthBar, speed, health, deathSound, scoreValue, powerupSprite));
-			// this.enemies.push(new Enemy(id, spr, t, x, y, w, h, hb, s, l, ds, sv));
-			// Update array of enemies
-			this.filterEntities('enemy');
-		} else {
-			// Log warning if entity limit reached or exceeded
-			console.warn('Could not spawn enemy. Maximum number of entities reached: ' + this.max);
-		}
-	}
-	spawnPowerup(id, sprite, x, y, width, height, onCollision) {
-		if (this.entities.length < this.max) {
-			// New bullet to entities array
-			this.entities.push(new Powerup(id, sprite, x, y, width, height, onCollision));
-			// Update array of powerups
-			this.filterEntities('powerup');
-		} else {
-			// Log warning if entity limit reached or exceeded
-			console.warn('Could not spawn enemy. Maximum number of entities reached: ' + this.max);
-		}
-	}
-	spawnTurret(id, sprite, target, x, y, width, height, health, ammo, rotationSpeed, stationary, equipItem) {
-		if (this.entities.length < this.max) {
-			// New entities to entities array
-			this.entities.push(new Turret(id, sprite, target, x, y, width, height, health, ammo, rotationSpeed, stationary, equipItem));
-			// Update array of turrets
-			this.filterEntities('turret');
-		} else {
-			// Log warning if entity limit reached or exceeded
-			console.warn('Could not spawn turret. Maximum number of entities reached: ' + this.max);
-		}
-	}
-	spawnBullet(id, sprite, x, y, width, height, p) {
-		if (this.entities.length < this.max) {
-			// New entities to entities array
-			this.entities.push(new Bullet(id, sprite, x, y, width, height, p));
-			// Update array of bullets
-			this.filterEntities('bullet');
-		} else {
-			// Log warning if entity limit reached or exceeded
-			console.warn('Could not spawn bullet. Maximum number of entities reached: ' + this.max);
-		}
-	}
-	spawnTile(id, tilesheet, sx, sy, sw, sh, x, y, width, height, collision, knockBack) {
-		this.entities.push(new Tile(id, tilesheet, sx, sy, sw, sh, x, y, width, height, collision, knockBack));
-		this.filterEntities('tile');
-	}
-	filterEntities(t) {
-		// Find bullets within the main entity array and index them
-		if ( t == 'bullet' ) this.bullets  = this.entities.filter( x => x.entityType == t );
-		if ( t == 'enemy'  ) this.enemies  = this.entities.filter( x => x.entityType == t );
-		if ( t == 'turret' ) this.turrets  = this.entities.filter( x => x.entityType == t );
-		if ( t == 'tile'   ) this.tiles    = this.entities.filter( x => x.entityType == t );
-		if ( t == 'powerup') this.powerups = this.entities.filter( x => x.entityType == t );
+	spawnEntity(e) {
+		this.entities.push(e);
 	}
 	getEntityById(id) {
 		// Return entity with specified id
@@ -121,8 +39,6 @@ class EntityManager {
 		let i = this.entities.indexOf(e);
 		if (i !== -1) {
 			this.entities.splice(i, 1);
-			// Update entity specific arrays on kill
-			this.filterEntities(e.entityType);
 		} else {
 			console.log('Entity could not be found.');
 		}

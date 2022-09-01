@@ -1,7 +1,7 @@
 // Powerup
 class Powerup extends Entity {
 	constructor(id, sprite, x, y, width, height, onCollision) {
-		// Call Entity properties
+		// Set Entity properties
 		super(id, sprite, x, y, width, height);
 		// Class specific properties
 		this.entityType = 'powerup';
@@ -19,16 +19,10 @@ class Powerup extends Entity {
 		if (this.health < 0) this.destroy();
 	}
 	display() {
-		Game.c.save();
-		// Move entity to position and rotation
-		Game.c.translate(this.pos.x, this.pos.y + Math.round(Math.sin(lastCalledTime/250)));
-		Game.c.rotate(this.rotation);
-		// Draw drop shadow behind sprite
-		this.drawShadow();
-		// Draw sprite
-		this.drawSprite();
-
-		Game.c.restore();
+		// Draw shadow if generated
+		if (this.sprite.shadow) this.drawSprite(this.sprite.shadow, g_shadow_distance);
+		// Draw powerup sprite
+		this.drawSprite(this.sprite, 0);
 	}
 	destroy() {
 		entityManager.removeEntity(this);

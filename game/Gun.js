@@ -1,14 +1,14 @@
 // Gun Class : Gun(id, gun sprite, bullet sprite, parent, width, height, amount, speed, dither, damage, hit sound, hit particle, eqipped)
 class Gun {
-	constructor(id, sprite, bulletSprite, parent, width, height, bulletWidth, bulletHeight, amount, speed, dither, damage, hitSound, hitParticle, equipped) {
+	constructor(id, sprite, bulletSprite, parent, bulletWidth, bulletHeight, amount, speed, dither, damage, hitSound, hitParticle, equipped) {
 		let self = this;
 		this.id = id;
 		this.sprite = sprite;
 		this.bulletSprite = bulletSprite;
 		this.parent = parent;
 		this.pos = new Vector(parent.pos.x, parent.pos.y);
-		this.width = width;
-		this.height = height;
+		this.width = parent.width;
+		this.height = parent.height;
 		this.bulletWidth = bulletWidth;
 		this.bulletHeight = bulletHeight;
 		this.amount = amount;
@@ -48,7 +48,7 @@ class Gun {
 	shoot() {
 		if (this.timeCounter >= this.firerate) {
 			for (let i = 0; i < this.amount; i++) {
-				entityManager.spawnBullet('bullet' + entityManager.bullets.length, this.bulletSprite, this.pos.x, this.pos.y, this.bulletWidth, this.bulletHeight, this);
+				entityManager.spawnEntity(new Bullet('bullet' + entityManager.entities.length, this.bulletSprite, this.pos.x, this.pos.y, this.bulletWidth, this.bulletHeight, this));
 			}
 			this.timeCounter = 0;
 		}

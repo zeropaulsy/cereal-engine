@@ -50,6 +50,9 @@ let spr_dash_emoji    = loadImage({ src : './game/assets/img/slayer/spr_dash_emo
 let spr_heart         = loadImage({ src : './game/assets/img/slayer/spr_heart.png',        maxSeconds : 10 });
 let spr_joint         = loadImage({ src : './game/assets/img/slayer/spr_joint.png',        maxSeconds : 10 });
 let spr_skull         = loadImage({ src : './game/assets/img/slayer/spr_skull.png',        maxSeconds : 10 });
+let spr_creeper       = loadImage({ src : './game/assets/img/slayer/spr_creeper.png',      maxSeconds : 10 });
+let spr_adblock       = loadImage({ src : './game/assets/img/slayer/spr_adblock.png',      maxSeconds : 10 });
+let spr_tnt           = loadImage({ src : './game/assets/img/slayer/spr_tnt.png',          maxSeconds : 10 });
 
 let p_hitmarker = loadImage({ src : './game/assets/img/slayer/p_hitmarker.png', maxSeconds : 10 });
 let p_banana    = loadImage({ src : './game/assets/img/slayer/p_banana.png',    maxSeconds : 10 });
@@ -57,6 +60,8 @@ let p_dorito    = loadImage({ src : './game/assets/img/slayer/p_dorito.png',    
 let p_chicken   = loadImage({ src : './game/assets/img/slayer/p_chicken.png',   maxSeconds : 10 });
 let p_dew_can   = loadImage({ src : './game/assets/img/slayer/p_dew_can.png',   maxSeconds : 10 });
 let p_explosion = loadImage({ src : './game/assets/img/slayer/p_explosion.png', maxSeconds : 10 });
+let p_smoke     = loadImage({ src : './game/assets/img/slayer/p_smoke.png',     maxSeconds : 10 });
+let p_dust      = loadImage({ src : './game/assets/img/slayer/p_dust.png',      maxSeconds : 10 });
 
 let bg_windows_bliss   = loadImage({ src : './game/assets/img/slayer/bg_windows_bliss.jpg',   maxSeconds : 10 });
 let bg_windows_startup = loadImage({ src : './game/assets/img/slayer/bg_windows_startup.png', maxSeconds : 10 });
@@ -64,7 +69,8 @@ let bg_windows_98      = loadImage({ src : './game/assets/img/slayer/bg_windows_
 
 let gif_wormhole = loadGIF({ src: './game/assets/img/slayer/gif_wormhole.gif' });
 let gif_trippy   = loadGIF({ src: './game/assets/img/slayer/gif_trippy.gif'   });
-let gif_mlg      = loadGIF({ src: './game/assets/img/slayer/gif_mlg.gif'   });
+let gif_mlg      = loadGIF({ src: './game/assets/img/slayer/gif_mlg.gif'      });
+let gif_tnt_exp  = loadGIF({ src: './game/assets/img/slayer/gif_tnt_exp.gif'  });
 
 // Cursors
 var cur_pixel = loadImage({ src : './game/assets/img/cur_pixel.png', maxSeconds : 10 });

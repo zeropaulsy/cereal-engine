@@ -16,7 +16,11 @@ class StatBar {
 		this.statBar = false;
 		this.kill = false;
 	}
+	setMaxValue(value) {
+		this.maxValue = value;
+	}
 	update() {
+		// Set statbar percent to parent value
 		this.stat = this.parent[this.statString];
 		// Constrain width of health within the container
 		this.ratio = this.maxValue / this.cWidth;

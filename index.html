@@ -6,6 +6,7 @@
 		<meta http-equiv="Content-Security-Policy" content="img-src 'self' data:">
 		<script type="text/javascript" src="./game/lib/pace/pace.min.js"></script>
 		<link href="./game/lib/pace/pace.css" rel="stylesheet" />
+		<link href="./game/lib/XP.css" rel="stylesheet" />
 		<script type="text/javascript" src="./game/lib/pizzicato.min.js"></script>
 		<script type="text/javascript" src="./game/lib/gamepad.js"></script>
 		<script type="text/javascript" src="./game/lib/mousetrap.js"></script>
@@ -21,6 +22,14 @@
 		<title>Snoop Slayer</title>
 	</head>
 	<body id="body">
+		<div class="title-bar" id="main-title-bar">
+		  <div class="title-bar-text">Snoop Slayer</div>
+		  <div class="title-bar-controls">
+		    <button aria-label="Minimize" id="title-bar-minimize"></button>
+		    <button aria-label="Maximize" id="title-bar-maximize"></button>
+		    <button aria-label="Close" id="title-bar-close"></button>
+		  </div>
+		</div>
 		<div id="pause_menu" align="center">
 			<ul>
 				<h1>Game Paused</h1>
@@ -45,6 +54,7 @@
 		<script type="text/javascript" src="./game/KeyBinds.js"></script>
 		<script type="text/javascript" src="./game/Controller.js"></script>
 		<script type="text/javascript" src="./game/Entity.js"></script>
+		<script type="text/javascript" src="./game/Creature.js"></script>
 		<script type="text/javascript" src="./game/Timer.js"></script>
 		<script type="text/javascript" src="./game/Vector.js"></script>
 		<script type="text/javascript" src="./game/Collision.js"></script>

@@ -11,6 +11,7 @@ let inputTime = 0;
 let lastScreen;
 let root = document.querySelector(':root');
 
+let g_responsive = true;
 let g_speed = 1;
 let g_gravity = 0;
 let g_tileSize = 64;
@@ -27,9 +28,6 @@ let g_pathfinding_enabled = true;
 
 let width = 1280;
 let height = 720;
-
-let mouseX;
-let mouseY;
 
 let mouseDown = false;
 let mouseUp = false;
@@ -56,8 +54,8 @@ let leftPressed  = false;
 let rightPressed = false;
 let spacePressed = false;
 
-let leftJoystick  = {x: 0, y: 0};
-let rightJoystick = {x: 0, y: 0};
+let leftJoystick  = new Vector(0, 0);
+let rightJoystick = new Vector(0, 0);
 let leftDeadzone  = 0.25;
 let rightDeadzone = 0.25;
 
@@ -95,7 +93,11 @@ function GameObject() {
 	this.run = function() {
 		requestAnimationFrame(this.run.bind(this));
 		// Set scale based on window size
-		g_scale = canvas.width / 1280;
+		g_scale = this.canvas.width / width;
+		if (g_responsive) {
+			width = window.innerWidth;
+			height = window.innerHeight - 28;
+		}
 		// Prevent speed going below 0
 		if (g_speed < 0) g_speed = 0;
 		// Apply deadzones to gamepad to stop drifting
@@ -124,7 +126,7 @@ function GameObject() {
 		fps = 1000 / delta;
 		// Update and render current state
 		if (!loading) {
-			if (!g_paused) {
+			if (!g_paused && !this.getCurrentState().loading) {
 				this.stateStack.update();
 			}
 			this.stateStack.display();
@@ -135,7 +137,7 @@ function GameObject() {
 		this.setState(new SnoopSlayer());
 	}
 	this.pauseGame = function() {
-		g_paused = !g_paused; 
+		g_paused = !g_paused;
 		if (g_paused) {
 			pauseActiveSounds();
 			timerManager.pauseTimers();
@@ -186,16 +188,17 @@ function GameObject() {
 	this.setupCanvas = function(wrapper) {
 		this.canvas = document.createElement('canvas');
 		this.canvas.id = 'canvas';
-        this.canvas.width = window.innerWidth * window.devicePixelRatio;
-        this.canvas.height = window.innerHeight * window.devicePixelRatio;
+        this.canvas.width  = window.innerWidth  * window.devicePixelRatio;
+        this.canvas.height = (window.innerHeight * window.devicePixelRatio);
+        this.canvas.mouse = new Vector();
         this.c = this.canvas.getContext('2d');
 
         wrapper.appendChild(this.canvas);
 	}
 	this.getWindowSize = function() {
 		return {
-			width  : window.innerWidth * window.devicePixelRatio,
-			height : window.innerHeight * window.devicePixelRatio
+			width  : window.innerWidth  * window.devicePixelRatio,
+			height : (window.innerHeight * window.devicePixelRatio)
 		};
 	}
 	this.init = function() {
@@ -240,22 +243,22 @@ window.onload = function () {
 		Game.canvas.addEventListener('mousemove', function(evt) {
 			var mousePos = getMousePos(canvas, evt);
 
-			this.mouseX = (mousePos.x * window.devicePixelRatio) / g_scale;
-			this.mouseY = (mousePos.y * window.devicePixelRatio) / g_scale;
+			this.mouse.x = (mousePos.x * window.devicePixelRatio) / g_scale;
+			this.mouse.y = ((mousePos.y * window.devicePixelRatio) / g_scale) - 28;
 
 			g_lastInput = 'computer';
 		}, true);
 
 		window.addEventListener('resize', function() {
-			Game.canvas.width = window.innerWidth * window.devicePixelRatio;
-			Game.canvas.height = window.innerHeight * window.devicePixelRatio;
+			Game.canvas.width  = window.innerWidth  * window.devicePixelRatio;
+			Game.canvas.height = (window.innerHeight * window.devicePixelRatio);
 		});
 	});
 };
 
 document.addEventListener('visibilitychange', () => {
 	if (document.hidden) {
-		console.log('Window hidden.')
+		g_paused = false;
 		Game.pauseGame();
 	} else {
 		// Do something...
@@ -266,6 +269,18 @@ document.addEventListener('keypress', (e) => {
 	g_lastInput = 'computer';
 	inputTime = 0;
 });
+
+document.getElementById('title-bar-minimize').onclick = function() {
+	remote.ipcRenderer.send('minimize');
+}
+
+document.getElementById('title-bar-maximize').onclick = function() {
+	remote.ipcRenderer.send('maximize');
+}
+
+document.getElementById('title-bar-close').onclick = function() {
+	window.close();
+}
 
 resume.addEventListener('click', (e) => {
 	Game.pauseGame();

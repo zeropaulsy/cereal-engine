@@ -15,6 +15,18 @@
     src: './game/assets/fonts/m3x6.ttf';
 }
 
+#main-title-bar {
+  -webkit-user-select: none;
+  -webkit-app-region: drag;
+
+  border-top-left-radius: 0px;
+  border-top-right-radius: 0px;
+}
+
+.title-bar-controls {
+  -webkit-app-region: no-drag;
+}
+
 body {
     font-family: "Comic Sans MS", "Comic Sans", cursive;
     user-select: none;
@@ -26,7 +38,7 @@ body {
 
     background-image: url('../../game/assets/img/slayer/bg_windows_startup.png');
     background-position: center;
-    background-size: contain;
+    background-size: cover;
 }
 
 /*
@@ -43,12 +55,12 @@ video {
     display: none;
 }
 
+
 canvas {
-    position: absolute;
-    image-rendering: pixelated;
-    transition: filter 0.5s;
     width: 100%;
     height: 100%;
+    image-rendering: pixelated;
+    transition: filter 0.5s;
     filter: blur(var(--blur)) contrast(var(--contrast)) brightness(var(--brightness)) contrast(var(--contrast)) grayscale(var(--grayscale)) hue-rotate(var(--hue-rotate)) invert(var(--invert)) opacity(var(--opacity)) saturate(var(--saturate)) sepia(var(--sepia)); 
 }
 

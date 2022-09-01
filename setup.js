@@ -1,5 +1,7 @@
+const remote   = require('electron');
 const easystar = new EasyStar.js();
-const gamepad  = new Gamepad();
+
+//window.devicePixelRatio = 2;
 
 var EmptyState = function() {
 	this.name = "EmptyState";

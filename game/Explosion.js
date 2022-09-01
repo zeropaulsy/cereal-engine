@@ -1,17 +1,26 @@
-class Explosion {
+class Explosion extends Entity {
 	constructor(x, y, pWidth, pHeight, amount, range, dither, damage, p1, p2, p3) {
-		this.pos = new Vector(x, y);
+		// Set entity properties
+		super(null, null, x, y, range * 20, range * 20);
+		// Class specific properties
+		this.entityType = 'explosion';
 		this.pWidth = pWidth;
 		this.pHeight = pHeight;
-		this.hitbox = {w: range, h: range};
 		this.amount = amount;
 		this.range = range;
 		this.dither = dither;
 		this.damage = damage;
+		// Set explosion particles
 		this.p1 = p1 || p_white;
 		this.p2 = p2 || p_orange;
 		this.p3 = p3 || p_red_small;
+		// Execute explosion
 		this.explode();
+	}
+	spawnParticle(x, y, spr) {
+		let id = 'boomSpr' + particleSystem.particles.length;
+		let particle = new Particle(id, spr, x, y, this.pWidth, this.pHeight, this.range, random(-this.range/2, this.range/2), random(25, 35), this.dither);
+		particleSystem.spawnParticle(particle);
 	}
 	explode() {
 		// Shake screen
@@ -19,23 +28,16 @@ class Explosion {
 		timerManager.addTimer(function() { g_shake -= 3 }, 100);
 		// Create particles for explosion effect
 		for (let i = 0; i < this.amount; i++) {
-			particleSystem.spawnParticle('boom' + particleSystem.particles.length, this.p1, this.pos.x, this.pos.y, this.pWidth, this.pHeight, this.range, random(-this.range/2, this.range/2), random(35, 55), this.dither);
-			particleSystem.spawnParticle('boom' + particleSystem.particles.length, this.p2, this.pos.x, this.pos.y, this.pWidth, this.pHeight, this.range, random(-this.range/2, this.range/2), random(25, 35), this.dither);
-			particleSystem.spawnParticle('boom' + particleSystem.particles.length, this.p3, this.pos.x, this.pos.y, this.pWidth, this.pHeight, this.range, random(-this.range/2, this.range/2), random(25, 35), this.dither);
+			this.spawnParticle(this.pos.x, this.pos.y, this.p1);
+			this.spawnParticle(this.pos.x, this.pos.y, this.p2);
+			this.spawnParticle(this.pos.x, this.pos.y, this.p3);
 		}
 		// Check for enemies in range
-		for (let i = entityManager.enemies.length-1; i >= 0; i--) {
-			let e = entityManager.enemies[i];
-
-			if (inRangeOf(this, e, this.range * 20)) {
-				var dx = (e.pos.x) - (this.pos.x),
-					dy = (e.pos.y) - (this.pos.y),
-					angle = Math.atan2(dx, dy);
-
-				e.health -= this.damage;
-				e.vel.x -= Math.sin(angle) * -25;
-				e.vel.y -= Math.cos(angle) * -25;
+		this.handleCollision('bullet', function(e, self) {
+			// Calculate distance from center of explosion to entity
+			if (e.entityType == 'enemy') {
+				e.health -= self.damage;
 			}
-		}
+		});
 	}
 }

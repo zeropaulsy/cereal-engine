@@ -6,7 +6,7 @@
  * Released under the MIT license.
  */
 
-(function () {
+const Gamepad = (function () {
 
     'use strict';
 
@@ -525,4 +525,5 @@
 
     }
 
+    return new Gamepad();
 }());

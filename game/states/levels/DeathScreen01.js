@@ -50,7 +50,7 @@ var DeathScreen01 = function() {
 
 		Game.c.scale(g_scale, g_scale);
 
-		Game.c.drawImage(lastScreen, 0, 0, width, height);
+		Game.c.drawImage(lastScreen, 0, 0, width, height + 28);
 
 		// Darken image
 		Game.c.fillStyle = 'rgba(0, 0, 0, 0.5)';

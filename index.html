@@ -19,7 +19,7 @@
 		<script type="text/javascript" src="./game/LoadAssets.js"></script>
 		<script type="text/javascript" src="./setup.js"></script>
 		<link rel="stylesheet" type="text/css" href="./game/css/styles.css" />
-		<title>Snoop Slayer</title>
+		<title>Windows Defender</title>
 	</head>
 	<body id="body">
 		<div class="title-bar" id="main-title-bar">
@@ -30,25 +30,47 @@
 		    <button aria-label="Close" id="title-bar-close"></button>
 		  </div>
 		</div>
-		<div id="pause_menu" align="center">
-			<ul>
-				<h1>Game Paused</h1>
-				<li>
-					<input type="button" id="resume" value="Resume">
-				</li>
-				<br>
-				<li>
-					<input type="button" id="toggle_fullscreen" value="Fullscreen: OFF">
-				</li>
-				<li>
-					<h2>Sound</h2>
-					<input type="range" id="audio_volume" value="100" min="0" max="100">
-				</li>
-				<li>
-					<h2>Music</h2>
-					<input type="range" id="music_volume" value="100" min="0" max="100">
-				</li>
-			</ul>
+		<div id="canvas-div"></div>
+		<div id="pause-window" class="window" style="width: 400px">
+			<div id="pause-window-title-bar" class="title-bar">
+				<div class="title-bar-text">Settings</div>
+				<div class="title-bar-controls">
+					<button id="pause-window-min" aria-label="Minimize"></button>
+					<button id="pause-window-max" aria-label="Maximize"></button>
+					<button id="pause-window-close" aria-label="Close"></button>
+				</div>
+			</div>
+			<div class="window-body">
+				<menu role="tablist">
+					<button aria-selected="true" aria-controls="music">Music</button>
+				</menu>
+				<article role="tabpanel" id="music">
+					<p>Set your listening preferences</p>
+					<fieldset>
+						<legend>Device Volume</legend>
+						<div class="field-row" style="width: 300px">
+							<label for="range25">Audio:</label>
+							<label for="range26">Low</label>
+							<input id="audio-slider" type="range" min="0" max="100" value="100" />
+							<label for="range27">High</label>
+						</div>
+						<div class="field-row" style="width: 300px">
+							<label for="range25">Music: </label>
+							<label for="range26">Low</label>
+							<input id="music-slider" type="range" min="0" max="100" value="100" />
+							<label for="range27">High</label>
+						</div>
+					</fieldset>
+					<section class="field-row">
+						<button>Reset Alarm...</button>
+						<label>Try this to get some attention</label>
+					</section>
+				</article>
+				<section class="field-row" style="justify-content: flex-end">
+					<button>OK</button>
+					<button>Cancel</button>
+				</section>
+			</div>
 		</div>
 		<!-- You can also require other files to run in this process -->
 		<script type="text/javascript" src="./game/KeyBinds.js"></script>
@@ -80,5 +102,6 @@
 		<script type="text/javascript" src="./game/states/levels/Test01.js"></script>
 		<script type="text/javascript" src="./game/states/levels/DeathScreen01.js"></script>
 		<script type="text/javascript" src="./game/states/levels/SnoopSlayer.js"></script>
+		<script type="text/javascript" src="./game/states/levels/WindowsDefender.js"></script>
 	</body>
 </html>

@@ -17,9 +17,9 @@ class Explosion extends Entity {
 		// Execute explosion
 		this.explode();
 	}
-	spawnParticle(x, y, spr) {
+	spawnParticle(x, y, a, b, spr) {
 		let id = 'boomSpr' + particleSystem.particles.length;
-		let particle = new Particle(id, spr, x, y, this.pWidth, this.pHeight, this.range, random(-this.range/2, this.range/2), random(25, 35), this.dither);
+		let particle = new Particle(id, spr, x, y, this.pWidth, this.pHeight, this.range, random(-this.range/2, this.range/2), random(a, b), this.dither);
 		particleSystem.spawnParticle(particle);
 	}
 	explode() {
@@ -28,9 +28,9 @@ class Explosion extends Entity {
 		timerManager.addTimer(function() { g_shake -= 3 }, 100);
 		// Create particles for explosion effect
 		for (let i = 0; i < this.amount; i++) {
-			this.spawnParticle(this.pos.x, this.pos.y, this.p1);
-			this.spawnParticle(this.pos.x, this.pos.y, this.p2);
-			this.spawnParticle(this.pos.x, this.pos.y, this.p3);
+			this.spawnParticle(this.pos.x, this.pos.y, 25, 55, this.p1);
+			this.spawnParticle(this.pos.x, this.pos.y, 25, 35, this.p2);
+			this.spawnParticle(this.pos.x, this.pos.y, 25, 35, this.p3);
 		}
 		// Check for enemies in range
 		this.handleCollision('bullet', function(e, self) {

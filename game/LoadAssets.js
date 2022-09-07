@@ -33,12 +33,16 @@ let ts_map = loadImage({ src : './game/assets/img/ts_map.png', maxSeconds : 10 }
 
 // Snoop Slayer Assets
 let spr_player_slayer = loadImage({ src : './game/assets/img/slayer/spr_player_org.png',   maxSeconds : 10 });
+let spr_player_steve  = loadImage({ src : './game/assets/img/slayer/spr_player_ste.png',   maxSeconds : 10 });
+let spr_player_gates  = loadImage({ src : './game/assets/img/slayer/spr_player_gates.png', maxSeconds : 10 });
 let spr_chicken_gun   = loadImage({ src : './game/assets/img/slayer/spr_chicken_gun.png',  maxSeconds : 10 });
 let spr_dorito_gun    = loadImage({ src : './game/assets/img/slayer/spr_dorito_gun.png',   maxSeconds : 10 });
 let spr_banana_gun    = loadImage({ src : './game/assets/img/slayer/spr_banana_gun.png',   maxSeconds : 10 });
 let spr_dew_gun       = loadImage({ src : './game/assets/img/slayer/spr_dew_gun.png',      maxSeconds : 10 });
 let spr_dew_logo      = loadImage({ src : './game/assets/img/slayer/spr_dew_logo.png',     maxSeconds : 10 });
 let spr_snoop         = loadImage({ src : './game/assets/img/slayer/spr_snoop.png',        maxSeconds : 10 });
+let spr_gates         = loadImage({ src : './game/assets/img/slayer/spr_gates.png',        maxSeconds : 10 });
+let spr_steve         = loadImage({ src : './game/assets/img/slayer/spr_steve.png',        maxSeconds : 10 });
 let spr_misc_bag      = loadImage({ src : './game/assets/img/slayer/spr_misc_bag.png',     maxSeconds : 10 });
 let spr_hypercam      = loadImage({ src : './game/assets/img/slayer/spr_hypercam.png',     maxSeconds : 10 });
 let spr_alert_boss_1  = loadImage({ src : './game/assets/img/slayer/spr_alert_boss_1.png', maxSeconds : 10 });

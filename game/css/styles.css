@@ -28,7 +28,7 @@
 }
 
 body {
-    font-family: "Comic Sans MS", "Comic Sans", cursive;
+    /* font-family: "Comic Sans MS", "Comic Sans", cursive; */
     user-select: none;
     margin: 0px;
     overflow: hidden;
@@ -72,6 +72,15 @@ canvas {
     height: 24px;
     -webkit-app-region: drag;
     width: calc(100% - 2px);
+}
+
+#pause-window {
+    position: absolute;
+    display: none;
+    top: 50%;
+    left: 50%;
+    margin-right: -50%;
+    transform: translate(-50%, -50%);
 }
 
 #title {

@@ -54,8 +54,8 @@ let leftPressed  = false;
 let rightPressed = false;
 let spacePressed = false;
 
-let leftJoystick  = new Vector(0, 0);
-let rightJoystick = new Vector(0, 0);
+let leftJoystick  = new Vector();
+let rightJoystick = new Vector();
 let leftDeadzone  = 0.25;
 let rightDeadzone = 0.25;
 
@@ -134,7 +134,7 @@ function GameObject() {
 		tick++;
 	}
 	this.startGame = function() {
-		this.setState(new SnoopSlayer());
+		this.setState(new WindowsDefender());
 	}
 	this.pauseGame = function() {
 		g_paused = !g_paused;
@@ -147,11 +147,11 @@ function GameObject() {
 		}
 	}
 	this.showPauseMenu = function() {
-		if (pause_menu.style.display !== 'block') {
+		if (document.getElementById('pause-window').style.display !== 'block') {
 			// Set html body background as canvas data
 			// body.style.backgroundImage = 'url(' + Game.canvas.toDataURL() + ')';
 			// Show pause menu if hidden
-			pause_menu.style.display = 'block';
+			document.getElementById('pause-window').style.display = 'block';
 			// Set game cursor style
 			canvas.style.cursor = 'auto';
 			// Apply canvas filter
@@ -159,9 +159,9 @@ function GameObject() {
 		}
 	}
 	this.hidePauseMenu = function() {
-		if (pause_menu.style.display !== 'none') {
+		if (document.getElementById('pause-window').style.display !== 'none') {
 			// Hide pause menu if visible
-			pause_menu.style.display = 'none';
+			document.getElementById('pause-window').style.display = 'none';
 			// Set game cursor style
 			canvas.style.cursor = 'auto';
 			// Remove canvas filter
@@ -193,7 +193,7 @@ function GameObject() {
         this.canvas.mouse = new Vector();
         this.c = this.canvas.getContext('2d');
 
-        wrapper.appendChild(this.canvas);
+        document.getElementById('canvas-div').appendChild(this.canvas);
 	}
 	this.getWindowSize = function() {
 		return {
@@ -270,34 +270,73 @@ document.addEventListener('keypress', (e) => {
 	inputTime = 0;
 });
 
+// Main window controls
 document.getElementById('title-bar-minimize').onclick = function() {
 	remote.ipcRenderer.send('minimize');
-}
-
+};
 document.getElementById('title-bar-maximize').onclick = function() {
 	remote.ipcRenderer.send('maximize');
-}
-
+};
 document.getElementById('title-bar-close').onclick = function() {
 	window.close();
-}
-
-resume.addEventListener('click', (e) => {
+};
+// Pause window controls
+document.getElementById('audio-slider').onclick = function() {
 	Game.pauseGame();
-});
-
-audio_volume.addEventListener('click', (e) => {
+};
+document.getElementById('audio-slider').onclick = function() {
 	if (audioLoaded) {
-		audio.Group.volume = audio_volume.value / 100;
+		audio.Group.volume = document.getElementById('audio-slider').value / 100;
 	}
-});
-
-music_volume.addEventListener('click', (e) => {
+};
+document.getElementById('music-slider').onclick = function() {
 	if (audioLoaded) {
-		music.Group.volume = music_volume.value / 100;
+		music.Group.volume = document.getElementById('music-slider').value / 100;
 	}
-});
+};
+// Make the DIV element draggable:
+dragElement( document.getElementById('pause-window') );
 
-toggle_fullscreen.addEventListener('click', (e) => {
+function dragElement(elmnt) {
+	var pos1 = 0,
+		pos2 = 0,
+		pos3 = 0,
+		pos4 = 0;
+	if ( document.getElementById(elmnt.id + '-title-bar') ) {
+		// if present, the header is where you move the DIV from:
+		document.getElementById(elmnt.id + '-title-bar').onmousedown = dragMouseDown;
+	} else {
+		// otherwise, move the DIV from anywhere inside the DIV:
+		elmnt.onmousedown = dragMouseDown;
+	}
 
-});
+	function dragMouseDown(e) {
+		e = e || window.event;
+		e.preventDefault();
+		// get the mouse cursor position at startup:
+		pos3 = e.clientX;
+		pos4 = e.clientY;
+		document.onmouseup = closeDragElement;
+		// call a function whenever the cursor moves:
+		document.onmousemove = elementDrag;
+	}
+
+	function elementDrag(e) {
+		e = e || window.event;
+		e.preventDefault();
+		// calculate the new cursor position:
+		pos1 = pos3 - e.clientX;
+		pos2 = pos4 - e.clientY;
+		pos3 = e.clientX;
+		pos4 = e.clientY;
+		// set the element's new position:
+		elmnt.style.top  = (elmnt.offsetTop  - pos2) + 'px';
+		elmnt.style.left = (elmnt.offsetLeft - pos1) + 'px';
+	}
+
+	function closeDragElement() {
+		// stop moving when mouse button is released:
+		document.onmouseup = null;
+		document.onmousemove = null;
+	}
+}

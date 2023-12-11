@@ -192,11 +192,11 @@ var WindowsDefender = function() {
 		}
 		this.camera.zoomTo(Game.canvas.width - (g_shake * 3));
 
-		// this.bossSpawnerTop.run();
+		this.bossSpawnerTop.run();
 
-		// this.snoopSpawnerTop.run();
-		// this.snoopSpawnerLeft.run();
-		// this.snoopSpawnerRight.run();
+		this.snoopSpawnerTop.run();
+		this.snoopSpawnerLeft.run();
+		this.snoopSpawnerRight.run();
 
 		if ( this.snoopSpawnerTop.spawnTime   > 10 ) this.snoopSpawnerTop.spawnTime   -= 0.01;
 		if ( this.snoopSpawnerLeft.spawnTime  > 10 ) this.snoopSpawnerLeft.spawnTime  -= 0.01;
@@ -208,7 +208,7 @@ var WindowsDefender = function() {
 
 		inputTime++;
 		if (inputTime > 500) {
-			// g_shake += 0.55 * g_speed;
+			g_shake += 0.55 * g_speed;
 		}
 
 		if (g_shake > 0 && this.dampenShake) g_shake -= 0.5;

@@ -4,7 +4,6 @@ class Turret extends Creature {
 		// Set Creature properties
 		super(id, sprite, x, y, width, height, health, speed);
 		// Class specific properties
-		let self = this;
 		this.entityType = 'turret';
 		this.target = target;
 		this.ammo = ammo;
@@ -13,13 +12,9 @@ class Turret extends Creature {
 		this.stationary = false;
 		this.distance = random(128, 256);
 		// Worker message timings
-		this.worker = Game.getCurrentState().turretWorker;
 		this.workerUpdateSpeed = 25;
 		this.workerTimer = 0;
-		// Listen for worker responce message
-		this.worker.onmessage = function(e) {
-			self.angle = Math.atan2(e.data.vy, e.data.vx);
-		};
+		this.createWorker();
 	}
 	update() {
 		this.applyVelocity(this.friction);
@@ -74,12 +69,22 @@ class Turret extends Creature {
 		}
 		return target;
 	}
-	workerMessage() {
+	createWorker() {
+		let self = this;
+		// Assign worker to scene collision worker
+		this.worker = Game.getCurrentState().turretWorker;
+		// Listen for worker responce message
+		this.worker.onmessage = function(e) {
+			if (typeof e === 'object') self.angle = Math.atan2(e.data.vy, e.data.vx);
+			else self.angle = 0;
+		};
+	}
+	calculateAngle() {
 		// Set target
 		let t = this.findTarget();
 		// Write message
-		if (t.pos) {
-			return {
+		if (typeof t === 'object') {
+			let message = {
 				'worker_message': 'calculate_angle',
 				'turret': {
 					x: this.pos.x,
@@ -95,20 +100,18 @@ class Turret extends Creature {
 				},
 				'vMag': this.inventory.getEquippedItem().speed
 			}
+			// Send data to worker thread
+			if (this.workerTimer < 0) {
+				// Post message to worker thread
+				this.worker.postMessage( message );
+				// Reset worker timer
+				this.workerTimer = this.workerUpdateSpeed;
+			}
+			// Rotate towards target
+			this.rotateTo(this.angle, this.rotationSpeed);
+			// Fire equipped weapon
+			this.inventory.getEquippedItem().shoot();
 		}
-	}
-	calculateAngle() {
-		// Send data to worker thread
-		if (this.workerTimer < 0) {
-			// Post message to worker thread
-			this.worker.postMessage( this.workerMessage() );
-			// Reset worker timer
-			this.workerTimer = this.workerUpdateSpeed;
-		}
-		// Rotate towards target
-		this.rotateTo(this.angle, this.rotationSpeed);
-		// Fire equipped weapon
-		this.inventory.getEquippedItem().shoot();
 	}
 	destroy(a) {
 		let amount = a || 0

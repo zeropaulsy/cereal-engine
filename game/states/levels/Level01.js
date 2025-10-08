@@ -60,7 +60,7 @@ var Level01 = function() {
 		backgroundManager = new BackgroundManager(10, 0);
 
 		backgroundManager.screens.push(new BackgroundScreen('bg_level_01', [bg_level_01], 1));
-		backgroundManager.screens.push(new BackgroundScreen('bg_level_01_trippy', [vid_tunnel, bg_trip, bg_level_01], 0.1));
+		backgroundManager.screens.push(new BackgroundScreen('bg_level_01_trippy', [bg_windows_bliss, bg_trip_full], 0.1, [gif_wormhole]));
 
 		entityManager = new EntityManager(5000);
 		// Create map from tilemap

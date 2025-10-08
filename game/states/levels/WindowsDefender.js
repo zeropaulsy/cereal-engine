@@ -496,7 +496,7 @@ var WindowsDefender = function() {
 		// Set ID
 		let id = 'player_turret' + entityManager.entities.length;
 		// Define turret
-		let turret = new Turret(id, spr_player_slayer, 'enemy', player.pos.x, player.pos.y, 55, 55, 50, 2, 100);
+		let turret = new Turret(id, spr_player_gates, 'enemy', player.pos.x, player.pos.y, 55, 55, 50, 2, 100);
 		// Spawn Turret
 		entityManager.spawnEntity(turret);
 		// Populate inventory

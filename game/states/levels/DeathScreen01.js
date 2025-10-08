@@ -14,8 +14,8 @@ var DeathScreen01 = function() {
 		// Play deathscreen music
 		music.mp3_sad_violin.play();
 		// Bind keys to restart game
-		Mousetrap.bind('esc', function() { Game.setState(new SnoopSlayer()) }, 'keydown');
-		Mousetrap.bind( 'r',  function() { Game.setState(new SnoopSlayer()) }, 'keydown');
+		Mousetrap.bind('esc', function() { Game.setState(new WindowsDefender()) }, 'keydown');
+		Mousetrap.bind( 'r',  function() { Game.setState(new WindowsDefender()) }, 'keydown');
 		// Apply canvas filters
 		timerManager.addTimer(function() {
 			Game.setFilter('--grayscale', 1.00);

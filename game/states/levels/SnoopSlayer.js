@@ -9,7 +9,9 @@ var SnoopSlayer = function() {
 	this.snoopSpawnerLeft;
 	this.snoopSpawnerRight;
 
-	this.turrentWorker;
+	this.turretWorker;
+	this.turretLookup;
+	this.turretRequestPending = false;
 
 	this.dampenShake = true;
 	this.spooky = false;
@@ -60,6 +62,7 @@ var SnoopSlayer = function() {
 		Game.canvas.mouse.y = height / 2;
 		// Add turret worker thread
 		this.turretWorker = new Worker('./game/CalculateAngle.js');
+		this.setupTurretWorker();
 		// Set global variables
 		g_speed = 1;
 		g_tileSize = 64;
@@ -191,6 +194,8 @@ var SnoopSlayer = function() {
 			);
 		}
 		this.camera.zoomTo(Game.canvas.width - (g_shake * 3));
+
+		this.updateTurretWorker();
 
 		this.bossSpawnerTop.run();
 
@@ -491,6 +496,57 @@ var SnoopSlayer = function() {
 				self.spawnCreep(pos.x, pos.y,100,100, random(4.5, 6));
 			}
 		});
+	}
+	this.setupTurretWorker = function() {
+		this.turretLookup = new Map();
+		this.turretRequestPending = false;
+		// Apply aim angles returned by the worker to each turret by id
+		this.turretWorker.onmessage = function(e) {
+			for (let i = 0; i < e.data.length; i++) {
+				let r = e.data[i];
+				let turret = self.turretLookup.get(r.id);
+				if (turret) turret.aimAngle = r.angle;
+			}
+			self.turretRequestPending = false;
+		};
+		// Don't stay stuck waiting on a reply that will never come
+		this.turretWorker.onerror = function(err) {
+			console.error('Turret worker error:', err.message);
+			self.turretRequestPending = false;
+		};
+	}
+	this.updateTurretWorker = function() {
+		// Only one request in flight at a time so messages never queue up
+		if (this.turretRequestPending) return;
+
+		let turrets = [];
+		let targetTypes = new Set();
+		this.turretLookup = new Map();
+
+		for (let i = 0; i < entityManager.entities.length; i++) {
+			let e = entityManager.entities[i];
+			if (e.entityType !== 'turret' || !e.inventory) continue;
+			turrets.push({
+				id: e.id,
+				x: e.pos.x,
+				y: e.pos.y,
+				speed: e.inventory.getEquippedItem().speed,
+				targetType: e.target
+			});
+			targetTypes.add(e.target);
+			this.turretLookup.set(e.id, e);
+		}
+		if (turrets.length === 0) return;
+
+		let targets = [];
+		for (let i = 0; i < entityManager.entities.length; i++) {
+			let e = entityManager.entities[i];
+			if (!targetTypes.has(e.entityType)) continue;
+			targets.push({ type: e.entityType, x: e.pos.x, y: e.pos.y, vx: e.vel.x, vy: e.vel.y });
+		}
+
+		this.turretWorker.postMessage({ turrets: turrets, targets: targets });
+		this.turretRequestPending = true;
 	}
 	this.spawnTurret = function() {
 		// Set ID

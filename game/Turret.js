@@ -11,10 +11,10 @@ class Turret extends Creature {
 		this.rotationSpeed = 0.75;
 		this.stationary = false;
 		this.distance = random(128, 256);
-		// Worker message timings
-		this.workerUpdateSpeed = 25;
-		this.workerTimer = 0;
-		this.createWorker();
+		// Angle to aim at, written by the level's turret worker (null when no target)
+		this.aimAngle = null;
+		// How close rotation must be to aimAngle before firing (radians)
+		this.fireTolerance = 0.2;
 	}
 	update() {
 		this.applyVelocity(this.friction);
@@ -30,9 +30,12 @@ class Turret extends Creature {
 			this.vel.y += Math.sin(ta) / this.speed;
 
 		}
-		if (this.inventory) {
-			this.workerTimer -= g_speed * deltaTime;
-			this.calculateAngle();
+		if (this.inventory && this.aimAngle !== null) {
+			// Rotate towards target
+			this.rotateTo(this.aimAngle, this.rotationSpeed);
+			// Fire equipped weapon only once roughly on target
+			let diff = Math.atan2(Math.sin(this.aimAngle - this.rotation), Math.cos(this.aimAngle - this.rotation));
+			if (Math.abs(diff) < this.fireTolerance) this.inventory.getEquippedItem().shoot();
 		}
 		if ( isNaN(this.rotation) ) this.rotation = 1, console.warn(this.id + ': Could not calculate rotation. Instead set to 1.');
 
@@ -57,67 +60,11 @@ class Turret extends Creature {
 			this.inventory.run();
 		});
 	}
-	findTarget() {
-		// Find closest enemy
-		for (var target, d = Number.MAX_VALUE, i = 0; i < this.parent.entities.length; i++) {
-			let e = this.parent.entities[i];
-			if (e.entityType !== this.target) {
-            	continue;
-            }
-			let distance = Math.pow(this.pos.x - e.pos.x, 2) + Math.pow(this.pos.y - e.pos.y, 2);
-			distance < d && (target = e, d = distance)
-		}
-		return target;
-	}
-	createWorker() {
-		let self = this;
-		// Assign worker to scene collision worker
-		this.worker = Game.getCurrentState().turretWorker;
-		// Listen for worker responce message
-		this.worker.onmessage = function(e) {
-			if (typeof e === 'object') self.angle = Math.atan2(e.data.vy, e.data.vx);
-			else self.angle = 0;
-		};
-	}
-	calculateAngle() {
-		// Set target
-		let t = this.findTarget();
-		// Write message
-		if (typeof t === 'object') {
-			let message = {
-				'worker_message': 'calculate_angle',
-				'turret': {
-					x: this.pos.x,
-					y: this.pos.y
-				},
-				'target': {
-					x: t.pos.x,
-					y: t.pos.y
-				},
-				'targetVel': {
-					x: t.vel.x,
-					y: t.vel.y
-				},
-				'vMag': this.inventory.getEquippedItem().speed
-			}
-			// Send data to worker thread
-			if (this.workerTimer < 0) {
-				// Post message to worker thread
-				this.worker.postMessage( message );
-				// Reset worker timer
-				this.workerTimer = this.workerUpdateSpeed;
-			}
-			// Rotate towards target
-			this.rotateTo(this.angle, this.rotationSpeed);
-			// Fire equipped weapon
-			this.inventory.getEquippedItem().shoot();
-		}
-	}
 	destroy(a) {
 		let amount = a || 0
 		// Spawn death particles
 		for (let i = 0; i < amount; i++) {
-			particleSystem.spawnParticle('hitmarker' + particleSystem.particles.length, p_red_small , this.pos.x, this.pos.y, 18, 18, 3, random(0, 3), 15, 5);
+			particleSystem.spawnParticle(new Particle('hitmarker' + particleSystem.particles.length, p_red_small, this.pos.x, this.pos.y, 18, 18, 3, random(0, 3), 15, 5));
 		}
 		// Remove entity from main array
 		this.explode(audio.mp3_vine_boom, p_explosion, spr_dew_logo, p_hitmarker);

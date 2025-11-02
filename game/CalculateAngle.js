@@ -1,51 +1,49 @@
+// Turret worker : receives every turret and potential target in one message,
+// picks the closest target for each turret and returns an intercept angle per turret id
 self.addEventListener('message', function(e) {
-	var data = e.data;
-	switch (data.worker_message) {
-		case 'find_target':
+	var turrets = e.data.turrets;
+	var targets = e.data.targets;
+	var results = [];
 
-			// ...
+	for (var i = 0; i < turrets.length; i++) {
+		var t = turrets[i];
+		// Find closest target of the type this turret is hunting
+		var best = null, bestD = Infinity;
+		for (var j = 0; j < targets.length; j++) {
+			var o = targets[j];
+			if (o.type !== t.targetType) continue;
+			var dx = o.x - t.x, dy = o.y - t.y, d = dx * dx + dy * dy;
+			if (d < bestD) {
+				bestD = d;
+				best = o;
+			}
+		}
+		results.push({
+			id: t.id,
+			angle: best ? interceptAngle(t, best, t.speed) : null
+		});
+	}
 
-			break;
-		case 'calculate_angle':
-			// Find the vector AB
-			this.ABx = data.target.x - data.turret.x;
-			this.ABy = data.target.y - data.turret.y;
-
-			// Normalize it
-			this.ABmag = Math.sqrt(this.ABx * this.ABx + this.ABy * this.ABy);
-			this.ABx /= this.ABmag;
-			this.ABy /= this.ABmag;
-
-			// Project u onto AB
-			this.uDotAB = this.ABx * data.targetVel.x + this.ABy * data.targetVel.y
-			this.ujx = this.uDotAB * this.ABx;
-			this.ujy = this.uDotAB * this.ABy;
-
-			// Subtract uj from u to get ui
-			this.uix = data.targetVel.x - this.ujx;
-			this.uiy = data.targetVel.y - this.ujy;
-
-			// Set vi to ui (for clarity)
-			this.vix = this.uix;
-			this.viy = this.uiy;
-
-			// Calculate the magnitude of vj
-			this.viMag = Math.sqrt(this.vix * this.vix + this.viy * this.viy);
-			this.vjMag = Math.sqrt(data.vMag * data.vMag - this.viMag * this.viMag);
-
-			// Get vj by multiplying it's magnitude with the unit vector AB
-			this.vjx = this.ABx * this.vjMag;
-			this.vjy = this.ABy * this.vjMag;
-
-			// Add vj and vi to get v
-			this.vx = this.vjx + this.vix;
-			this.vy = this.vjy + this.viy;
-
-			// Post result back to main thread
-			self.postMessage({
-				'vx': this.vx,
-				'vy': this.vy
-			});
-			break;
-	};
+	// Post results back to main thread
+	self.postMessage(results);
 }, false);
+
+function interceptAngle(t, o, speed) {
+	// Find the vector AB
+	var dx = o.x - t.x, dy = o.y - t.y;
+	var mag = Math.sqrt(dx * dx + dy * dy);
+	if (mag === 0) return 0;
+	// Normalize it
+	var ux = dx / mag, uy = dy / mag;
+	// Project target velocity onto AB, subtract to get the perpendicular component
+	var along = ux * o.vx + uy * o.vy;
+	var vix = o.vx - along * ux;
+	var viy = o.vy - along * uy;
+	// Magnitude left over for the bullet along AB
+	var vjSq = speed * speed - (vix * vix + viy * viy);
+	// Target is too fast to intercept, aim straight at it instead
+	if (vjSq < 0) return Math.atan2(dy, dx);
+	var vj = Math.sqrt(vjSq);
+	// Add vj and vi to get bullet velocity
+	return Math.atan2(uy * vj + viy, ux * vj + vix);
+}

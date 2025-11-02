@@ -16,6 +16,11 @@ let delay = new Pizzicato.Effects.DubDelay({
 // 	options: { volume: 1 }
 // });
 
+// Volumes for sounds that shouldn't play at full volume : { file name without extension : volume }
+const soundVolumes = {
+	mp3_fart : 0.5
+};
+
 let audioLoaded = false;
 let audioArray  = [];
 let musicArray  = [];
@@ -109,24 +114,24 @@ function audioTrack(url, type, volume) {
 	}
 }
 
+// Load every sound in the folder for this type, named after its file
+// e.g. game/assets/sound/sfx/mp3_pop.mp3 -> audio.mp3_pop
 function preloadAudio(type) {
+	const fs   = require('fs');
+	const path = require('path');
 
-	if (type == 'soundfx') {
-		this.mp3_hitmarker 	 = new audioTrack('./game/assets/sound/mp3_hitmarker.mp3', type);
-		this.wav_hit 		 = new audioTrack('./game/assets/sound/wav_hit.wav', type);
-		this.mp3_hurt 		 = new audioTrack('./game/assets/sound/mp3_hurt.mp3', type);
-		this.mp3_smoke_weed  = new audioTrack('./game/assets/sound/mp3_smoke_weed.mp3', type);
-		this.mp3_vine_boom   = new audioTrack('./game/assets/sound/mp3_vine_boom.mp3', type);
-        this.mp3_fart        = new audioTrack('./game/assets/sound/mp3_fart.mp3', type, 0.5);
-        this.mp3_bruh        = new audioTrack('./game/assets/sound/mp3_bruh.mp3', type);
-        this.mp3_pop         = new audioTrack('./game/assets/sound/mp3_pop.mp3', type, 1);
-        this.mp3_1up         = new audioTrack('./game/assets/sound/mp3_1up.mp3', type);
-        this.mp3_tnt         = new audioTrack('./game/assets/sound/mp3_tnt.mp3', type);
-	}
-	if (type == 'music') {
-		this.mp3_snoop_train = new audioTrack('./game/assets/sound/mp3_snoop_train.mp3', type);
-		this.mp3_sad_violin  = new audioTrack('./game/assets/sound/mp3_sad_violin.mp3', type);
-		this.mp3_spooky_song = new audioTrack('./game/assets/sound/mp3_spooky_song.mp3', type);
-		this.mp3_skrillex    = new audioTrack('./game/assets/sound/mp3_skrillex.mp3', type);
-	}
+	const folders    = { soundfx : 'sfx', music : 'music' };
+	const soundTypes = ['.mp3', '.wav', '.ogg'];
+	const dir = path.join(__dirname, 'game', 'assets', 'sound', folders[type]);
+
+	fs.readdirSync(dir).sort().forEach(file => {
+		let ext = path.extname(file).toLowerCase();
+		if (!soundTypes.includes(ext)) return;
+
+		let name = path.basename(file, path.extname(file));
+		// Sound src relative to index.html
+		let src = './game/assets/sound/' + folders[type] + '/' + file;
+
+		this[name] = new audioTrack(src, type, soundVolumes[name]);
+	});
 }

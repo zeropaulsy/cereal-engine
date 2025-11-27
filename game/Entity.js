@@ -17,6 +17,9 @@ class Entity {
 		this.angle     = 1;
 		this.rotation  = 0;
 		this.enableRotation = true;
+		// Used by EntityManager / SpatialGrid, declared here so every entity has the same shape
+		this.removed    = false;
+		this._gridQuery = 0;
 	}
 	// Destruction
 	destroy() {
@@ -64,9 +67,11 @@ class Entity {
 	}
 	// Collision
 	handleCollision(exclude, callback) {
-        for (let i = 0; i < this.parent.entities.length; i++) {
-        	let e = this.parent.entities[i];
-            if (e == this || e.entityType == exclude || this.entityType == e.entityType) {
+        // Only check entities in nearby grid cells (padding covers movement since the grid was built)
+        let nearby = this.parent.queryNearby(this, exclude, 8);
+        for (let i = 0; i < nearby.length; i++) {
+        	let e = nearby[i];
+            if (e == this || e.removed || e.entityType == exclude || this.entityType == e.entityType) {
             	continue;
             }
             if ( e.hitbox.type == 1 && this.inRangeOf(e, 0) ) this.rectCollision(e, callback);
@@ -75,8 +80,7 @@ class Entity {
     }
     inRangeOf(e, range) {
 		let dx = (this.pos.x) - (e.pos.x),
-			dy = (this.pos.y) - (e.pos.y),
-			angle = Math.atan2(dx, dy);
+			dy = (this.pos.y) - (e.pos.y);
 		// Combined radius of the two shapes
 		var radii = (this.hitbox.w / 2) + (e.hitbox.w / 2) + (range);
 		// Compare distance to radii
@@ -89,11 +93,12 @@ class Entity {
     circleCollision(e, callback) {
         let dx = (this.pos.x) - (e.pos.x);
         let dy = (this.pos.y) - (e.pos.y);
-        this.angle = Math.atan2(dx, dy);
         // Combined radius of the two shapes
         var radii = (e.hitbox.w / 2) + (this.hitbox.h / 2);
         // Compare distance to radii
         if ((dx * dx) + (dy * dy) < radii * radii) {
+            // Only work out the angle when actually colliding
+            this.angle = Math.atan2(dx, dy);
             // Move object to edge of shapeB
             e.pos.x += Math.sin(this.angle) / radii;
             e.pos.y += Math.cos(this.angle) / radii;

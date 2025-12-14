@@ -33,25 +33,6 @@ var WindowsDefender = function() {
 	this.onEnter = function() {
 		this.loading = true;
 		console.time('Windows Defender loading');
-		// Generate shadows
-		console.time('Generate Shadows');
-		// Sprites
-		spr_player_gates.shadow  = generateShadow(spr_player_gates);
-		spr_steve.shadow 		 = generateShadow(spr_steve);
-		spr_skull.shadow 		 = generateShadow(spr_skull);
-		spr_creeper.shadow 		 = generateShadow(spr_creeper);
-		spr_alert_boss_1.shadow  = generateShadow(spr_alert_boss_1);
-		spr_alert_boss_2.shadow  = generateShadow(spr_alert_boss_2);
-		spr_alert_boss_3.shadow  = generateShadow(spr_alert_boss_3);
-		spr_misc_bag.shadow      = generateShadow(spr_misc_bag);
-		spr_heart.shadow         = generateShadow(spr_heart);
-		spr_joint.shadow         = generateShadow(spr_joint);
-		// Particles
-		p_chicken.shadow  = generateShadow(p_chicken);
-		p_dew_can.shadow  = generateShadow(p_dew_can);
-		p_dorito.shadow   = generateShadow(p_dorito );
-		p_banana.shadow   = generateShadow(p_banana );
-		console.timeEnd('Generate Shadows');
 		// Set html body background
 		body.style.backgroundImage = 'url(' + bg_windows_bliss.src + ')';
 		// Set image rendering mode
@@ -67,7 +48,6 @@ var WindowsDefender = function() {
 		g_speed = 1;
 		g_tileSize = 64;
 		g_shake = 0;
-		g_shadows_enabled = false;
 		g_pathfinding_enabled = false;
 		inputTime = 0;
 		// Create audio groups if undefined

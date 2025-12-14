@@ -57,8 +57,8 @@ class Player extends Creature {
 		this.dashBar.update();
 	}
 	display() {
-		// Draw shadow if generated
-		if (this.sprite.shadow) this.drawSprite(this.sprite.shadow, g_shadow_distance);
+		// Draw shadow (generated on first use)
+		this.drawShadow();
 		// Draw player sprite
 		this.drawSprite(this.sprite, 0, function() {
 			// Run health bar and inventory within the save restore to inherit player position and rotation

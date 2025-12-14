@@ -61,6 +61,16 @@ class Entity {
             Game.c.restore();
         }
 	}
+	drawShadow() {
+		let sprite = this.sprite;
+		if (!g_shadows_enabled || !sprite) return;
+		// Generate the shadow the first time this sprite is drawn, once the image has loaded
+		if (!sprite.shadow) {
+			if (!(sprite.naturalWidth || sprite.width)) return;
+			sprite.shadow = generateShadow(sprite);
+		}
+		this.drawSprite(sprite.shadow, g_shadow_distance);
+	}
 	setSpriteScale(x, y) {
 		this.sWidth  = x;
 		this.sHeight = y;

@@ -43,19 +43,22 @@ function generateShadow(image) {
     if (!image.shadow) {
     	let shadow = document.createElement('canvas');
     	let sc = shadow.getContext('2d');
+    	// Shadows are drawn far smaller than most source sprites, so cap their resolution
+    	let scale = Math.min(1, 512 / Math.max(image.width, image.height));
 
     	shadow.id     = 'shadow';
-        shadow.width  = image.width;
-        shadow.height = image.height;
+        shadow.width  = Math.max(1, Math.round(image.width  * scale));
+        shadow.height = Math.max(1, Math.round(image.height * scale));
 
         sc.drawImage(image, 0, 0, shadow.width, shadow.height);
+        // Keep the sprite's shape but replace its colour with half transparent black.
+        // Done on the GPU, no reading pixels back into JS.
+        sc.globalCompositeOperation = 'source-in';
+        sc.fillStyle = 'rgba(0, 0, 0, 0.5)';
+        sc.fillRect(0, 0, shadow.width, shadow.height);
 
-        let imgData = sc.getImageData(0, 0, shadow.width, shadow.height);
-
-        shadowData = darkenImage(imgData, 255, 127);
-        sc.putImageData(shadowData, 0, 0);
-
-        return loadImage({ src : shadow.toDataURL("image/png") });
+        // drawImage accepts a canvas directly, so no need to encode it to a PNG and decode it again
+        return shadow;
     } else {
         return image.shadow;
     }

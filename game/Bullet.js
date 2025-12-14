@@ -41,8 +41,8 @@ class Bullet extends Entity {
 		}
 	}
 	display() {
-		// Draw shadow if generated
-		if (this.sprite.shadow) this.drawSprite(this.sprite.shadow, g_shadow_distance);
+		// Draw shadow (generated on first use)
+		this.drawShadow();
 		// Draw bullet sprite
 		this.drawSprite(this.sprite, 0);
 	}

@@ -61,8 +61,8 @@ class Enemy extends Creature {
 		}
 	}
 	display() {
-		// Draw shadow if generated
-		if (this.sprite.shadow) this.drawSprite(this.sprite.shadow, g_shadow_distance);
+		// Draw shadow (generated on first use)
+		this.drawShadow();
 		// Draw sprite and healthbar
 		this.drawSprite(this.sprite, 0, function() {
 			// Display healthbar if enabled

@@ -54,6 +54,7 @@ class Entity {
             } else {
             	Game.c.scale(this.sWidth, this.sHeight);
             }
+            if (g_log_sprite_sizes) recordSpriteSize(sprite, this.width, this.height);
             // Draw entity sprite with origin in center
             Game.c.drawImage(sprite, -this.width/2, -this.height/2, this.width, this.height);
             if (this.callback) this.callback();

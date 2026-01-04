@@ -43,7 +43,9 @@ class Gun {
 		this.height = this.parent.height;
 	}
 	display() {
-		if (this.equipped) Game.c.drawImage(this.sprite, -this.width / 2, -this.height / 2, this.width, this.height);
+		if (!this.equipped) return;
+		if (g_log_sprite_sizes) recordSpriteSize(this.sprite, this.width, this.height);
+		Game.c.drawImage(this.sprite, -this.width / 2, -this.height / 2, this.width, this.height);
 	}
 	shoot() {
 		if (this.timeCounter >= this.firerate) {

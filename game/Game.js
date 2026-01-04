@@ -25,6 +25,8 @@ let g_powerup_drop_rate = 5;
 let g_shadow_distance = 3;
 let g_shadows_enabled = true;
 let g_pathfinding_enabled = true;
+// Temporary: record the largest size each sprite is drawn at, see spriteSizeReport() in LoadAssets.js
+let g_log_sprite_sizes = true;
 
 let width = 1280;
 let height = 720;
@@ -224,7 +226,10 @@ window.onload = function () {
 		};
 	}
 
-	Pace.on('hide', function(e) {
+	Pace.on('hide', async function(e) {
+		// Shrink oversized sprites before any level uses them
+		await prescaleSprites();
+
 		loading = false;
 
 		Game.init();

@@ -33,6 +33,7 @@ class Particle  {
         Game.c.translate(this.pos.x, this.pos.y);
         Game.c.rotate(this.angle);
         if (!this.sprite.image) {
+            if (g_log_sprite_sizes) recordSpriteSize(this.sprite, this.width + this.health, this.height + this.health);
             Game.c.drawImage(this.sprite, -(this.width + this.health) / 2, -(this.height + this.health) / 2, this.width + this.health, this.height + this.health);
         } else {
             Game.c.drawImage(this.sprite.image, -(this.width + this.health) / 2, -(this.height + this.health) / 2, this.width + this.health, this.height + this.health);

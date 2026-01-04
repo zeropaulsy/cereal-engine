@@ -1,4 +1,5 @@
 // Dev
+Mousetrap.bind('o',   () => { spriteSizeReport(); }, 'keydown' );
 Mousetrap.bind('r',   () => { location.reload(); }, 'keydown' );
 Mousetrap.bind('q',   () => {
 	Game.getCurrentState().onExit()

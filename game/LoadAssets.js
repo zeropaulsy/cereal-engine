@@ -26,6 +26,39 @@ const spriteMaxSize = {
 const prescalePattern = /^(spr_|p_)/;
 
 const loadedImages = {};
+// Every global an image was assigned to : { global name : image }
+const assetGlobals = new Map();
+
+// Check whether a global name is already taken, either as a window property (browser built-ins, libraries,
+// var and function declarations) or as a let, const or class declaration, which window can't see
+function globalNameTaken(name) {
+	if (name in window) return 'already defined';
+	try {
+		(0, eval)(name);
+		return 'already declared';
+	} catch (err) {
+		// A ReferenceError means nothing is bound to the name
+		return (err instanceof ReferenceError) ? null : 'not a valid identifier';
+	}
+}
+
+// Assign an image to a global, refusing names that aren't identifiers or are already in use.
+// Names already owned by an asset can be reassigned, so aliases can replace a file's global.
+function assignAssetGlobal(name, img, source) {
+	if (!/^[A-Za-z_$][\w$]*$/.test(name)) {
+		console.error('Asset "' + name + '" (' + source + ') not made global: not a valid identifier.');
+		return;
+	}
+	if (!assetGlobals.has(name)) {
+		let reason = globalNameTaken(name);
+		if (reason) {
+			console.error('Asset "' + name + '" (' + source + ') not made global: name ' + reason + '. Rename the file.');
+			return;
+		}
+	}
+	window[name] = img;
+	assetGlobals.set(name, img);
+}
 
 (function() {
 	function loadDir(dir) {
@@ -45,14 +78,14 @@ const loadedImages = {};
 			let src = './' + path.relative(__dirname, fullPath).split(path.sep).join('/');
 
 			loadedImages[name] = (ext === '.gif') ? loadGIF({ src : src }) : loadImage({ src : src });
-			window[name] = loadedImages[name];
+			assignAssetGlobal(name, loadedImages[name], fullPath);
 		});
 	}
 
 	loadDir(imgRoot);
 
 	Object.keys(assetAliases).forEach(function(alias) {
-		if (loadedImages[assetAliases[alias]]) window[alias] = loadedImages[assetAliases[alias]];
+		if (loadedImages[assetAliases[alias]]) assignAssetGlobal(alias, loadedImages[assetAliases[alias]], 'alias of ' + assetAliases[alias]);
 		else console.warn('Asset alias "' + alias + '" points to missing file "' + assetAliases[alias] + '".');
 	});
 
@@ -61,7 +94,17 @@ const loadedImages = {};
 
 // Every global name an image is reachable by (its file name plus any aliases)
 function spriteGlobalNames() {
-	return Object.keys(loadedImages).concat(Object.keys(assetAliases)).filter(name => window[name]);
+	return Array.from(assetGlobals.keys());
+}
+
+// Scripts load after this file, so a later var, function or class with an asset's name can still take it over.
+// Call once every script has loaded to report asset globals that no longer resolve to their image.
+function checkAssetGlobals() {
+	assetGlobals.forEach((img, name) => {
+		let value;
+		try { value = (0, eval)(name); } catch (err) {}
+		if (value !== img) console.error('Asset global "' + name + '" was overwritten by a script. Rename the file or the variable.');
+	});
 }
 
 // Shrink oversized sprites to the size they are actually drawn at. Call once all images have loaded.
@@ -100,7 +143,10 @@ async function prescaleSprites() {
 		// Keep the original size around for spriteSizeReport()
 		bitmap.sourceWidth  = img.naturalWidth;
 		bitmap.sourceHeight = img.naturalHeight;
-		names.forEach(name => window[name] = bitmap);
+		names.forEach(name => {
+			window[name] = bitmap;
+			assetGlobals.set(name, bitmap);
+		});
 		scaled++;
 	}));
 	console.timeEnd('Prescale sprites');

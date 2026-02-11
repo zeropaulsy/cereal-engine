@@ -227,6 +227,8 @@ window.onload = function () {
 	}
 
 	Pace.on('hide', async function(e) {
+		// Report asset globals taken over by later scripts
+		checkAssetGlobals();
 		// Shrink oversized sprites before any level uses them
 		await prescaleSprites();
 

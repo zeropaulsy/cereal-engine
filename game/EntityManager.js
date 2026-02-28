@@ -47,7 +47,7 @@ class EntityManager {
 		for (let i = this.entities.length-1; i >= 0; i--) {
 			let e = this.entities[i];
 
-			if (!g_paused) e.update();
+			if (!settings.paused) e.update();
 			e.display();
 		}
 		// Sort zIndex based on Y position (in place, no per-frame allocations)

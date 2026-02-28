@@ -45,10 +45,10 @@ var WindowsDefender = function() {
 		this.turretWorker = new Worker('./game/CalculateAngle.js');
 		this.setupTurretWorker();
 		// Set global variables
-		g_speed = 1;
-		g_tileSize = 64;
-		g_shake = 0;
-		g_pathfinding_enabled = false;
+		settings.speed = 1;
+		settings.tileSize = 64;
+		settings.shake = 0;
+		settings.pathfindingEnabled = false;
 		inputTime = 0;
 		// Create audio groups if undefined
 		if (!audioLoaded) {
@@ -130,8 +130,8 @@ var WindowsDefender = function() {
 
 		// Add level score to global score
 		score = this.score;
-		g_shake = 0;
-		g_speed = 1;
+		settings.shake = 0;
+		settings.speed = 1;
 		inputTime = 0;
 
 		// Stop all audio
@@ -162,10 +162,10 @@ var WindowsDefender = function() {
 
 	this.update = function() {
 
-		if (g_shake !== 0 && !g_paused) {
+		if (settings.shake !== 0 && !settings.paused) {
 			this.camera.moveTo(
-				(Game.canvas.width  / 2) + random(-g_shake, g_shake), 
-				(Game.canvas.height / 2) + random(-g_shake, g_shake)
+				(Game.canvas.width  / 2) + random(-settings.shake, settings.shake), 
+				(Game.canvas.height / 2) + random(-settings.shake, settings.shake)
 			);
 		} else {
 			this.camera.moveTo(
@@ -173,7 +173,7 @@ var WindowsDefender = function() {
 				(Game.canvas.height / 2)
 			);
 		}
-		this.camera.zoomTo(Game.canvas.width - (g_shake * 3));
+		this.camera.zoomTo(Game.canvas.width - (settings.shake * 3));
 
 		this.updateTurretWorker();
 
@@ -193,15 +193,15 @@ var WindowsDefender = function() {
 
 		inputTime++;
 		if (inputTime > 500) {
-			g_shake += 0.55 * g_speed;
+			settings.shake += 0.55 * settings.speed;
 		}
 
-		if (g_shake > 0 && this.dampenShake) g_shake -= 0.5;
+		if (settings.shake > 0 && this.dampenShake) settings.shake -= 0.5;
 
-		if (g_shake < 0) g_shake = 0;
+		if (settings.shake < 0) settings.shake = 0;
 
 		// Set gif playback speed to global speed
-		gif_tnt_exp.playSpeed = g_speed;
+		gif_tnt_exp.playSpeed = settings.speed;
 
 	}
 	this.display = function() {
@@ -210,15 +210,15 @@ var WindowsDefender = function() {
 
 		Game.c.save();
 
-		Game.c.scale(g_scale, g_scale);
+		Game.c.scale(settings.scale, settings.scale);
 
-		if (!g_paused) {
+		if (!settings.paused) {
 
 			backgroundManager.run();
 
 			entityManager.run();
 
-			if (g_particles_enabled) particleSystem.run();
+			if (settings.particlesEnabled) particleSystem.run();
 
 			Game.c.save();
 
@@ -243,7 +243,7 @@ var WindowsDefender = function() {
 		// Render ontop on the game
 		Game.c.save();
 
-		Game.c.scale(g_scale, g_scale);
+		Game.c.scale(settings.scale, settings.scale);
 
 		// Draw HUD
 		Game.c.font = '50px Comic Sans MS';
@@ -260,7 +260,7 @@ var WindowsDefender = function() {
 		Game.c.fillStyle = '#ff0000';
 		Game.c.fillText('particles: ' + particleSystem.particles.length, 10, 150);
 
-		if (inputTime > 500 && !g_paused) {
+		if (inputTime > 500 && !settings.paused) {
 			Game.c.font = '42pt Comic Sans MS';
 			Game.c.textAlign = "center";
 			Game.c.fillStyle = '#000'
@@ -375,7 +375,7 @@ var WindowsDefender = function() {
 	}
 	this.playerDashEvent = function() {
 		player.dash(player.dashVel, function() {
-			g_shake += 5;
+			settings.shake += 5;
 			// Dash explosion
 			new Explosion(player.pos.x, player.pos.y, 8, 8, 10, 5, 5, 0, spr_dash_emoji, spr_lip_emoji, spr_hot_emoji);
 
@@ -387,9 +387,9 @@ var WindowsDefender = function() {
 
 				audio.mp3_vine_boom.play(0, 0.1, true);
 
-				g_shake -= 5;
+				settings.shake -= 5;
 
-			}, (player.dashVel * 25) / g_speed);
+			}, (player.dashVel * 25) / settings.speed);
 		});
 	}
 	this.trippyMode = function(time, shake, saturation) {
@@ -397,8 +397,8 @@ var WindowsDefender = function() {
 			// Apply filter to canvas
 			Game.setFilter('--saturate', saturation);
 			// Set shake amount
-			g_shake += shake;
-			g_speed  = 0.25;
+			settings.shake += shake;
+			settings.speed  = 0.25;
 			self.dampenShake = false;
 			// Create timer to reset changes and refer to default backgound
 			timerManager.addTimer(function() {
@@ -406,8 +406,8 @@ var WindowsDefender = function() {
 				// Only execute if game is still in current level
 				if (Game.getCurrentState() == self) {
 					backgroundManager.selectBackgroundScreen('bg_windows_bliss');
-					g_shake -= shake;
-					g_speed  = 1;
+					settings.shake -= shake;
+					settings.speed  = 1;
 					self.dampenShake = true;
 				}
 			}, time);
@@ -419,7 +419,7 @@ var WindowsDefender = function() {
 		Game.setFilter('--grayscale', 1.0);
 		Game.setFilter('--contrast',  1.5);
 		// Set shake amount
-		g_shake += shake;
+		settings.shake += shake;
 		// Disable shake dampening
 		this.dampenShake = false;
 		// Create timer to reset changes and refer to default backgound
@@ -429,7 +429,7 @@ var WindowsDefender = function() {
 			// Only execute if game is still in current level
 			if (Game.getCurrentState() == self) {
 				backgroundManager.selectBackgroundScreen('bg_windows_bliss');
-				g_shake -= shake;
+				settings.shake -= shake;
 				// Enable shake dampening
 				self.dampenShake = true;
 				self.spooky = false;

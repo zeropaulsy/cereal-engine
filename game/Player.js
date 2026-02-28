@@ -29,7 +29,7 @@ class Player extends Creature {
 			this.dashCharge += 10;
 		}
 		// Handle controller movement
-		if (g_gamepadConnected && g_lastInput == 'controller') {
+		if (settings.gamepadConnected && settings.lastInput == 'controller') {
 			// Move in direct of left joystick
 			moveTo(leftJoystick, this.speed, 0.35);
 			// Shoot when aiming with right joystick

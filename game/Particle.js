@@ -21,9 +21,9 @@ class Particle  {
     update() {
         this.pos.add(this.vel);
         this.vel.dampen(this.friction);
-        this.vel.y += g_gravity;
+        this.vel.y += settings.gravity;
 
-        this.health -= (this.drain * g_speed) * deltaTime;
+        this.health -= (this.drain * settings.speed) * deltaTime;
 
         if (this.health <= 0) this.destroy();
     }
@@ -33,7 +33,7 @@ class Particle  {
         Game.c.translate(this.pos.x, this.pos.y);
         Game.c.rotate(this.angle);
         if (!this.sprite.image) {
-            if (g_log_sprite_sizes) recordSpriteSize(this.sprite, this.width + this.health, this.height + this.health);
+            if (settings.logSpriteSizes) recordSpriteSize(this.sprite, this.width + this.health, this.height + this.health);
             Game.c.drawImage(this.sprite, -(this.width + this.health) / 2, -(this.height + this.health) / 2, this.width + this.health, this.height + this.health);
         } else {
             Game.c.drawImage(this.sprite.image, -(this.width + this.health) / 2, -(this.height + this.health) / 2, this.width + this.health, this.height + this.health);

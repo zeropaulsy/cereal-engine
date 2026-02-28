@@ -37,7 +37,7 @@ function collisionBetween1(shapeA, shapeB) {
 		// Combined radius of the two shapes
 		var radii = (shapeA.hitbox.w / 2) + (shapeB.hitbox.h / 2);
 		// Compare distance to radii
-		if ((dx * dx) + (dy * dy) < radii * radii && !g_paused) {
+		if ((dx * dx) + (dy * dy) < radii * radii && !settings.paused) {
 			// Move object to edge of shapeB
 			shapeA.pos.x += Math.sin(angle) / radii;
 			shapeA.pos.y += Math.cos(angle) / radii;
@@ -75,7 +75,7 @@ function inRangeOf(shapeA, shapeB, range) {
 	// Combined radius of the two shapes
 	var radii = (shapeA.hitbox.w / 2) + (range);
 	// Compare distance to radii
-	if ((dx * dx) + (dy * dy) < radii * radii && !g_paused) {
+	if ((dx * dx) + (dy * dy) < radii * radii && !settings.paused) {
 		// Store last collision in objects
 		return true;
 	} else {

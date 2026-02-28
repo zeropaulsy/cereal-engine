@@ -1,8 +1,8 @@
 function findEntityPath(e, t) {
 	// easystar js
-	if ( !inRangeOf(e, t, g_tileSize * 2) ) {
+	if ( !inRangeOf(e, t, settings.tileSize * 2) ) {
 		e.pathfinding = true;
-		e.pathInstanceId = easystar.findPath(e.tile.x/g_tileSize, e.tile.y/g_tileSize, t.tile.x/g_tileSize, t.tile.y/g_tileSize, function(path) {
+		e.pathInstanceId = easystar.findPath(e.tile.x/settings.tileSize, e.tile.y/settings.tileSize, t.tile.x/settings.tileSize, t.tile.y/settings.tileSize, function(path) {
 			if (path === null) {
 				console.log("Path was not found. " + path);
 			} else {

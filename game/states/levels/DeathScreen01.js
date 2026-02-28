@@ -48,7 +48,7 @@ var DeathScreen01 = function() {
 
 		Game.c.save();
 
-		Game.c.scale(g_scale, g_scale);
+		Game.c.scale(settings.scale, settings.scale);
 
 		Game.c.drawImage(lastScreen, 0, 0, width, height + 28);
 

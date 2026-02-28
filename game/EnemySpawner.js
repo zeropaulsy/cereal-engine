@@ -8,7 +8,7 @@ function EnemySpawner(max, spawnTime, spawnTimer, active, amount, callback) {
 	this.amount = amount;
 	EnemySpawner.prototype.update = function() {
 		if (this.active) {
-			this.spawnTimer -= g_speed * deltaTime;
+			this.spawnTimer -= settings.speed * deltaTime;
 			if (this.spawnTimer < 0) {
 				this.spawnTimer = this.spawnTime;
 				for (let i = 0; i < this.amount; i++) {
@@ -18,6 +18,6 @@ function EnemySpawner(max, spawnTime, spawnTimer, active, amount, callback) {
 		}
 	}
 	EnemySpawner.prototype.run = function() {
-		if (!g_paused) this.update();
+		if (!settings.paused) this.update();
 	}
 }

@@ -24,8 +24,8 @@ class Explosion extends Entity {
 	}
 	explode() {
 		// Shake screen
-		g_shake += 3;
-		timerManager.addTimer(function() { g_shake -= 3 }, 100);
+		settings.shake += 3;
+		timerManager.addTimer(function() { settings.shake -= 3 }, 100);
 		// Create particles for explosion effect
 		for (let i = 0; i < this.amount; i++) {
 			this.spawnParticle(this.pos.x, this.pos.y, 25, 55, this.p1);

@@ -111,7 +111,7 @@ function checkAssetGlobals() {
 async function prescaleSprites() {
 	console.time('Prescale sprites');
 	// In responsive mode the world grows with the window, so only pixel density scales sprites up
-	const screenScale = window.devicePixelRatio * (g_responsive ? 1 : Math.max(1, window.screen.width / width));
+	const screenScale = window.devicePixelRatio * (settings.responsive ? 1 : Math.max(1, window.screen.width / width));
 
 	// Group names by image so aliases share one scaled copy
 	const groups = new Map();
@@ -153,7 +153,7 @@ async function prescaleSprites() {
 	console.log(scaled + ' sprites prescaled (screen scale ' + screenScale + ').');
 }
 
-// --- Temporary sprite size logging, enabled with g_log_sprite_sizes ---
+// --- Temporary sprite size logging, enabled with settings.logSpriteSizes ---
 
 // Record the largest size (game pixels, longest side) a sprite is drawn at
 function recordSpriteSize(sprite, w, h) {

@@ -54,7 +54,7 @@ class Entity {
             } else {
             	Game.c.scale(this.sWidth, this.sHeight);
             }
-            if (g_log_sprite_sizes) recordSpriteSize(sprite, this.width, this.height);
+            if (settings.logSpriteSizes) recordSpriteSize(sprite, this.width, this.height);
             // Draw entity sprite with origin in center
             Game.c.drawImage(sprite, -this.width/2, -this.height/2, this.width, this.height);
             if (this.callback) this.callback();
@@ -64,13 +64,13 @@ class Entity {
 	}
 	drawShadow() {
 		let sprite = this.sprite;
-		if (!g_shadows_enabled || !sprite) return;
+		if (!settings.shadowsEnabled || !sprite) return;
 		// Generate the shadow the first time this sprite is drawn, once the image has loaded
 		if (!sprite.shadow) {
 			if (!(sprite.naturalWidth || sprite.width)) return;
 			sprite.shadow = generateShadow(sprite);
 		}
-		this.drawSprite(sprite.shadow, g_shadow_distance);
+		this.drawSprite(sprite.shadow, settings.shadowDistance);
 	}
 	setSpriteScale(x, y) {
 		this.sWidth  = x;
@@ -165,7 +165,7 @@ class Entity {
 	}
 	isOnGrid() {
 		if (Game.getCurrentState().map !== undefined) {
-			if (this.tile.x/g_tileSize < Game.getCurrentState().map.cols && this.tile.y/g_tileSize < Game.getCurrentState().map.rows && this.tile.x/g_tileSize > 0 && this.tile.y/g_tileSize > 0) {
+			if (this.tile.x/settings.tileSize < Game.getCurrentState().map.cols && this.tile.y/settings.tileSize < Game.getCurrentState().map.rows && this.tile.x/settings.tileSize > 0 && this.tile.y/settings.tileSize > 0) {
 				return true;
 			} else {
 				return false;
@@ -174,8 +174,8 @@ class Entity {
 	}
 	getTilePosition() {
 		return {
-			x: Math.floor(this.pos.x/g_tileSize)*g_tileSize,
-			y: Math.floor(this.pos.y/g_tileSize)*g_tileSize
+			x: Math.floor(this.pos.x/settings.tileSize)*settings.tileSize,
+			y: Math.floor(this.pos.y/settings.tileSize)*settings.tileSize
 		}
 	}
 	getPosition() {

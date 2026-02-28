@@ -31,7 +31,7 @@ class Bullet extends Entity {
 
 		if ( !this.isOnScreen() || this.rotation == NaN) this.destroy();
 
-		this.addRotation( (0.25 * g_speed) * deltaTime );
+		this.addRotation( (0.25 * settings.speed) * deltaTime );
 
 		if (this.health <= 0) {
 			if (!this.explosive)  {

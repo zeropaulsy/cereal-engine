@@ -5,8 +5,8 @@ class Vector {
     }
     add(vec, mult) {
         let m = mult || 1;
-        this.x += ((vec.x * m) * (g_speed)) * deltaTime;
-        this.y += ((vec.y * m) * (g_speed)) * deltaTime;
+        this.x += ((vec.x * m) * (settings.speed)) * deltaTime;
+        this.y += ((vec.y * m) * (settings.speed)) * deltaTime;
     }
     subtract(vec) {
         this.x -= vec.x;
@@ -17,8 +17,8 @@ class Vector {
         this.y *= value;
     }
     dampen(value) {
-        this.x *= averageNums(value, 1, g_speed);
-        this.y *= averageNums(value, 1, g_speed);
+        this.x *= averageNums(value, 1, settings.speed);
+        this.y *= averageNums(value, 1, settings.speed);
     }
     equals(vec) {
         this.x = vec.x;

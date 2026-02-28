@@ -11,22 +11,28 @@ let inputTime = 0;
 let lastScreen;
 let root = document.querySelector(':root');
 
-let g_responsive = true;
-let g_speed = 1;
-let g_gravity = 0;
-let g_tileSize = 64;
-let g_particles_enabled = true;
-let g_paused = false;
-let g_shake = 0;
-let g_gamepadConnected = false;
-let g_lastInput = 'computer';
-let g_scale = 1;
-let g_powerup_drop_rate = 5;
-let g_shadow_distance = 3;
-let g_shadows_enabled = true;
-let g_pathfinding_enabled = true;
-// Temporary: record the largest size each sprite is drawn at, see spriteSizeReport() in LoadAssets.js
-let g_log_sprite_sizes = true;
+// Global settings and runtime values shared by the whole game
+const settings = {
+	// Display
+	responsive        : true,	// World grows with the window instead of stretching
+	scale             : 1,		// Canvas pixels per game pixel, set on resize
+	particlesEnabled  : true,
+	shadowsEnabled    : true,
+	shadowDistance    : 3,
+	// World
+	speed             : 1,		// Time scale, 1 is normal speed and lower is slow motion
+	gravity           : 0,
+	tileSize          : 64,
+	shake             : 0,		// Screen shake amount
+	paused            : false,
+	pathfindingEnabled: true,
+	powerupDropRate   : 5,		// Percent chance an enemy drops a powerup
+	// Input
+	gamepadConnected  : false,
+	lastInput         : 'computer',	// 'computer' or 'controller'
+	// Temporary: record the largest size each sprite is drawn at, see spriteSizeReport() in LoadAssets.js
+	logSpriteSizes    : true
+};
 
 let width = 1280;
 let height = 720;
@@ -95,15 +101,15 @@ function GameObject() {
 	this.run = function() {
 		requestAnimationFrame(this.run.bind(this));
 		// Set scale based on window size
-		g_scale = this.canvas.width / width;
-		if (g_responsive) {
+		settings.scale = this.canvas.width / width;
+		if (settings.responsive) {
 			width = window.innerWidth;
 			height = window.innerHeight - 28;
 		}
 		// Prevent speed going below 0
-		if (g_speed < 0) g_speed = 0;
+		if (settings.speed < 0) settings.speed = 0;
 		// Apply deadzones to gamepad to stop drifting
-		if (g_gamepadConnected) {
+		if (settings.gamepadConnected) {
 			let gp = navigator.getGamepads()[0];
 
 			leftJoystick.x = applyDeadzone(gp.axes[0], leftDeadzone);
@@ -114,7 +120,7 @@ function GameObject() {
 		}
 
 		// Handle pause menu inputs
-		g_paused ? this.stateStack.pause() : this.stateStack.resume();
+		settings.paused ? this.stateStack.pause() : this.stateStack.resume();
 
 		// Calculate current framerate
 		if (!lastCalledTime) {
@@ -128,7 +134,7 @@ function GameObject() {
 		fps = 1000 / delta;
 		// Update and render current state
 		if (!loading) {
-			if (!g_paused && !this.getCurrentState().loading) {
+			if (!settings.paused && !this.getCurrentState().loading) {
 				this.stateStack.update();
 			}
 			this.stateStack.display();
@@ -139,8 +145,8 @@ function GameObject() {
 		this.setState(new WindowsDefender());
 	}
 	this.pauseGame = function() {
-		g_paused = !g_paused;
-		if (g_paused) {
+		settings.paused = !settings.paused;
+		if (settings.paused) {
 			pauseActiveSounds();
 			timerManager.pauseTimers();
 		} else {
@@ -239,21 +245,21 @@ window.onload = function () {
 
 		Game.canvas.addEventListener('mousedown', function(e) {
 			mouseDown = true;
-			g_lastInput = 'computer';
+			settings.lastInput = 'computer';
 		});
 
 		Game.canvas.addEventListener('mouseup', function(e) {
 			mouseDown = false;
-			g_lastInput = 'computer';
+			settings.lastInput = 'computer';
 		});
 
 		Game.canvas.addEventListener('mousemove', function(evt) {
 			var mousePos = getMousePos(canvas, evt);
 
-			this.mouse.x = (mousePos.x * window.devicePixelRatio) / g_scale;
-			this.mouse.y = ((mousePos.y * window.devicePixelRatio) / g_scale) - 28;
+			this.mouse.x = (mousePos.x * window.devicePixelRatio) / settings.scale;
+			this.mouse.y = ((mousePos.y * window.devicePixelRatio) / settings.scale) - 28;
 
-			g_lastInput = 'computer';
+			settings.lastInput = 'computer';
 		}, true);
 
 		window.addEventListener('resize', function() {
@@ -265,7 +271,7 @@ window.onload = function () {
 
 document.addEventListener('visibilitychange', () => {
 	if (document.hidden) {
-		g_paused = false;
+		settings.paused = false;
 		Game.pauseGame();
 	} else {
 		// Do something...
@@ -273,7 +279,7 @@ document.addEventListener('visibilitychange', () => {
 }, false);
 
 document.addEventListener('keypress', (e) => {
-	g_lastInput = 'computer';
+	settings.lastInput = 'computer';
 	inputTime = 0;
 });
 

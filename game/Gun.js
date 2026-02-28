@@ -35,7 +35,7 @@ class Gun {
 		// Set position to parent position
 		this.pos.equals(this.parent.pos);
 		// Count time passed
-		this.timeCounter += g_speed * deltaTime;
+		this.timeCounter += settings.speed * deltaTime;
 
 		this.angle = this.parent.angle;
 
@@ -44,7 +44,7 @@ class Gun {
 	}
 	display() {
 		if (!this.equipped) return;
-		if (g_log_sprite_sizes) recordSpriteSize(this.sprite, this.width, this.height);
+		if (settings.logSpriteSizes) recordSpriteSize(this.sprite, this.width, this.height);
 		Game.c.drawImage(this.sprite, -this.width / 2, -this.height / 2, this.width, this.height);
 	}
 	shoot() {

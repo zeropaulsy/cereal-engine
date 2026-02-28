@@ -22,13 +22,13 @@ class Enemy extends Creature {
 	}
 	update() {
 		// Find player and follow path
-		if (this.isOnGrid() && g_pathfinding_enabled) {
+		if (this.isOnGrid() && settings.pathfindingEnabled) {
 			findEntityPath(this, this.target);
 		}
-		if (this.pathfinding && g_pathfinding_enabled) {
+		if (this.pathfinding && settings.pathfindingEnabled) {
 			try {
-				this.dx = ( (this.path[1].x - random(-1, 1) ) * g_tileSize ) - ( this.pos.x - (this.width / 2) );
-				this.dy = ( (this.path[1].y - random(-1, 1) ) * g_tileSize ) - ( this.pos.y - (this.height/ 2) );
+				this.dx = ( (this.path[1].x - random(-1, 1) ) * settings.tileSize ) - ( this.pos.x - (this.width / 2) );
+				this.dy = ( (this.path[1].y - random(-1, 1) ) * settings.tileSize ) - ( this.pos.y - (this.height/ 2) );
 				this.rotateTo(Math.atan2(this.dy, this.dx), this.rotationSpeed);
 			}
 			catch {
@@ -93,7 +93,7 @@ class Enemy extends Creature {
 		// Spawn blood particles
 		this.spawnDeathParticle(this.pos.x, this.pos.y, false);
 		// Drop powerup
-		if (random(0, 100) < g_powerup_drop_rate && !this.powerupDropped) {
+		if (random(0, 100) < settings.powerupDropRate && !this.powerupDropped) {
 			Game.getCurrentState().dropPowerup(this);
 			this.powerupDropped = true;
 		}

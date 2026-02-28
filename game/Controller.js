@@ -1,13 +1,13 @@
 Gamepad.on('connect', e => {
     console.log(`controller ${e.index} connected!`);
 	initializeGamepadControls();
-    g_lastInput = 'controller';
-    g_gamepadConnected = true;
+    settings.lastInput = 'controller';
+    settings.gamepadConnected = true;
 });
 
 Gamepad.on('press', 'vendor', e => {
-    g_lastInput = 'controller';
-    g_gamepadConnected = true;
+    settings.lastInput = 'controller';
+    settings.gamepadConnected = true;
 });
 
 function initializeGamepadControls() {
@@ -36,7 +36,7 @@ function initializeGamepadControls() {
 	});
 
 	Gamepad.on('press', 'start', () => {
-	    if (g_gamepadConnected) Game.pauseGame();
+	    if (settings.gamepadConnected) Game.pauseGame();
 	});
 
 	Gamepad.on('press', 'shoulder_bottom_left', e => {

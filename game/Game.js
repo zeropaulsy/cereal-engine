@@ -14,8 +14,8 @@ let root = document.querySelector(':root');
 // Global settings and runtime values shared by the whole game
 const settings = {
 	// Display
-	responsive        : true,	// World grows with the window instead of stretching
-	scale             : 1,		// Canvas pixels per game pixel, set on resize
+	responsive        : true,	// Show extra world on wider or taller windows instead of letterboxing
+	scale             : 1,		// Canvas pixels per game pixel, set by Game.resize()
 	particlesEnabled  : true,
 	shadowsEnabled    : true,
 	shadowDistance    : 3,
@@ -34,8 +34,12 @@ const settings = {
 	logSpriteSizes    : true
 };
 
-let width = 1280;
-let height = 720;
+// Smallest area of the world that is always visible, scaled to fit the window
+const baseWidth  = 1280;
+const baseHeight = 720;
+// Current world size in game pixels, set by Game.resize()
+let width  = baseWidth;
+let height = baseHeight;
 
 let mouseDown = false;
 let mouseUp = false;
@@ -100,12 +104,6 @@ function GameObject() {
 	}
 	this.run = function() {
 		requestAnimationFrame(this.run.bind(this));
-		// Set scale based on window size
-		settings.scale = this.canvas.width / width;
-		if (settings.responsive) {
-			width = window.innerWidth;
-			height = window.innerHeight - 28;
-		}
 		// Prevent speed going below 0
 		if (settings.speed < 0) settings.speed = 0;
 		// Apply deadzones to gamepad to stop drifting
@@ -191,17 +189,43 @@ function GameObject() {
 		root.style.setProperty('--sepia',      0);
 	}
 	this.clearCanvas = function(context) {
-		context.clearRect(0, 0, width, height);
+		context.clearRect(0, 0, context.canvas.width, context.canvas.height);
 	}
 	this.setupCanvas = function(wrapper) {
 		this.canvas = document.createElement('canvas');
 		this.canvas.id = 'canvas';
-        this.canvas.width  = window.innerWidth  * window.devicePixelRatio;
-        this.canvas.height = (window.innerHeight * window.devicePixelRatio);
         this.canvas.mouse = new Vector();
         this.c = this.canvas.getContext('2d');
 
         document.getElementById('canvas-div').appendChild(this.canvas);
+        this.resize();
+	}
+	this.resize = function() {
+		// Space left for the game below the title bar
+		let div = document.getElementById('canvas-div');
+		let cssWidth  = div.clientWidth;
+		let cssHeight = div.clientHeight;
+		// Scale so the base area always fits inside the window
+		let scale = Math.min(cssWidth / baseWidth, cssHeight / baseHeight);
+		if (settings.responsive) {
+			// Grow the world on the axis with spare room so nothing stretches
+			width  = cssWidth  / scale;
+			height = cssHeight / scale;
+		} else {
+			// Keep the base area and letterbox the rest
+			width  = baseWidth;
+			height = baseHeight;
+			cssWidth  = baseWidth  * scale;
+			cssHeight = baseHeight * scale;
+		}
+		this.width  = width;
+		this.height = height;
+		// Size the canvas in CSS pixels and back it with device pixels for sharp rendering
+		this.canvas.style.width  = cssWidth  + 'px';
+		this.canvas.style.height = cssHeight + 'px';
+		this.canvas.width  = Math.round(cssWidth  * window.devicePixelRatio);
+		this.canvas.height = Math.round(cssHeight * window.devicePixelRatio);
+		settings.scale = this.canvas.width / width;
 	}
 	this.getWindowSize = function() {
 		return {
@@ -223,14 +247,6 @@ window.onload = function () {
             height: Game.height
         };
     };
-
-	window.getMousePos = function(canvas, evt) {
-		var rect = canvas.getBoundingClientRect();
-		return {
-			x: (evt.clientX + Game.getCurrentState().camera.lookAt[0]) - canvas.width / 2,
-			y: (evt.clientY + Game.getCurrentState().camera.lookAt[1]) - canvas.height/ 2
-		};
-	}
 
 	Pace.on('hide', async function(e) {
 		// Report asset globals taken over by later scripts
@@ -254,17 +270,16 @@ window.onload = function () {
 		});
 
 		Game.canvas.addEventListener('mousemove', function(evt) {
-			var mousePos = getMousePos(canvas, evt);
-
-			this.mouse.x = (mousePos.x * window.devicePixelRatio) / settings.scale;
-			this.mouse.y = ((mousePos.y * window.devicePixelRatio) / settings.scale) - 28;
+			// Convert from window pixels to game pixels
+			let rect = this.getBoundingClientRect();
+			this.mouse.x = (evt.clientX - rect.left) / rect.width  * width;
+			this.mouse.y = (evt.clientY - rect.top)  / rect.height * height;
 
 			settings.lastInput = 'computer';
 		}, true);
 
 		window.addEventListener('resize', function() {
-			Game.canvas.width  = window.innerWidth  * window.devicePixelRatio;
-			Game.canvas.height = (window.innerHeight * window.devicePixelRatio);
+			Game.resize();
 		});
 	});
 };

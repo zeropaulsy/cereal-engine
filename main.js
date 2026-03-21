@@ -1,5 +1,5 @@
 // Modules to control application life and create native browser window
-const {app, BrowserWindow} = require('electron')
+const {app, BrowserWindow, screen} = require('electron')
 const remote 			   = require('electron').remote;
 const path                 = require('path')
 const {ipcMain}            = require('electron');
@@ -27,8 +27,8 @@ function createWindow () {
 		}
 	})
 
-	// Set window aspect ratio
-	// mainWindow.setAspectRatio(1280/720);
+	// Snap the game area to the closest supported aspect ratio after the user resizes
+	snapAspectRatio(mainWindow);
 	if (process.platform !== 'darwin') mainWindow.setMenu(null);
 
 	// and load the index.html of the app.
@@ -43,6 +43,52 @@ function createWindow () {
 		// when you should delete the corresponding element.
 		mainWindow = null
 	})
+}
+
+// Aspect ratios (width / height) the game area snaps to: widescreen, ultrawide, 4:3 and square
+const aspectRatios = [16/9, 21/9, 4/3, 1];
+// Height of the HTML title bar above the game area, in CSS pixels
+const titleBarHeight = 28;
+// Wait this long after the last resize event before snapping, so dragging stays smooth
+const snapDelay = 150;
+
+function snapAspectRatio(win) {
+	let lastSize = win.getContentSize();
+	let snapTimer;
+
+	win.on('resize', function() {
+		clearTimeout(snapTimer);
+		snapTimer = setTimeout(snap, snapDelay);
+	});
+
+	function snap() {
+		if (win.isDestroyed()) return;
+		let [w, h] = win.getContentSize();
+		// Leave maximized and fullscreen windows alone, taskbars and docks give them uneven sizes
+		if (win.isMaximized() || win.isFullScreen()) {
+			lastSize = [w, h];
+			return;
+		}
+		let gameHeight = h - titleBarHeight;
+		// Find the closest ratio, compared on a log scale so wider and taller count equally
+		let current = Math.log(w / gameHeight);
+		let ratio = aspectRatios.reduce((best, r) =>
+			Math.abs(Math.log(r) - current) < Math.abs(Math.log(best) - current) ? r : best);
+		// Keep whichever side the user changed most and fit the other one to the ratio
+		let keepWidth = Math.abs(w - lastSize[0]) / lastSize[0] >= Math.abs(h - lastSize[1]) / lastSize[1];
+		let minH = win.getMinimumSize()[1];
+		let area = screen.getDisplayMatching(win.getBounds()).workArea;
+		let newW = w;
+		let newH = Math.round(w / ratio) + titleBarHeight;
+		// Fit the width to the height instead if the new height is too small or too tall for the screen
+		if (!keepWidth || newH < minH || newH > area.height) {
+			newW = Math.round(gameHeight * ratio);
+			newH = h;
+		}
+		lastSize = [newW, newH];
+		// Skip tiny corrections so the snap doesn't trigger itself again
+		if (Math.abs(newW - w) > 1 || Math.abs(newH - h) > 1) win.setContentSize(newW, newH);
+	}
 }
 
 // This method will be called when Electron has finished

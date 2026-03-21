@@ -41,7 +41,9 @@ var DeathScreen01 = function() {
 	this.onResume = function() {}
 
 	this.update = function() {
-
+		// Follow canvas size changes from window resizing
+		this.camera.moveTo(Game.canvas.width / 2, Game.canvas.height / 2);
+		this.camera.zoomTo(Game.canvas.width);
 	}
 	this.display = function() {
 		this.camera.begin();
@@ -50,7 +52,7 @@ var DeathScreen01 = function() {
 
 		Game.c.scale(settings.scale, settings.scale);
 
-		Game.c.drawImage(lastScreen, 0, 0, width, height + 28);
+		Game.c.drawImage(lastScreen, 0, 0, width, height);
 
 		// Darken image
 		Game.c.fillStyle = 'rgba(0, 0, 0, 0.5)';

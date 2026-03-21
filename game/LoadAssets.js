@@ -110,8 +110,8 @@ function checkAssetGlobals() {
 // Shrink oversized sprites to the size they are actually drawn at. Call once all images have loaded.
 async function prescaleSprites() {
 	console.time('Prescale sprites');
-	// In responsive mode the world grows with the window, so only pixel density scales sprites up
-	const screenScale = window.devicePixelRatio * (settings.responsive ? 1 : Math.max(1, window.screen.width / width));
+	// Largest scale the game can reach, with the base area fitted to a fullscreen window
+	const screenScale = window.devicePixelRatio * Math.max(1, Math.min(window.screen.width / baseWidth, window.screen.height / baseHeight));
 
 	// Group names by image so aliases share one scaled copy
 	const groups = new Map();

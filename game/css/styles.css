@@ -35,6 +35,8 @@ body {
 
     width: 100vw;
     height: 100vh;
+    display: flex;
+    flex-direction: column;
 
     background-image: url('../../game/assets/img/slayer/bg_windows_startup.png');
     background-position: center;
@@ -56,9 +58,19 @@ video {
 }
 
 
+/* Fills the space below the title bar, the canvas is sized and centred inside it by Game.resize() */
+#canvas-div {
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 canvas {
-    width: 100%;
-    height: 100%;
+    display: block;
+    flex-shrink: 0;
     image-rendering: pixelated;
     transition: filter 0.5s;
     filter: blur(var(--blur)) contrast(var(--contrast)) brightness(var(--brightness)) contrast(var(--contrast)) grayscale(var(--grayscale)) hue-rotate(var(--hue-rotate)) invert(var(--invert)) opacity(var(--opacity)) saturate(var(--saturate)) sepia(var(--sepia)); 

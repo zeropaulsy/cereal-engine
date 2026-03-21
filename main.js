@@ -34,7 +34,13 @@ function createWindow () {
 	// and load the index.html of the app.
 	mainWindow.loadFile('index.html');
 
-	mainWindow.webContents.openDevTools();
+	// mainWindow.webContents.openDevTools();
+
+	// Tell the renderer when the window is maximized or restored
+	mainWindow.on('maximize',   () => mainWindow.webContents.send('maximized', true));
+	mainWindow.on('unmaximize', () => mainWindow.webContents.send('maximized', false));
+	// Send the starting state once the page can hear it
+	mainWindow.webContents.on('did-finish-load', () => mainWindow.webContents.send('maximized', mainWindow.isMaximized()));
 
 	// Emitted when the window is closed.
 	mainWindow.on('closed', function () {
@@ -116,7 +122,9 @@ app.on('activate', function () {
 ipcMain.on('minimize', () => {
 	mainWindow.minimize();
 })
-
 ipcMain.on('maximize', () => {
 	mainWindow.maximize();
+})
+ipcMain.on('unmaximize', () => {
+        mainWindow.unmaximize();
 })

@@ -15,6 +15,7 @@ let root = document.querySelector(':root');
 const settings = {
 	// Display
 	responsive        : true,	// Show extra world on wider or taller windows instead of letterboxing
+	maximized		  : false,
 	scale             : 1,		// Canvas pixels per game pixel, set by Game.resize()
 	particlesEnabled  : true,
 	shadowsEnabled    : true,
@@ -303,11 +304,18 @@ document.getElementById('title-bar-minimize').onclick = function() {
 	remote.ipcRenderer.send('minimize');
 };
 document.getElementById('title-bar-maximize').onclick = function() {
-	remote.ipcRenderer.send('maximize');
+	if (!settings.maximized) {
+		remote.ipcRenderer.send('maximize');
+	} else {
+		remote.ipcRenderer.send('unmaximize');
+	}
 };
 document.getElementById('title-bar-close').onclick = function() {
 	window.close();
 };
+remote.ipcRenderer.on('maximized', function(event, maximized) {
+        settings.maximized = maximized;
+});
 // Pause window controls
 document.getElementById('audio-slider').onclick = function() {
 	Game.pauseGame();

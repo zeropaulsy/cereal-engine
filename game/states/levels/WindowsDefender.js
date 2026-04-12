@@ -78,7 +78,7 @@ var WindowsDefender = function() {
 		// Create particle system
 		particleSystem = new ParticleSystem(1000);
 		// Spawn player and initialize instructions
-		entityManager.spawnEntity(new Player('player', spr_player_gates, width / 2, height - 85, 85, 85, 100, 7));
+		entityManager.spawnEntity(new Player('player', spr_player_gates, width / 2, height - 64, 64, 64, 100, 7));
 		// Assign player entity to global varible for ease of use
 		player = entityManager.getEntityById('player');
 		// Create player inventory

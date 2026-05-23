@@ -67,6 +67,16 @@ let leftPressed  = false;
 let rightPressed = false;
 let spacePressed = false;
 
+// Release all held inputs so nothing carries over between states
+function resetInput() {
+	upPressed    = false;
+	downPressed  = false;
+	leftPressed  = false;
+	rightPressed = false;
+	spacePressed = false;
+	mouseDown    = false;
+}
+
 let leftJoystick  = new Vector();
 let rightJoystick = new Vector();
 let leftDeadzone  = 0.25;
@@ -90,12 +100,64 @@ function GameObject() {
 
 	this.stateStack = new StateStack();
 
+	// Keys bound for the whole session, stored as (key, fn, event)
+	this.globalBindings = [];
+	// Keys bound by the current state, stored as (key, event)
+	this.stateBindings  = [];
+
 	this.getCurrentState = function() {
 		return this.stateStack.stateList.top();
 	}
 	this.setState = function(state) {
+		this.exitState();
 		this.stateStack.pop();
 		this.stateStack.push(state);
+	}
+	this.restartState = function() {
+		this.exitState();
+		this.getCurrentState().onEnter();
+	}
+	this.exitState = function() {
+		// Level specific cleanup
+		this.getCurrentState().onExit();
+		// Cancel pending timers so they can't fire into the next state
+		timerManager.clearTimers();
+		// Unbind state keys and restore global ones
+		this.unbindStateKeys();
+		resetInput();
+		// Leave the pause menu if exiting while paused
+		settings.paused = false;
+		this.hidePauseMenu();
+		this.resetFilters();
+		// Stop all audio
+		if (audioLoaded) {
+			audio.Group.stop();
+			music.Group.stop();
+		}
+		// Reset global effects
+		settings.shake = 0;
+		settings.speed = 1;
+		inputTime = 0;
+	}
+	// Bind a key for the whole session (dev keys)
+	this.bindGlobal = function(key, fn, event) {
+		Mousetrap.bind(key, fn, event);
+		this.globalBindings.push(key, fn, event);
+	}
+	// Bind a key until the current state exits
+	this.bind = function(key, fn, event) {
+		Mousetrap.bind(key, fn, event);
+		this.stateBindings.push(key, event);
+	}
+	this.unbindStateKeys = function() {
+		for (let i = 0; i < this.stateBindings.length; i += 2) {
+			Mousetrap.unbind(this.stateBindings[i], this.stateBindings[i + 1]);
+		}
+		this.stateBindings.length = 0;
+		// Restore any global keys a state overrode
+		for (let i = 0; i < this.globalBindings.length; i += 3) {
+			Mousetrap.bind(this.globalBindings[i], this.globalBindings[i + 1], this.globalBindings[i + 2]);
+		}
 	}
 	this.update = function() {
 		this.stateStack.update();

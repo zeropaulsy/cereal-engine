@@ -45,10 +45,13 @@ class TimerManager {
 		this.timers.push(new Timer(function() { callback() }, delay));
 	}
 	removeTimer(index) {
-		// Remove timer from TimerManager
 		let i = this.timers.indexOf(index);
 		if (i !== -1) {
 			this.timers.splice(i, 1);
 		}
+	}
+	clearTimers() {
+		for (let i = 0; i < this.timers.length; i++) this.timers[i].clear();
+		this.timers.length = 0;
 	}
 }

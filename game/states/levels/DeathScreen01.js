@@ -1,5 +1,7 @@
-var DeathScreen01 = function() {
+// DeathScreen01 : DeathScreen01(level class to restart into, defaults to WindowsDefender)
+var DeathScreen01 = function(level) {
 	this.name = 'DeathScreen01';
+	this.level = level || WindowsDefender;
 
 	this.camera;
 
@@ -14,27 +16,20 @@ var DeathScreen01 = function() {
 		// Play deathscreen music
 		music.mp3_sad_violin.play();
 		// Bind keys to restart game
-		Mousetrap.bind('esc', function() { Game.setState(new WindowsDefender()) }, 'keydown');
-		Mousetrap.bind( 'r',  function() { Game.setState(new WindowsDefender()) }, 'keydown');
+		Game.bind('esc', () => { Game.setState(new this.level()) }, 'keydown');
+		Game.bind( 'r',  () => { Game.setState(new this.level()) }, 'keydown');
 		// Apply canvas filters
 		timerManager.addTimer(function() {
 			Game.setFilter('--grayscale', 1.00);
 			Game.setFilter('--contrast' , 1.15);
 		}, 300);
 	}
+	// Timers, keybinds, input, filters and audio are reset by Game.exitState()
 	this.onExit = function() {
 		// Clear the canvas
-		Game.clearCanvas(Game.c);	
-		lastScreen = null;
+		Game.clearCanvas(Game.c);
+		// lastScreen is kept so a restart (Q) can draw it again, the next death replaces it
 		this.camera = null;
-		// Stop all audio
-		audio.Group.stop();
-		music.Group.stop();
-		// Unbind controls
-		Mousetrap.unbind('esc', 'keydown');
-		Mousetrap.unbind( 'r',  'keydown');
-		// Reset filters applied to the canvas
-		Game.resetFilters();
 	}
 
 	this.onPause  = function() {}

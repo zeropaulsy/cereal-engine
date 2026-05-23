@@ -67,9 +67,8 @@ var StateStack = function() {
 		this.stateList.push(state);
 		state.onEnter();
 	}
+	// onExit is called by Game.exitState(), which also runs the shared cleanup
 	this.pop = function() {
-		var state = this.stateList.top();
-		state.onExit();
 		return this.stateList.pop();
 	}
 

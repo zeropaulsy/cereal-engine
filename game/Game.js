@@ -17,6 +17,7 @@ const settings = {
 	responsive        : true,	// Show extra world on wider or taller windows instead of letterboxing
 	maximized		  : false,
 	scale             : 1,		// Canvas pixels per game pixel, set by Game.resize()
+	pixelated         : false,	// Nearest neighbour sprite scaling instead of smoothing
 	particlesEnabled  : true,
 	shadowsEnabled    : true,
 	shadowDistance    : 3,
@@ -104,6 +105,8 @@ function GameObject() {
 	this.globalBindings = [];
 	// Keys bound by the current state, stored as (key, event)
 	this.stateBindings  = [];
+	// Last settings.pixelated applied to the canvas CSS
+	this.pixelated = null;
 
 	this.getCurrentState = function() {
 		return this.stateStack.stateList.top();
@@ -197,6 +200,13 @@ function GameObject() {
 		if (!loading) {
 			if (!settings.paused && !this.getCurrentState().loading) {
 				this.stateStack.update();
+			}
+			// Applied every frame because resizing the canvas resets it, and so the setting can change at any time
+			this.c.imageSmoothingEnabled = !settings.pixelated;
+			// Match the CSS scaling of the canvas element, only touching the style when the setting changes
+			if (this.pixelated !== settings.pixelated) {
+				this.pixelated = settings.pixelated;
+				this.canvas.style.imageRendering = settings.pixelated ? 'pixelated' : 'auto';
 			}
 			this.stateStack.display();
 		}

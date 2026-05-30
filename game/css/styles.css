@@ -71,7 +71,6 @@ video {
 canvas {
     display: block;
     flex-shrink: 0;
-    image-rendering: pixelated;
     transition: filter 0.5s;
     filter: blur(var(--blur)) contrast(var(--contrast)) brightness(var(--brightness)) contrast(var(--contrast)) grayscale(var(--grayscale)) hue-rotate(var(--hue-rotate)) invert(var(--invert)) opacity(var(--opacity)) saturate(var(--saturate)) sepia(var(--sepia)); 
 }

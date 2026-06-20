@@ -13,7 +13,7 @@ function createWindow () {
 	mainWindow = new BrowserWindow({
 		useContentSize: true,
 		width: 1280,
-		height: 720,
+		height: 720 + 28,
 		minWidth: 640,
 		minHeight: 360,
 		backgroundColor: '#000000',
@@ -51,8 +51,8 @@ function createWindow () {
 	})
 }
 
-// Aspect ratios (width / height) the game area snaps to: widescreen, ultrawide, 4:3 and square
-const aspectRatios = [16/9, 21/9, 4/3, 1];
+// Aspect ratios (width / height) the game area snaps to, currently widescreen only
+const aspectRatios = [16/9];
 // Height of the HTML title bar above the game area, in CSS pixels
 const titleBarHeight = 28;
 // Wait this long after the last resize event before snapping, so dragging stays smooth
@@ -117,8 +117,7 @@ app.on('activate', function () {
 	// dock icon is clicked and there are no other windows open.
 	if (mainWindow === null) createWindow();
 })
-// In this file you can include the rest of your app's specific main process
-// code. You can also put them in separate files and require them here.
+// Window controls
 ipcMain.on('minimize', () => {
 	mainWindow.minimize();
 })

@@ -22,3 +22,8 @@ node_modules
 npm-debug.log
 
 # Build directory
+
+#####=== macOS ===#####
+
+# Finder metadata, in any folder
+.DS_Store

@@ -1,7 +1,7 @@
 {
-  "name": "Snoop Slayer",
+  "name": "cereal-engine",
   "version": "1.0.0",
-  "description": "here we go boyos",
+  "description": "A 2D top-down shooter engine in JavaScript and HTML5 Canvas, running in Electron, with the arena shooter Windows Defender",
   "main": "main.js",
   "scripts": {
     "start": "electron . --no-sandbox"

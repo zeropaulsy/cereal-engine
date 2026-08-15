@@ -40,7 +40,10 @@ function createWindow () {
 	mainWindow.on('maximize',   () => mainWindow.webContents.send('maximized', true));
 	mainWindow.on('unmaximize', () => mainWindow.webContents.send('maximized', false));
 	// Send the starting state once the page can hear it
-	mainWindow.webContents.on('did-finish-load', () => mainWindow.webContents.send('maximized', mainWindow.isMaximized()));
+	mainWindow.webContents.on('did-finish-load', () => {
+		mainWindow.webContents.send('maximized', mainWindow.isMaximized());
+		mainWindow.webContents.send('gpu-status', getGpuStatus());
+	});
 
 	// Emitted when the window is closed.
 	mainWindow.on('closed', function () {
@@ -100,6 +103,17 @@ function snapAspectRatio(win) {
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
+// Whether hardware acceleration is on, and whether Chromium actually draws 2D canvas on the GPU.
+// The canvas can still fall back to software if the GPU is blocklisted or the driver fails
+function getGpuStatus() {
+	let canvasStatus = app.getGPUFeatureStatus()['2d_canvas'];
+	return {
+		hardwareAcceleration: app.isHardwareAccelerationEnabled(),
+		canvasStatus: canvasStatus,
+		canvasAccelerated: typeof canvasStatus === 'string' && canvasStatus.startsWith('enabled')
+	};
+}
+
 app.on('ready', function () {
 	createWindow();
 })

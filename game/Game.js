@@ -18,6 +18,7 @@ const settings = {
 	maximized		  : false,
 	scale             : 1,		// Canvas pixels per game pixel, set by Game.resize()
 	pixelated         : false,	// Nearest neighbour sprite scaling instead of smoothing
+	gpuAccelerated    : null,	// Whether 2D canvas is drawn on the GPU, set from the main process at startup
 	particlesEnabled  : true,
 	shadowsEnabled    : true,
 	shadowDistance    : 3,
@@ -387,6 +388,17 @@ document.getElementById('title-bar-close').onclick = function() {
 };
 remote.ipcRenderer.on('maximized', function(event, maximized) {
         settings.maximized = maximized;
+});
+// Warn when the canvas isn't drawn on the GPU, since performance drops sharply without it
+remote.ipcRenderer.on('gpu-status', function(event, status) {
+	settings.gpuAccelerated = status.canvasAccelerated;
+	if (!status.hardwareAcceleration) {
+		console.warn('Hardware acceleration is disabled, the canvas is drawn in software.');
+	} else if (!status.canvasAccelerated) {
+		console.warn('2D canvas is not GPU accelerated (' + status.canvasStatus + '), performance will suffer.');
+	} else {
+		console.log('2D canvas is GPU accelerated.');
+	}
 });
 // Pause window controls
 document.getElementById('audio-slider').onclick = function() {

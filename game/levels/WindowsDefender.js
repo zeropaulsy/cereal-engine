@@ -1,4 +1,4 @@
-// WindowsDefender : the main level, built on the Level base class (game/Level.js)
+// WindowsDefender : the main level, built on the Level base class (engine/core/Level.js)
 class WindowsDefender extends Level {
 	constructor() {
 		super('windows_defender');
@@ -29,7 +29,7 @@ class WindowsDefender extends Level {
 	setup() {
 		this.spooky = false;
 		// Add turret worker thread
-		this.turretWorker = new Worker('./game/CalculateAngle.js');
+		this.turretWorker = new Worker('./engine/workers/CalculateAngle.js');
 		this.setupTurretWorker();
 		// Create backgrounds
 		this.addBackground('bg_windows_bliss',   [bg_windows_bliss], 1);

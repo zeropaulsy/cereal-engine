@@ -12,7 +12,7 @@
 
 @font-face {
     font-family: 'm3x6';
-    src: './game/assets/fonts/m3x6.ttf';
+    src: url('../../game/assets/fonts/m3x6.ttf');
 }
 
 #main-title-bar {

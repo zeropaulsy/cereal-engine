@@ -1,5 +1,5 @@
 // Reskin : Reskin()
-// A pixel art reskin of the arena, built on the Level base class (game/Level.js)
+// A pixel art reskin of the arena, built on the Level base class (engine/core/Level.js)
 class Reskin extends Level {
 	constructor() {
 		super('reskin');

@@ -1,9 +1,9 @@
-// Level template, a minimal playable level built on the Level base class (game/Level.js)
+// Level template, a minimal playable level built on the Level base class (engine/core/Level.js)
 //
 // To make a new level:
 //   1. Copy this file, rename LevelTemplate and the name passed to super()
-//   2. Add a script tag for it in index.html after Level.js
-//   3. Start it with Game.setState(new YourLevel()) (see Game.startGame)
+//   2. Add a script tag for it in index.html in the game section, before config.js
+//   3. Start it with Game.setState(new YourLevel()), or set Game.startLevel in game/config.js
 //
 // Level handles the camera, managers, shake, spawners, death, pause, draw order
 // and default controls. Override only the hooks you need, see Level.js for the

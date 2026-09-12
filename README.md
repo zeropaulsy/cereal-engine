@@ -70,7 +70,7 @@ The d-pad moves, the top shoulder buttons switch weapons, the bottom-left should
 
 ## Windows Defender
 
-The included game, set up in `game/states/levels/WindowsDefender.js`.
+The included game, set up in `game/levels/WindowsDefender.js`.
 
 - **Weapons**: chicken, dorito, banana and Dew guns. The Dew gun fires explosive rounds and plays music while equipped.
 - **Dash**: launches the player with an emoji explosion, then a damaging explosion where the dash ends. It recharges over time.
@@ -85,41 +85,51 @@ The repo also includes `Reskin.js`, a pixel art variant of the arena with staff 
 
 ## Project structure
 
+The code is split into a reusable **engine** and the **game** built on it. The engine never names the game's classes: the game tells it which level to start, and which death screen to use, in `game/config.js`.
+
 ```
 main.js                 Electron main process: window, title bar controls, aspect ratio snapping
+preload.js              Electron preload script
 index.html              Page layout and <script> load order
-setup.js                State machine (StateStack)
+engine/
+  core/
+    Game.js             Settings, input state, the Game object and the main loop
+    Level.js            Base class for playable levels
+    setup.js            State machine (StateStack)
+    Timer.js            Pausable timers (timerManager)
+  entities/
+    Entity.js           Base entity: position, velocity, sprites, shadows, collision
+    Creature.js         Entities with health, movement and smoothed rotation
+    Player.js, Enemy.js, Turret.js
+    Bullet.js, Explosion.js, Powerup.js
+  weapons/              Gun.js and Inventory.js: weapons and weapon slots
+  systems/
+    EntityManager.js    Owns all entities and their spatial grids
+    SpatialGrid.js      Collision broad phase
+    Collision.js, CollisionBody.js
+    ParticleSystem.js, Particle.js
+    EnemySpawner.js     Timed spawn callbacks
+    BackgroundManager.js  Background screens, including animated GIFs
+    Tile.js
+  input/                Controller.js (gamepad) and KeyBinds.js (developer keys)
+  assets/               LoadAssets.js (images, sprite prescaling), LoadImage.js, Sound.js
+  ui/                   StatBar.js (health and dash bars) and styles.css (window, title bar, pause menu)
+  util/                 Vector.js and Maths.js (random, randomInt, pathfinding, ...)
+  workers/              CalculateAngle.js: Web Worker for turret aiming
+  lib/                  Third-party libraries (camera, mousetrap, pace, GIF, easystar, XP.css, ...)
 game/
-  Game.js               Settings, input state, the Game object and the main loop
-  KeyBinds.js           Developer keys
-  Level.js              Base class for playable levels
-  Entity.js             Base entity: position, velocity, sprites, shadows, collision
-  Creature.js           Entities with health, movement and smoothed rotation
-  Player.js, Enemy.js, Turret.js
-  Bullet.js, Explosion.js, Powerup.js
-  Gun.js, Inventory.js  Weapons and weapon slots
-  EntityManager.js      Owns all entities and their spatial grids
-  SpatialGrid.js        Collision broad phase
-  ParticleSystem.js, Particle.js
-  EnemySpawner.js       Timed spawn callbacks
-  BackgroundManager.js  Background screens, including animated GIFs
-  Timer.js              Pausable timers (timerManager)
-  StatBar.js            Health and dash bars
-  CalculateAngle.js     Web Worker for turret aiming
-  Controller.js         Gamepad bindings
-  LoadAssets.js         Image auto-loading and sprite prescaling
-  Sound.js              Sound auto-loading
-  Maths.js              Helpers (random, randomInt, pathfinding, ...)
-  states/levels/        Levels and the death screen
+  config.js             Start level and death screen
+  levels/               WindowsDefender.js, Reskin.js, LevelTemplate.js
+  states/               DeathScreen01.js
   assets/               img/, sound/sfx/, sound/music/, fonts/, video/
-  lib/                  Third-party libraries (camera, mousetrap, pace, GIF, easystar, ...)
+archive/                Old code that isn't loaded
 ```
 
 ## How it works
 
 ### No modules
 
-There's no bundler and no `import`/`export`. Scripts are loaded in order by `<script>` tags in `index.html`, and classes, sprites, sounds and managers are all globals. **When you add a file, add a script tag for it in `index.html`**, after anything it uses when it loads. Levels go after `Level.js`.
+There's no bundler and no `import`/`export`. Scripts are loaded in order by `<script>` tags in `index.html`, and classes, sprites, sounds and managers are all globals. **When you add a file, add a script tag for it in `index.html`**, after anything it uses when it loads. `index.html` has an engine section and a game section. Levels and states go in the game section, before `game/config.js`, which always loads last.
 
 The renderer has full Node access (`nodeIntegration`), which the asset loaders use to read the asset folders with `fs`.
 
@@ -127,12 +137,12 @@ The renderer has full Node access (`nodeIntegration`), which the asset loaders u
 
 1. Electron opens a frameless window with an HTML title bar (`main.js`).
 2. The asset loaders turn every image and sound into a global while the Pace loading bar runs.
-3. When loading finishes, oversized sprites are prescaled, then `Game.init()` sets up the canvas and starts the first level with `Game.startGame()`.
+3. When loading finishes, oversized sprites are prescaled, then `Game.init()` sets up the canvas and starts `Game.startLevel` (set in `game/config.js`) with `Game.startGame()`.
 4. `Game.run()` runs every frame with `requestAnimationFrame`. It computes `deltaTime` (1.0 at 60fps), then updates and draws the current state.
 
 ### States
 
-The game is a stack of states (`setup.js`). Each state has `onEnter`, `onExit`, `onPause`, `onResume`, `update` and `display`.
+The game is a stack of states (`engine/core/setup.js`). Each state has `onEnter`, `onExit`, `onPause`, `onResume`, `update` and `display`.
 
 Always change state through the `Game` object:
 
@@ -171,7 +181,7 @@ Particles aren't entities. They're owned by the `ParticleSystem`.
 
 ## Making a level
 
-Extend `Level` and override only what you need. The quickest start is to copy `game/states/levels/LevelTemplate.js`.
+Extend `Level` and override only what you need. The quickest start is to copy `game/levels/LevelTemplate.js`.
 
 ```js
 class MyLevel extends Level {
@@ -205,7 +215,7 @@ class MyLevel extends Level {
 }
 ```
 
-Then add `<script type="text/javascript" src="./game/states/levels/MyLevel.js"></script>` to `index.html` after `Level.js`, and start it with `Game.setState(new MyLevel())`, or from `Game.startGame()` in `Game.js` to make it the first level.
+Then add `<script type="text/javascript" src="./game/levels/MyLevel.js"></script>` to the game section of `index.html`, before `game/config.js`. Start it with `Game.setState(new MyLevel())`, or set `Game.startLevel = MyLevel;` in `game/config.js` to make it the first level.
 
 ### Hooks
 
@@ -233,7 +243,7 @@ Set these in the constructor after `super()`.
 | `maxBackgrounds` | `10` | Background screen limit |
 | `spawnRamp` | `0` | Ticks taken off every spawner's interval each frame |
 | `minSpawnTime` | `10` | Shortest spawner interval |
-| `deathScreen` | `DeathScreen01` | State to show when the player dies, `null` to restart straight away |
+| `deathScreen` | `Game.deathScreen` | State to show when the player dies, `null` to restart straight away. The game-wide default is set in `game/config.js`. |
 
 ### Helpers
 
@@ -263,11 +273,11 @@ Use these prefixes:
 | `gif_` | Animations |
 | `cur_` | Cursors |
 
-At startup, `spr_` and `p_` images larger than their limit in `spriteMaxSize` (in `LoadAssets.js`) are shrunk to save memory and drawing time.
+At startup, `spr_` and `p_` images larger than their limit in `spriteMaxSize` (in `engine/assets/LoadAssets.js`) are shrunk to save memory and drawing time.
 
 ### Sounds
 
-Files in `game/assets/sound/sfx/` load into `audio.<name>`, and files in `game/assets/sound/music/` into `music.<name>`, named after the file. Per-sound volumes go in the `soundVolumes` table in `Sound.js`.
+Files in `game/assets/sound/sfx/` load into `audio.<name>`, and files in `game/assets/sound/music/` into `music.<name>`, named after the file. Per-sound volumes go in the `soundVolumes` table in `engine/assets/Sound.js`.
 
 ```js
 audio.mp3_hitmarker.play();
@@ -312,7 +322,7 @@ music.mp3_skrillex.stop();
 
 ### Settings
 
-Runtime settings live in the `settings` object at the top of `game/Game.js`.
+Runtime settings live in the `settings` object at the top of `engine/core/Game.js`.
 
 | Setting | Default | Meaning |
 |---|---|---|
@@ -351,9 +361,9 @@ Bugs:
 
 Cleanup:
 
-- The audio slider's `onclick` is assigned twice in `Game.js`, so the first assignment never runs.
+- The audio slider's `onclick` is assigned twice in `engine/core/Game.js`, so the first assignment never runs.
 - `BackgroundScreen` stores the return value of `timerManager.addTimer`, which is always `undefined`.
-- `PowerupScripts.js` isn't valid JavaScript, and `AudioAnalyser.js` is unused. Neither is loaded.
+- `archive/PowerupScripts.js` isn't valid JavaScript, and `archive/AudioAnalyser.js` is unused. Neither is loaded.
 - `darkenImage` and `contrastImage` in `Maths.js` are unused.
 
 ## License

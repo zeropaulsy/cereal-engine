@@ -38,8 +38,9 @@ class Level {
 		// Spawn time removed from each spawner every frame, down to minSpawnTime
 		this.spawnRamp = 0;
 		this.minSpawnTime = 10;
-		// State class to switch to when the player dies, given this level's class to restart into
-		this.deathScreen = DeathScreen01;
+		// State class to switch to when the player dies, given this level's class to restart into.
+		// Defaults to Game.deathScreen from game/config.js
+		this.deathScreen = Game.deathScreen;
 		// Reused by edgePoint() so spawning doesn't allocate
 		this.spawnPoint = new Vector();
 	}

@@ -4,21 +4,23 @@
 		<meta charset="UTF-8">
 		<!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
 		<meta http-equiv="Content-Security-Policy" content="img-src 'self' data:">
-		<script type="text/javascript" src="./game/lib/pace/pace.min.js"></script>
-		<link href="./game/lib/pace/pace.css" rel="stylesheet" />
-		<link href="./game/lib/XP.css" rel="stylesheet" />
-		<script type="text/javascript" src="./game/lib/pizzicato.min.js"></script>
-		<script type="text/javascript" src="./game/lib/gamepad.js"></script>
-		<script type="text/javascript" src="./game/lib/mousetrap.js"></script>
-		<script type="text/javascript" src="./game/lib/camera.js"></script>
-		<script type="text/javascript" src="./game/lib/GIF.js"></script>
-		<script type="text/javascript" src="./game/lib/easystar-0.4.3.js"></script>
-		<script type="text/javascript" src="./game/Maths.js"></script>
-		<script type="text/javascript" src="./game/Sound.js"></script>
-		<script type="text/javascript" src="./game/LoadImage.js"></script>
-		<script type="text/javascript" src="./game/LoadAssets.js"></script>
-		<script type="text/javascript" src="./setup.js"></script>
-		<link rel="stylesheet" type="text/css" href="./game/css/styles.css" />
+		<!-- Third-party libraries -->
+		<script type="text/javascript" src="./engine/lib/pace/pace.min.js"></script>
+		<link href="./engine/lib/pace/pace.css" rel="stylesheet" />
+		<link href="./engine/lib/XP.css" rel="stylesheet" />
+		<script type="text/javascript" src="./engine/lib/pizzicato.min.js"></script>
+		<script type="text/javascript" src="./engine/lib/gamepad.js"></script>
+		<script type="text/javascript" src="./engine/lib/mousetrap.js"></script>
+		<script type="text/javascript" src="./engine/lib/camera.js"></script>
+		<script type="text/javascript" src="./engine/lib/GIF.js"></script>
+		<script type="text/javascript" src="./engine/lib/easystar-0.4.3.js"></script>
+		<!-- Engine: loaded before the page so assets load during the loading bar -->
+		<script type="text/javascript" src="./engine/util/Maths.js"></script>
+		<script type="text/javascript" src="./engine/assets/Sound.js"></script>
+		<script type="text/javascript" src="./engine/assets/LoadImage.js"></script>
+		<script type="text/javascript" src="./engine/assets/LoadAssets.js"></script>
+		<script type="text/javascript" src="./engine/core/setup.js"></script>
+		<link rel="stylesheet" type="text/css" href="./engine/ui/styles.css" />
 		<title>Windows Defender</title>
 	</head>
 	<body id="body">
@@ -72,35 +74,37 @@
 				</section>
 			</div>
 		</div>
-		<!-- You can also require other files to run in this process -->
-		<script type="text/javascript" src="./game/Controller.js"></script>
-		<script type="text/javascript" src="./game/Entity.js"></script>
-		<script type="text/javascript" src="./game/Creature.js"></script>
-		<script type="text/javascript" src="./game/Timer.js"></script>
-		<script type="text/javascript" src="./game/Vector.js"></script>
-		<script type="text/javascript" src="./game/Collision.js"></script>
-		<script type="text/javascript" src="./game/CollisionBody.js"></script>
-		<script type="text/javascript" src="./game/BackgroundManager.js"></script>
-		<script type="text/javascript" src="./game/SpatialGrid.js"></script>
-		<script type="text/javascript" src="./game/EntityManager.js"></script>
-		<script type="text/javascript" src="./game/Tile.js"></script>
-		<script type="text/javascript" src="./game/ParticleSystem.js"></script>
-		<script type="text/javascript" src="./game/Particle.js"></script>
-		<script type="text/javascript" src="./game/Gun.js"></script>
-		<script type="text/javascript" src="./game/Bullet.js"></script>
-		<script type="text/javascript" src="./game/Explosion.js"></script>
-		<script type="text/javascript" src="./game/Turret.js"></script>
-		<script type="text/javascript" src="./game/Enemy.js"></script>
-		<script type="text/javascript" src="./game/Powerup.js"></script>
-		<script type="text/javascript" src="./game/EnemySpawner.js"></script>
-		<script type="text/javascript" src="./game/Player.js"></script>
-		<script type="text/javascript" src="./game/Inventory.js"></script>
-		<script type="text/javascript" src="./game/StatBar.js"></script>
-		<script type="text/javascript" src="./game/Game.js"></script>
-		<script type="text/javascript" src="./game/KeyBinds.js"></script>
-		<script type="text/javascript" src="./game/Level.js"></script>
-		<script type="text/javascript" src="./game/states/levels/DeathScreen01.js"></script>
-		<script type="text/javascript" src="./game/states/levels/WindowsDefender.js"></script>
-		<script type="text/javascript" src="./game/states/levels/Reskin.js"></script>
+		<!-- Engine: load order matters, anything a file uses at load time must come before it -->
+		<script type="text/javascript" src="./engine/input/Controller.js"></script>
+		<script type="text/javascript" src="./engine/entities/Entity.js"></script>
+		<script type="text/javascript" src="./engine/entities/Creature.js"></script>
+		<script type="text/javascript" src="./engine/core/Timer.js"></script>
+		<script type="text/javascript" src="./engine/util/Vector.js"></script>
+		<script type="text/javascript" src="./engine/systems/Collision.js"></script>
+		<script type="text/javascript" src="./engine/systems/CollisionBody.js"></script>
+		<script type="text/javascript" src="./engine/systems/BackgroundManager.js"></script>
+		<script type="text/javascript" src="./engine/systems/SpatialGrid.js"></script>
+		<script type="text/javascript" src="./engine/systems/EntityManager.js"></script>
+		<script type="text/javascript" src="./engine/systems/Tile.js"></script>
+		<script type="text/javascript" src="./engine/systems/ParticleSystem.js"></script>
+		<script type="text/javascript" src="./engine/systems/Particle.js"></script>
+		<script type="text/javascript" src="./engine/weapons/Gun.js"></script>
+		<script type="text/javascript" src="./engine/entities/Bullet.js"></script>
+		<script type="text/javascript" src="./engine/entities/Explosion.js"></script>
+		<script type="text/javascript" src="./engine/entities/Turret.js"></script>
+		<script type="text/javascript" src="./engine/entities/Enemy.js"></script>
+		<script type="text/javascript" src="./engine/entities/Powerup.js"></script>
+		<script type="text/javascript" src="./engine/systems/EnemySpawner.js"></script>
+		<script type="text/javascript" src="./engine/entities/Player.js"></script>
+		<script type="text/javascript" src="./engine/weapons/Inventory.js"></script>
+		<script type="text/javascript" src="./engine/ui/StatBar.js"></script>
+		<script type="text/javascript" src="./engine/core/Game.js"></script>
+		<script type="text/javascript" src="./engine/input/KeyBinds.js"></script>
+		<script type="text/javascript" src="./engine/core/Level.js"></script>
+		<!-- Game: states and levels, then config.js last -->
+		<script type="text/javascript" src="./game/states/DeathScreen01.js"></script>
+		<script type="text/javascript" src="./game/levels/WindowsDefender.js"></script>
+		<script type="text/javascript" src="./game/levels/Reskin.js"></script>
+		<script type="text/javascript" src="./game/config.js"></script>
 	</body>
 </html>

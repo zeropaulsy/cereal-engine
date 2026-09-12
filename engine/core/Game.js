@@ -106,6 +106,9 @@ function GameObject() {
 	this.globalBindings = [];
 	// Keys bound by the current state, stored as (key, event)
 	this.stateBindings  = [];
+	// Set by the game in game/config.js
+	this.startLevel  = null;	// Level class started on boot
+	this.deathScreen = null;	// State class shown when the player dies, given the level class to restart into
 	// Last settings.pixelated applied to the canvas CSS
 	this.pixelated = null;
 
@@ -214,7 +217,11 @@ function GameObject() {
 		tick++;
 	}
 	this.startGame = function() {
-		this.setState(new WindowsDefender());
+		if (!this.startLevel) {
+			console.error('No start level set, assign Game.startLevel in game/config.js.');
+			return;
+		}
+		this.setState(new this.startLevel());
 	}
 	this.pauseGame = function() {
 		settings.paused = !settings.paused;

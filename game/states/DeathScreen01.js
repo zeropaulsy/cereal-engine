@@ -1,7 +1,7 @@
-// DeathScreen01 : DeathScreen01(level class to restart into, defaults to WindowsDefender)
+// DeathScreen01 : DeathScreen01(level class to restart into, defaults to Game.startLevel)
 var DeathScreen01 = function(level) {
 	this.name = 'DeathScreen01';
-	this.level = level || WindowsDefender;
+	this.level = level || Game.startLevel;
 
 	this.camera;
 

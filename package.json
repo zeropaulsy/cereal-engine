@@ -15,8 +15,7 @@
   "author": "zeropaulsy",
   "license": "CC0-1.0",
   "devDependencies": {
-    "devtron": "^1.4.0",
-    "electron": "^38.2.2"
+    "electron": "^44.9.1"
   },
   "dependencies": {
     "easystarjs": "^0.4.3",

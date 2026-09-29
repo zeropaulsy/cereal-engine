@@ -6,15 +6,17 @@
 	-moz-user-select: none;
 	user-select: none;
 
+	/* Size the startup background is drawn at with background-size: cover (2560x1440 image) */
+	--bg-w: max(100vw, 100vh * 16 / 9);
+	--bg-h: max(100vh, 100vw * 9 / 16);
+
+	/* Place the bar over the empty track in the image (inside pixels x 1091-1456, y 1059-1091), so it stays on it at any aspect ratio */
 	z-index: 2000;
 	position: fixed;
-	margin: auto;
-	top: 49.3%;
-	left: -0.5%;
-	right: 0;
-	bottom: 0;
-	height: 2%;
-	width: 14%;
+	left: calc(50vw + (1091 / 2560 - 0.5) * var(--bg-w));
+	top: calc(50vh + (1059 / 1440 - 0.5) * var(--bg-h));
+	width: calc(366 / 2560 * var(--bg-w));
+	height: calc(33 / 1440 * var(--bg-h));
 
 	overflow: hidden;
 }
@@ -32,7 +34,6 @@
 	-o-transform: translate3d(0, 0, 0);
 	transform: translate3d(0, 0, 0);
 
-	max-width: 200px;
 	position: fixed;
 	z-index: 2000;
 	display: block;

@@ -14,6 +14,14 @@
     font-family: 'm3x6';
     src: url('../../game/assets/fonts/m3x6.ttf');
 }
+@font-face {
+    font-family: 'Comic Sans MS';
+    src: url('../../game/assets/fonts/Comic_Sans_MS.ttf');
+}
+@font-face {
+    font-family: 'Trebuchet MS';
+    src: url('../../game/assets/fonts/Trebuchet_MS.woff');
+}
 
 #main-title-bar {
   -webkit-user-select: none;
@@ -43,16 +51,6 @@ body {
     background-size: cover;
 }
 
-/*
-body {
-  font-family: 'm3x6';
-  user-select: none;
-  margin: 0px;
-  overflow: hidden;
-  background: black;
-}
-*/
-
 video {
     display: none;
 }
@@ -66,6 +64,9 @@ video {
     display: flex;
     justify-content: center;
     align-items: center;
+    border-style: ridge;
+    border-top: none;
+    border-color: #005df7;
 }
 
 canvas {
@@ -100,15 +101,6 @@ canvas {
     font-family: "Comic Sans MS", "Comic Sans", cursive;
     color: #fff;
 }
-
-/*
-#title {
-  margin-left: calc(50% - 130px);
-  font-size: 12pt;
-  font-family: 'm3x6';
-  color: #fff;
-}
-*/
 
 #close {
     margin-left: 7px;
@@ -179,27 +171,6 @@ a {
     -webkit-filter: brightness(100%);
     -webkit-transition: all 0.25s ease;
 }
-
-/*
-input, select, a {
-  font-family: 'm3x6';
-  border: 0px solid rgb(4, 26, 55);
-  display: inline-block;
-  cursor: pointer;
-  color: #fff;
-  font-size: 5vh;
-  text-shadow: rgb(40, 57, 102) 0px 2px 0px;
-  text-align: center;
-  background-color: #e85a23;
-  width: 100%;
-  margin-bottom: 1%;
-  margin-top: 1%;
-  height: 6vh;
-  -webkit-app-region: no-drag;
-  -webkit-filter: brightness(100%);
-  -webkit-transition: all 0.25s ease;
-}
-*/
 
 input:hover,
 select:hover {

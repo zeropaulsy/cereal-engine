@@ -40,6 +40,6 @@ function initializeGamepadControls() {
 	});
 
 	Gamepad.on('press', 'shoulder_bottom_left', e => {
-		Game.getCurrentState().playerDashEvent();
+		Game.getCurrentState().dashEvent();
 	});
 }

@@ -1,11 +1,11 @@
-// DeathScreen01 : DeathScreen01(level class to restart into, defaults to Game.startLevel)
-var DeathScreen01 = function(level) {
-	this.name = 'DeathScreen01';
-	this.level = level || Game.startLevel;
+// DeathScreen01 Class : DeathScreen01(level class to restart into, defaults to Game.startLevel), extends State
+class DeathScreen01 extends State {
+	constructor(level) {
+		super('DeathScreen01');
+		this.level = level || Game.startLevel;
+	}
 
-	this.camera;
-
-	this.onEnter = function() {
+	onEnter() {
 		// Set mouse cursor
 		Game.canvas.style.cursor = 'auto';
 		body.style.backgroundImage = '';
@@ -25,22 +25,19 @@ var DeathScreen01 = function(level) {
 		}, 300);
 	}
 	// Timers, keybinds, input, filters and audio are reset by Game.exitState()
-	this.onExit = function() {
+	onExit() {
 		// Clear the canvas
 		Game.clearCanvas(Game.c);
 		// lastScreen is kept so a restart (Q) can draw it again, the next death replaces it
 		this.camera = null;
 	}
 
-	this.onPause  = function() {}
-	this.onResume = function() {}
-
-	this.update = function() {
+	update() {
 		// Follow canvas size changes from window resizing
 		this.camera.moveTo(Game.canvas.width / 2, Game.canvas.height / 2);
 		this.camera.zoomTo(Game.canvas.width);
 	}
-	this.display = function() {
+	display() {
 		this.camera.begin();
 
 		Game.c.save();

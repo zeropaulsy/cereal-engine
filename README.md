@@ -94,7 +94,8 @@ index.html              Page layout and <script> load order
 engine/
   core/
     Game.js             Settings, input state, the Game object and the main loop
-    Level.js            Base class for playable levels
+    Level.js            Base class for playable levels, extends State
+    State.js            Base class for all states
     setup.js            State machine (StateStack)
     Timer.js            Pausable timers (timerManager)
   entities/
@@ -142,7 +143,7 @@ The renderer has full Node access (`nodeIntegration`), which the asset loaders u
 
 ### States
 
-The game is a stack of states (`engine/core/setup.js`). Each state has `onEnter`, `onExit`, `onPause`, `onResume`, `update` and `display`.
+The game is a stack of states (`engine/core/setup.js`). Every state extends `State` (`engine/core/State.js`) and overrides only the hooks it needs: `onEnter`, `onExit`, `onPause`, `onResume`, `update` and `display`. Playable levels extend `Level`, which extends `State`.
 
 Always change state through the `Game` object:
 

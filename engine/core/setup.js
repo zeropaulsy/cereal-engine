@@ -3,32 +3,6 @@ const easystar = new EasyStar.js();
 
 //window.devicePixelRatio = 2;
 
-var EmptyState = function() {
-	this.name = "EmptyState";
-
-	this.update = function() {};
-	this.display = function() {};
-
-	this.onEnter = function() {};
-	this.onExit = function() {};
-
-	this.onPause = function() {}
-	this.onResume = function() {}
-}
-
-var State = function() {
-	this.name;
-
-	this.update = function() {}
-	this.display = function() {}
-
-	this.onEnter = function() {}
-	this.onExit = function() {}
-
-	this.onPause = function() {}
-	this.onResume = function() {}
-}
-
 var StateList = function() {
 	this.states = [];
 	this.pop = function() {
@@ -44,7 +18,7 @@ var StateList = function() {
 
 var StateStack = function() {
 	this.stateList = new StateList();
-	this.stateList.push(new EmptyState());
+	this.stateList.push(new State('EmptyState'));
 	this.update = function() {
 		var state = this.stateList.top();
 		if (state) {

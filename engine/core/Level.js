@@ -1,4 +1,4 @@
-// Level Class : Level(name)
+// Level Class : Level(name), extends State
 //
 // Base class for playable levels. It owns the engine wiring every level needs
 // (camera, managers, audio, shake, spawners, death, draw order, pause and
@@ -18,9 +18,9 @@
 //
 // Game.exitState() resets timers, keybinds (bind with Game.bind), input, pause,
 // CSS filters, audio, settings.shake and settings.speed when the level is left.
-class Level {
+class Level extends State {
 	constructor(name) {
-		this.name = name;
+		super(name);
 		this.loading = true;
 		this.score = 0;
 		this.camera = null;
